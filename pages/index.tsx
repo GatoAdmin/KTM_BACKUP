@@ -1,14 +1,32 @@
-import * as React from "react";
+import * as React from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
 
-const App = () => {
-  return (
-    <>
-      <header>
-        <h2>To Do List</h2>
-      </header>
-      <main>Hello World</main>
-    </>
-  );
+const GlobalStyle = createGlobalStyle`
+	body {
+		margin: 0;
+		padding: 0;
+	}
+`;
+
+const Header = styled.header`
+	width: 100%;
+	background-color: lightgrey;
+`;
+
+const Logo = styled.h2`
+	margin: 0;
+`;
+
+const App: React.FC = () => {
+	return (
+		<>
+			<GlobalStyle />
+			<Header>
+				<Logo>To Do List</Logo>
+			</Header>
+			<main>Hello World</main>
+		</>
+	);
 };
 
 export default App;

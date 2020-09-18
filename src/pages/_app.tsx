@@ -1,5 +1,6 @@
 import React from "react";
 import { AppProps } from "next/app";
+import Head from "next/head";
 import { createGlobalStyle } from "styled-components";
 import "normalize.css";
 import { fontColor } from "../util/style/color";
@@ -7,7 +8,7 @@ import { fontColor } from "../util/style/color";
 const AppGlobalStyle = createGlobalStyle`
   @font-face {
       font-family: Nunito;
-      src: local(Nunito), url('https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap');
+      src: local(Nunito), url('../font/Nunito-ExtraBold.ttf');
       font-weight: 900;
   }
   
@@ -32,6 +33,9 @@ const AppGlobalStyle = createGlobalStyle`
 function App({Component, pageProps}: AppProps) {
   return (
     <>
+      <Head>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet" /> 
+      </Head>
       <Component {...pageProps} />
     </>
   )

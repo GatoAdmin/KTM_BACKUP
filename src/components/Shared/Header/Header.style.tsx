@@ -1,20 +1,19 @@
 import styled from "styled-components";
 import { fontColor, mainColor } from "src/util/style/color";
 
-interface HeaderContainerProps {
-  isTop: boolean;
-}
 
-export const HeaderContainer = styled.header<HeaderContainerProps>`
-  position: fixed;
+export const HeaderContainer = styled.header`
   display: flex;
+  position: absolute;
+  top: 0;
   justify-content: space-between;
 	width: 100%;
 	min-width: 1400px;
 	height: 116px;
 	line-height: 116px;
-	background-color: ${props => props.isTop ?  'transparent' : mainColor};
+	background-color: transparent;
 	user-select: none;
+	z-index: 3;
 `;
 
 export const Logo = styled.img`

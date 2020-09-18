@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   HeaderContainer,
+  Logo,
   LogoContainer,
   LocalizationButton,
   LocalizationButtonContainer,
@@ -8,7 +9,7 @@ import {
   LoginLink,
   Navigation,
   NavigationContainer,
-  NavLink, Logo
+  NavLink
 } from "./Header.style";
 import Link from "next/link";
 

@@ -8,6 +8,18 @@
         "displayName": false
       }
     ],
+    [
+      "module-resolver",
+      {
+        "root": ["./"],
+        "alias": {
+          "@components": "./src/components",
+          "@utils": "./src/utils",
+          "@views": "./src/views"
+        },
+        "extensions": [".js", ".jsx", ".tsx"]
+      }
+    ],
     ["@babel/plugin-proposal-decorators", { "legacy": true }]
   ]
 }

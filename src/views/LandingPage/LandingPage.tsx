@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {
+  Content,
   ClickImage,
   ConsultImage,
   UnivImage,
@@ -10,11 +11,12 @@ import Header from "@components/Shared/Header/Header";
 import IntroductionSection from "@components/LandingPage/IntroductionSection/IntroductionSection";
 import NumberSection from "@components/LandingPage/NumberSection/NumberSection";
 
+
 const LandingPage: React.FC = () => {
   return (
     <>
       <Header />
-      <main>
+      <Content>
         <IntroductionSection />
         <NumberSection
           buttonName="대학 소개&추천 바로가기"
@@ -49,7 +51,7 @@ const LandingPage: React.FC = () => {
           <br/>
           원하는 대학에 <EmphasisText>클릭 한 번</EmphasisText>으로 입학하세요.
         </NumberSection>
-      </main>
+      </Content>
     </>
   );
 };

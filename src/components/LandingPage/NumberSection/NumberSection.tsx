@@ -7,8 +7,7 @@ import {
   ImageContainer,
   TextContainer,
   Title,
-  RouteButton,
-  SectionImage
+  RouteButton
 } from "./NumberSection.style";
 import Link from "next/link";
 

@@ -12,6 +12,7 @@ import {
   NavLink
 } from "./Header.style";
 import Link from "next/link";
+import { useIntersection } from "@util/hooks/useInteraction";
 
 
 interface headerLink {
@@ -38,17 +39,19 @@ const headerLinks: Array<headerLink> = [
   },
 ]
 
-interface HeaderProps {
-
-}
+interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const [languageIndex, setLanguageIndex] = React.useState<number>(0)
-
+  const header = React.useRef<HTMLHeadingElement>(null);
+  const visible = useIntersection(header);
 
   return (
-    <HeaderContainer isTop={true}>
+    <HeaderContainer
+      ref={header}
+      show={visible}>
       <LogoContainer>
+        {console.log(visible)}
         <Logo src="/images/logo.png" alt="KATUMM Logo" />
         katumm
       </LogoContainer>

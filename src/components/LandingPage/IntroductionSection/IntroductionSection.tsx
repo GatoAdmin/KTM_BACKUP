@@ -4,19 +4,27 @@ import {
   EmphasisTitle,
   Introduction,
   IntroductionContent,
+  IntroductionSectionBackground,
   IntroductionSectionContainer,
   SubTitle,
+  StormAnimatedText,
   Title,
   RouteIntroductionButton
 } from "./IntroductionSection.style";
 import Link from "next/link";
+import { useIntersection } from "@util/hooks/useInteraction";
 
 interface IntroductionSectionProps { }
 
 const IntroductionSection : React.FC<IntroductionSectionProps> = () => {
+  const firstSection = React.useRef<HTMLDivElement>(null);
+  const visible = useIntersection(firstSection);
+
   return (
-    <IntroductionSectionContainer backgroundImage="/images/main_image.jpg">
-      <Introduction>
+    <IntroductionSectionContainer ref={firstSection}>
+      <IntroductionSectionBackground />
+      <Introduction
+        show={visible}>
         <IntroductionContent>
           <CompanyName>
             katumm
@@ -33,7 +41,9 @@ const IntroductionSection : React.FC<IntroductionSectionProps> = () => {
             href="/introduction"
             passHref>
             <RouteIntroductionButton>
-              회사 소개 바로가기
+              <StormAnimatedText>
+                회사 소개 바로가기
+              </StormAnimatedText>
             </RouteIntroductionButton>
           </Link>
         </IntroductionContent>

@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import {mainColor} from "@util/style/color";
 
+export const Content = styled.main`
+  width: 100%;
+  min-width: 1400px;
+  overflow: hidden;
+`;
+
 export const EmphasisText = styled.span`
   color: ${mainColor};
 `;

@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import { fontColor, mainColor } from "src/util/style/color";
 
+interface HeaderContainerProps {
+  show: boolean;
+}
 
-export const HeaderContainer = styled.header`
+export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
   position: absolute;
   top: 0;
@@ -14,6 +17,9 @@ export const HeaderContainer = styled.header`
 	background-color: transparent;
 	user-select: none;
 	z-index: 3;
+  transition: transform .5s ease 1.6s;
+  transform: ${props => props.show ? 'scaleY(1)' : 'scaleY(0)'};
+  transform-origin: top center;
 `;
 
 export const Logo = styled.img`

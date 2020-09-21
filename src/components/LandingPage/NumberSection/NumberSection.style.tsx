@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import {mainColor, secondColor} from "@util/style/color";
+import styled, { css } from "styled-components";
+import { mainColor, secondColor } from "@util/style/color";
 
 interface IsNumberEvenProp {
   isNumberEven: boolean;
@@ -10,13 +10,6 @@ export const NumberSectionContainer = styled.div<IsNumberEvenProp>`
   background: ${props => props.isNumberEven ? secondColor : 'transparent'};
 `;
 
-export const NumberSectionContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 1400px;
-  margin: 0 auto;
-`;
-
 export const TextContainer = styled.div`
   padding-top: 138px;
 `;
@@ -25,13 +18,17 @@ export const Title = styled.h2`
   margin: 0;
   padding-left: 31px;
   border-left: 11px solid ${mainColor};
-  font: bold 45px/70px "NEXON Lv1 Gothic";
+  font: bold 45px/80px "NEXON Lv1 Gothic";
+  transition-property: opacity, transform;
+  transition: 1s ease;
 `;
 
 export const Description = styled.div`
   padding-left: 42px;
   margin-top: 50px;
   font: normal 24px/40px "NEXON Lv1 Gothic";
+  transition-property: opacity, transform;
+  transition: 1s ease .3s;
 `;
 
 export const RouteButton = styled.a`
@@ -62,4 +59,35 @@ export const BackgroundNumber = styled.div<IsNumberEvenProp>`
   font: bold 250px/288px "NEXON Lv1 Gothic";
   color: ${mainColor};
   opacity: ${props => props.isNumberEven ? '0.3' : '0.2'};
+`;
+
+
+export const NumberSectionContent = styled.div<{show: boolean;}>`
+  display: flex;
+  justify-content: space-between;
+  width: 1400px;
+  margin: 0 auto;
+  
+  ${props => props.show ?
+    css`
+      ${Title} {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      ${Description} {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    `
+  : css`
+      ${Title} {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      ${Description} {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+    `
+  }
 `;

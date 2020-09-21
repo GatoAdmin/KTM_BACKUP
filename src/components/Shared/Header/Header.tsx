@@ -43,7 +43,7 @@ interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const [languageIndex, setLanguageIndex] = React.useState<number>(0)
-  const header = React.useRef<HTMLHeadingElement>(null);
+  const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
 
   return (

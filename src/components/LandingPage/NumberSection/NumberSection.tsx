@@ -10,6 +10,8 @@ import {
   RouteButton
 } from "./NumberSection.style";
 import Link from "next/link";
+import { StyledComponentBase } from "styled-components";
+import { useIntersection } from "@util/hooks/useInteraction";
 
 interface NumberSectionProps {
   buttonName: string;
@@ -17,7 +19,7 @@ interface NumberSectionProps {
   number: number;
   titleFirst: string;
   titleSecond: string;
-  image: React.ReactNode;
+  Image: StyledComponentBase<'img', any>;
 }
 
 const NumberSection: React.FC<NumberSectionProps> = ({
@@ -25,14 +27,18 @@ const NumberSection: React.FC<NumberSectionProps> = ({
   buttonName,
   children,
   number,
-  image,
+  Image,
   titleFirst,
   titleSecond
 }) => {
+  const content = React.useRef<HTMLDivElement>(null);
+  const contentVisible = useIntersection(content, {threshold: 0.7});
   const isNumberEven = !(number & 1);
   return (
     <NumberSectionContainer isNumberEven={isNumberEven}>
-      <NumberSectionContent>
+      <NumberSectionContent
+        ref={content}
+        show={contentVisible}>
         <TextContainer>
           <Title>
             { titleFirst }
@@ -54,7 +60,7 @@ const NumberSection: React.FC<NumberSectionProps> = ({
           <BackgroundNumber isNumberEven={isNumberEven}>
             0{ number }
           </BackgroundNumber>
-          { image }
+          <Image />
         </ImageContainer>
       </NumberSectionContent>
     </NumberSectionContainer>

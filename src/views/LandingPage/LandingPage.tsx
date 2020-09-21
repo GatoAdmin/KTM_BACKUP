@@ -22,7 +22,7 @@ const LandingPage: React.FC = () => {
           buttonName="대학 소개&추천 바로가기"
           buttonHref="/search-univ"
           number={1}
-          image={<UnivImage />}
+          Image={UnivImage}
           titleFirst="유학의 첫걸음,"
           titleSecond="나만의 대학을 검색하세요">
           한국 대학교에 입학하기 위한 정보,
@@ -33,7 +33,7 @@ const LandingPage: React.FC = () => {
           buttonName="입학 상담 바로가기"
           buttonHref="/admission-consult"
           number={2}
-          image={<ConsultImage />}
+          Image={ConsultImage}
           titleFirst="유학의 지름길,"
           titleSecond="유학 전문가와 상담하세요">
           <EmphasisText>카툼</EmphasisText>이 제공하는 입학 가이드라인,
@@ -44,7 +44,7 @@ const LandingPage: React.FC = () => {
           buttonName="원클릭입학솔루션 바로가기"
           buttonHref="/search-univ"
           number={3}
-          image={<ClickImage />}
+          Image={ClickImage}
           titleFirst="빠르고 저렴한 유학 신청"
           titleSecond="원클릭입학솔루션">
           유학에 필요한 서류를 등록하고

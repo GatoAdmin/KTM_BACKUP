@@ -5,7 +5,7 @@ interface IntersectionOption {
 }
 
 export const useIntersection = (
-  ref: MutableRefObject<HTMLDivElement | null>,
+  ref: MutableRefObject<HTMLElement | null>,
   option: IntersectionOption = {
     threshold: 0,
   }

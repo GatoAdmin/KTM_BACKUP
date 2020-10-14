@@ -1,4 +1,3 @@
-
 export const mainColor = '#DF4D3E';
 
 export const secondColor = '#FFF8F8';

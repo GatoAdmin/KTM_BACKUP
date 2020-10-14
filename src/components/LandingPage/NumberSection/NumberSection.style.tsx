@@ -44,6 +44,12 @@ export const RouteButton = styled.a`
   text-decoration: none;
   text-align: center;
   line-height: 63px;
+  transition: background-color .3s, color .3s;
+  
+  :hover {
+    background: ${mainColor};
+    color: white;
+  }
 `;
 
 export const ImageContainer = styled.div`

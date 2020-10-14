@@ -1,24 +1,26 @@
 import styled from "styled-components";
-import { fontColor, mainColor } from "src/util/style/color";
+import { fontColor, mainColor } from "@util/style/color";
 
 interface HeaderContainerProps {
   show: boolean;
+  isTop: boolean;
 }
 
 export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
-  position: absolute;
+  position: fixed;
   top: 0;
   justify-content: space-between;
 	width: 100%;
 	min-width: 1400px;
 	height: 116px;
+	border-radius: 0 0 40px 40px;
 	line-height: 116px;
-	background-color: transparent;
+	background-color: ${props => props.isTop ? 'transparent' : 'rgba(255, 255, 255, 0.85)'};
 	user-select: none;
 	z-index: 3;
   transition: transform .5s ease 1.6s;
-  transform: ${props => props.show ? 'scaleY(1)' : 'scaleY(0)'};
+  transform: ${props => props.show ? 'scaleY(1)' : 'scaleY(0)'}; 
   transform-origin: top center;
 `;
 

@@ -7,7 +7,7 @@ import {
   UnivImage,
   EmphasisText
 } from "./LandingPage.style";
-import Header from "@components/Shared/Header/Header";
+import Header from "@components/LandingPage/Header/Header";
 import IntroductionSection from "@components/LandingPage/IntroductionSection/IntroductionSection";
 import NumberSection from "@components/LandingPage/NumberSection/NumberSection";
 

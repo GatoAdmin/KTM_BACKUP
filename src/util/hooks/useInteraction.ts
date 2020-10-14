@@ -25,7 +25,6 @@ export const useIntersection = (
             const responseToTop = y >= 0;
             const AlreadyRendered = y <= 0;
             if (responseToTop) {
-              console.log(y)
               setVisible(isIntersecting);
             } else if (AlreadyRendered) {
               setVisible(true);

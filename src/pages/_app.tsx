@@ -3,7 +3,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { createGlobalStyle } from "styled-components";
 import "normalize.css";
-import { fontColor } from "../util/style/color";
+import { fontColor } from "@util/style/color";
 
 const AppGlobalStyle = createGlobalStyle`
   @font-face {
@@ -33,6 +33,7 @@ const AppGlobalStyle = createGlobalStyle`
 function App({Component, pageProps}: AppProps) {
   return (
     <>
+      <AppGlobalStyle />
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet" /> 
       </Head>

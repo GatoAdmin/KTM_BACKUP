@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { NextPage } from 'next';
 import {
   HeaderContainer,
   Logo,
@@ -41,15 +42,38 @@ const headerLinks: Array<headerLink> = [
 
 interface HeaderProps { }
 
-const Header: React.FC<HeaderProps> = () => {
+const Header: NextPage<HeaderProps> = () => {
   const [languageIndex, setLanguageIndex] = React.useState<number>(0)
+  const [isTop, setIsTop] = React.useState<boolean>(true)
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
+  React.useEffect(() => {
+    function makeScrollCallback() {
+      const isBrowser = typeof window !== `undefined`
+      if(!isBrowser) return () => {}
+      let tick = false
+      return function onWheel(event: WheelEvent) {
+        if(tick)
+          return undefined
+        tick = true
+        return requestAnimationFrame(() => {
+          setIsTop(window.pageYOffset <= 100)
+          tick = false
+        })
+      }
+    }
+    setIsTop(window.pageYOffset <= 100)
+    window.addEventListener('wheel', makeScrollCallback())
+    return () => {
+      window.removeEventListener('wheel', makeScrollCallback())
+    }
+  }, []);
 
   return (
     <HeaderContainer
       ref={header}
-      show={visible}>
+      show={visible}
+      isTop={isTop}>
       <LogoContainer>
         {console.log(visible)}
         <Logo src="/images/logo.png" alt="KATUMM Logo" />

@@ -17,7 +17,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@util/*": ["./src/util/*"],
+      "@views/*": ["./src/views/*"]
+    }
   },
   "include": [
     "next-env.d.ts",

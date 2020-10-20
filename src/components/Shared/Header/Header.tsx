@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { NextPage } from 'next';
 import Link from 'next/link';
-import useIntersection from '@util/hooks/useInteraction';
 import {
 	HeaderContainer,
 	Logo,
@@ -41,32 +39,9 @@ const headerLinks: Array<headerLink> = [
 
 const Header: React.FC = () => {
 	const [languageIndex, setLanguageIndex] = React.useState<number>(0);
-	const [isTop, setIsTop] = React.useState<boolean>(true);
-	const header = React.useRef<HTMLElement>(null);
-	const visible = useIntersection(header);
-	React.useEffect(() => {
-		function makeScrollCallback() {
-			const isBrowser = typeof window !== `undefined`;
-			if (!isBrowser) return () => undefined;
-			let tick = false;
-			return function onWheel() {
-				if (tick) return undefined;
-				tick = true;
-				return requestAnimationFrame(() => {
-					setIsTop(window.pageYOffset <= 100);
-					tick = false;
-				});
-			};
-		}
-		setIsTop(window.pageYOffset <= 100);
-		window.addEventListener('wheel', makeScrollCallback());
-		return () => {
-			window.removeEventListener('wheel', makeScrollCallback());
-		};
-	}, []);
 
 	return (
-		<HeaderContainer ref={header} show={visible} isTop={isTop}>
+		<HeaderContainer>
 			<LogoContainer>
 				<Logo src="/images/logo.png" alt="KATUMM Logo" />
 				katumm

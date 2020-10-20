@@ -8,19 +8,19 @@ import { fontColor } from '@util/style/color';
 const AppGlobalStyle = createGlobalStyle`
   @font-face {
       font-family: Nunito;
-      src: local(Nunito), url('../font/Nunito-ExtraBold.ttf');
+      src: local(Nunito), url('../font/Nunito-ExtraBold.ttf') format("truetype");
       font-weight: 900;
   }
   
   @font-face {
       font-family: "NEXON Lv1 Gothic";
-      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF.woff");
+      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF.woff") format(‘woff’);
       font-weight: normal;
   }
   
   @font-face {
       font-family: "NEXON Lv1 Gothic";
-      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF Bold.woff");
+      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF Bold.woff") format(‘woff’);
       font-weight: bold;
   }
   

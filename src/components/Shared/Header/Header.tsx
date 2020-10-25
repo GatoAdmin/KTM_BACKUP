@@ -43,7 +43,7 @@ const Header: React.FC = () => {
 	return (
 		<HeaderContainer>
 			<LogoContainer>
-				<Logo src="/images/logo.png" alt="KATUMM Logo" />
+				<Logo />
 				katumm
 			</LogoContainer>
 			<NavigationContainer>

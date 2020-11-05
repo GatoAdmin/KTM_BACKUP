@@ -4,12 +4,19 @@ import {
   Layout
 } from "@components/UserPage/UserPageLayout/UserLayout.style";
 
-const UserLayout: React.FC = ({
+interface UserLayoutProps {
+  width: number;
+  height: number;
+}
+
+const UserLayout: React.FC<UserLayoutProps> = ({
+  width,
+  height,
   children
 }) => {
   return (
     <Layout>
-      <ContentContainer>
+      <ContentContainer width={width} height={height}>
         { children }
       </ContentContainer>
     </Layout>

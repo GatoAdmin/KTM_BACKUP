@@ -34,7 +34,7 @@ const FilterModal = React.forwardRef<FilterModalRef, FilterModalProps>(
 			return () => {
 				if (isBrowser) window.removeEventListener('click', onSubmit);
 			};
-		}, []);
+		}, [onSubmit]);
 		return (
 			<FilterModalContainer ref={ref} width={width} height={height} show={visible} hasDescription={!!description}>
 				{description ? <FilterModalDescription>{description}</FilterModalDescription> : null}

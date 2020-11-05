@@ -25,13 +25,29 @@
   "plugins": [
     "react",
     "prettier",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "import"
   ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
   "rules": {
     "react/react-in-jsx-scope": 0,
     "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
     "@typescript-eslint/no-var-requires": 0,
-    "react/jsx-props-no-spreading": 0
+    "react/jsx-props-no-spreading": 0,
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   },
   "overrides": [
     {

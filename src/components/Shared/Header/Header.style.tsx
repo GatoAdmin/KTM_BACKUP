@@ -20,7 +20,7 @@ export const Logo = styled(LogoIcon)`
 	width: 81px;
 	height: 81px;
 	margin-right: 19px;
-	
+
 	> path {
 		fill: white;
 	}

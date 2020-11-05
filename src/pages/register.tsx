@@ -1,1 +1,1 @@
-export { default } from "@views/UserPage/RegisterPage/RegisterPage"
+export { default } from '@views/UserPage/RegisterPage/RegisterPage';

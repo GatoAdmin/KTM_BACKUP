@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontColor, mainColor } from '@util/style/color';
+import { mainColor } from '@util/style/color';
 
 export const UnivItemContainer = styled.div`
 	display: flex;

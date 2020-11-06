@@ -29,11 +29,12 @@ const FilterModal = React.forwardRef<FilterModalRef, FilterModalProps>(
 			setVisible(false);
 		};
 		React.useEffect(() => {
-			if (process.browser) window.addEventListener('click', onSubmit);
+			const isBrowser = typeof window !== 'undefined';
+			if (isBrowser) window.addEventListener('click', onSubmit);
 			return () => {
-				if (process.browser) window.removeEventListener('click', onSubmit);
+				if (isBrowser) window.removeEventListener('click', onSubmit);
 			};
-		}, []);
+		}, [onSubmit]);
 		return (
 			<FilterModalContainer ref={ref} width={width} height={height} show={visible} hasDescription={!!description}>
 				{description ? <FilterModalDescription>{description}</FilterModalDescription> : null}

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import LogoIcon from '../../../assets/logo.svg';
 
 export const HeaderContainer = styled.header`
 	display: flex;
@@ -15,10 +16,14 @@ export const HeaderContainer = styled.header`
 	z-index: 3;
 `;
 
-export const Logo = styled.img`
+export const Logo = styled(LogoIcon)`
 	width: 81px;
 	height: 81px;
 	margin-right: 19px;
+
+	> path {
+		fill: white;
+	}
 `;
 
 export const LogoContainer = styled.div`

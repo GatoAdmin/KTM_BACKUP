@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
-import Filter from '../../assets/filter.svg';
+import Filter from '../../../assets/filter.svg';
 
 export const SearchSectionContainer = styled.div`
 	width: 100vw;
@@ -360,7 +360,7 @@ export const CheckBox = styled.input.attrs<CheckBoxProps>(({ id }) => ({
 	}
 `;
 
-export const UnivListSection = styled.div`
+export const UnivListSection = styled.section`
 	width: 1400px;
 	margin: 0 auto;
 	padding: 42px 0 236px;

@@ -1,1 +1,1 @@
-export { default } from '@views/RecommendPage/RecommendPage';
+export { default } from '@views/RecommendPage/RecommendListPage/RecommendListPage';

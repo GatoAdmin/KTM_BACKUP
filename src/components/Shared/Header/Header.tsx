@@ -38,16 +38,18 @@ const headerLinks: Array<headerLink> = [
 ];
 
 interface HeaderProps {
+	position?: 'relative' | 'fixed';
 	background: 'light' | 'dark';
 }
 
 const Header: React.VFC<HeaderProps> = ({
-	background
+	background,
+	position = 'fixed'
 }) => {
 	const [languageIndex, setLanguageIndex] = React.useState<number>(0);
 
 	return (
-		<HeaderContainer background={background}>
+		<HeaderContainer background={background} position={position}>
 			<LogoContainer>
 				<Logo />
 				katumm

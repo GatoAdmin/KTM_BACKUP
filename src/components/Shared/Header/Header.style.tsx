@@ -22,11 +22,11 @@ export const LogoContainer = styled.div`
 
 interface HeaderContainerProps {
 	background: 'light' | 'dark';
+	position: 'relative' | 'fixed';
 }
 
 export const HeaderContainer = styled.header<HeaderContainerProps>`
 	display: flex;
-	position: absolute;
 	top: 0;
 	justify-content: space-between;
 	width: 100%;
@@ -39,23 +39,31 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
 	
 	${props => props.background === 'light' ?
 	css`
-			color: ${fontColor};
-			border-color: ${fontColor};
-			
-			${LogoContainer} {
-				color: ${mainColor};
-			}
-			
-			${Logo} > path {
-				fill: ${mainColor};
-			}
-			
-			box-shadow: 0 0 5px #0F0F0F33;
-		` :
+		color: ${fontColor};
+		border-color: ${fontColor};
+		
+		${LogoContainer} {
+			color: ${mainColor};
+		}
+		
+		${Logo} > path {
+			fill: ${mainColor};
+		}
+		
+		box-shadow: 0 0 5px #0F0F0F33;
+	` :
 	css`
-			color: white;
-			border-color: white;
-		`}
+		color: white;
+		border-color: white;
+	`}
+	
+	${props => props.position === 'relative' ?
+	css`
+		position: relative;
+	` :
+	css`
+		position: fixed;
+	`}
 `;
 
 export const Navigation = styled.div``;

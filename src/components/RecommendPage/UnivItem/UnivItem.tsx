@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Link from "next/link";
 import {
   UnivItemAddress,
   UnivItemContainer,
@@ -14,6 +15,7 @@ import {
 } from '@components/RecommendPage/UnivItem/UnivItem.style';
 
 interface UnivItemProps {
+  to: string;
   name: string;
   address: string;
   topik: number;
@@ -24,7 +26,7 @@ interface UnivItemProps {
   logo?: string;
 }
 
-const UnivItem: React.VFC<UnivItemProps> = ({ name, address, topik, tuitionFee, grant, type, thumbnail, logo }) => {
+const UnivItem: React.VFC<UnivItemProps> = ({to, name, address, topik, tuitionFee, grant, type, thumbnail, logo }) => {
   return (
     <UnivItemContainer>
       {thumbnail ? <UnivItemImage src={thumbnail} alt={name} /> : <UnivItemNoImage />}
@@ -39,8 +41,8 @@ const UnivItem: React.VFC<UnivItemProps> = ({ name, address, topik, tuitionFee, 
         <UnivItemDescription>대학 종류: {type}</UnivItemDescription>
       </UnivItemDescriptionContainer>
       <UnivItemLinkContainer>
-        <UnivItemLink>대학 상세보기</UnivItemLink>
-        <UnivItemPreferButton>대학 상세보기</UnivItemPreferButton>
+        <Link href={to} passHref><UnivItemLink>대학 상세보기</UnivItemLink></Link>
+        <UnivItemPreferButton>선호대학 추가</UnivItemPreferButton>
       </UnivItemLinkContainer>
     </UnivItemContainer>
   );

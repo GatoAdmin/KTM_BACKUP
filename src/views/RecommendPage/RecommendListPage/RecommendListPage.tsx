@@ -78,12 +78,13 @@ const univList = [
     type: '4년제',
     thumbnail: '/images/aboard.jpg',
     logo: '/images/aboard_logo.svg',
+    to: "/recommend/1"
   },
-  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제' },
-  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제' },
-  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제' },
-  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제' },
-  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제' },
+  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제', to: "/recommend/1" },
+  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제', to: "/recommend/1" },
+  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제', to: "/recommend/1" },
+  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제', to: "/recommend/1" },
+  { name: '한림대학교', address: '강원도 춘천시 한림대학길 1', topik: 4, grant: true, tuitionFee: 740, type: '4년제', to: "/recommend/1" },
 ];
 
 const useStateWithToggle = (initialState: boolean) => {

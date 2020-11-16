@@ -37,14 +37,14 @@ import {
 	UnivListPagination,
 	UnivListPrevButton,
 	UnivListNextButton,
-} from '@views/RecommendPage/RecommendPage.style';
+} from '@views/RecommendPage/RecommendListPage/RecommendListPage.style';
 import UnivItem from '@components/RecommendPage/UnivItem/UnivItem';
-import LocationIcon from '../../assets/location.svg';
-import EducationIcon from '../../assets/education-cost.svg';
-import LicenseIcon from '../../assets/driving-license.svg';
-import GrantIcon from '../../assets/grant.svg';
-import DiversifyIcon from '../../assets/diversify.svg';
-import CheckIcon from '../../assets/check.svg';
+import LocationIcon from '../../../assets/location.svg';
+import EducationIcon from '../../../assets/education-cost.svg';
+import LicenseIcon from '../../../assets/driving-license.svg';
+import GrantIcon from '../../../assets/grant.svg';
+import DiversifyIcon from '../../../assets/diversify.svg';
+import CheckIcon from '../../../assets/check.svg';
 
 const location: Array<string> = [
 	'서울',
@@ -92,7 +92,7 @@ const useStateWithToggle = (initialState: boolean) => {
 	return [toggle, () => setToggle((state) => !state), setToggle] as const;
 };
 
-const RecommendPage: NextPage = () => {
+const RecommendListPage: NextPage = () => {
 	const [filterShow, toggleFilterShow] = useStateWithToggle(false);
 	const [locationModalShow, toggleLocationModal, setLocationModalShow] = useStateWithToggle(false);
 	const locationModalRef = React.useRef<FilterModalRef>(null);
@@ -107,7 +107,7 @@ const RecommendPage: NextPage = () => {
 
 	return (
 		<>
-			<Header />
+			<Header background="dark" />
 			<SearchSectionContainer>
 				<SearchSection>
 					모든 대학을 알려드립니다
@@ -279,4 +279,4 @@ const RecommendPage: NextPage = () => {
 	);
 };
 
-export default RecommendPage;
+export default RecommendListPage;

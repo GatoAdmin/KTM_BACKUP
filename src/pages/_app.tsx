@@ -14,13 +14,13 @@ const AppGlobalStyle = createGlobalStyle`
   
   @font-face {
       font-family: "NEXON Lv1 Gothic";
-      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF.woff") format(‘woff’);
+      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF.woff") format("woff");
       font-weight: normal;
   }
   
   @font-face {
       font-family: "NEXON Lv1 Gothic";
-      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF Bold.woff") format(‘woff’);
+      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF Bold.woff") format("woff");
       font-weight: bold;
   }
   

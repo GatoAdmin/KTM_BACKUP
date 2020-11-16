@@ -1,13 +1,13 @@
 import styled, { css } from 'styled-components';
 import { fontColor, mainBackgroundColor, mainColor } from '@util/style/color';
-import Family from "../../../assets/family.svg";
-import Certificate from "../../../assets/guarantee.svg";
-import Exam from "../../../assets/test.svg";
+import Family from '../../../assets/family.svg';
+import Certificate from '../../../assets/guarantee.svg';
+import Exam from '../../../assets/test.svg';
 
 export const Main = styled.main`
-	width: 100vw;
-	min-width: 1400px;
-`
+  width: 100vw;
+  min-width: 1400px;
+`;
 
 export const SectionContainer = styled.div`
   width: 1400px;
@@ -62,7 +62,7 @@ export const LogoImage = styled.img`
 `;
 
 export const HomePageLink = styled.a.attrs({
-  target: '_blank'
+  target: '_blank',
 })`
   display: block;
   width: 40px;
@@ -89,12 +89,12 @@ export const ContentTypeRadioLabel = styled.label`
   color: ${mainColor};
   text-align: center;
   cursor: pointer;
-  
+
   ${ContentTypeRadio}:checked + & {
     color: white;
     background: ${mainColor};
   }
-`
+`;
 
 export const PriceSection = styled.section`
   margin-top: 47px;
@@ -133,7 +133,7 @@ export const PriceTableHeadCol = styled.th`
 
 export const PriceTableRow = styled.tr`
   :nth-child(2n) {
-    background: #F6F6F6;
+    background: #f6f6f6;
   }
 `;
 
@@ -153,7 +153,6 @@ export const PrepareSection = styled.section`
 export const PrepareStepContainer = styled.ul`
   margin: 0;
   padding: 64px 0 0 12px;
-  
 `;
 
 export const PrepareStep = styled.li`
@@ -180,9 +179,15 @@ const PrepareStepItemIconStyle = css`
   margin-bottom: 20px;
 `;
 
-export const FamilyIcon = styled(Family)`${PrepareStepItemIconStyle}`;
-export const CertificateIcon = styled(Certificate)`${PrepareStepItemIconStyle}`;
-export const ExamIcon = styled(Exam)`${PrepareStepItemIconStyle}`;
+export const FamilyIcon = styled(Family)`
+  ${PrepareStepItemIconStyle}
+`;
+export const CertificateIcon = styled(Certificate)`
+  ${PrepareStepItemIconStyle}
+`;
+export const ExamIcon = styled(Exam)`
+  ${PrepareStepItemIconStyle}
+`;
 
 export const PrepareStepItem = styled.li`
   width: 180px;
@@ -222,7 +227,7 @@ export const SideNavTitle = styled.h2`
 export const SideNavItemContainer = styled.ul`
   margin: 0;
   padding: 0;
-`
+`;
 
 export const SideNavItem = styled.li`
   display: flex;

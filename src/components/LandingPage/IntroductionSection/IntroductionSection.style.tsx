@@ -2,62 +2,62 @@ import styled, { css, keyframes } from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
 
 export const IntroductionSectionContainer = styled.div`
-	display: flex;
-	position: relative;
-	width: 100%;
-	height: 100vh;
-	overflow: hidden;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 `;
 
 export const IntroductionSectionBackground = styled.img.attrs({
-	src: '/images/main_image.jpg',
-	alt: 'background image',
+  src: '/images/main_image.jpg',
+  alt: 'background image',
 })`
-	display: block;
-	position: relative;
-	width: 100%;
-	object-fit: cover;
-	object-position: 50% 50%;
+  display: block;
+  position: relative;
+  width: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
 `;
 
 export const IntroductionContent = styled.div`
-	width: 1400px;
-	padding: 0 413px;
-	margin: 0 auto;
-	box-sizing: border-box;
+  width: 1400px;
+  padding: 0 413px;
+  margin: 0 auto;
+  box-sizing: border-box;
 `;
 
 export const CompanyName = styled.h1`
-	display: block;
-	width: 320px;
-	margin: 0 auto 44px;
-	color: ${mainColor};
-	font: 900 80px/109px Nunito, sans-serif;
-	text-align: center;
-	transition-property: opacity, transform;
-	transition: 0.5s ease 0.5s;
+  display: block;
+  width: 320px;
+  margin: 0 auto 44px;
+  color: ${mainColor};
+  font: 900 80px/109px Nunito, sans-serif;
+  text-align: center;
+  transition-property: opacity, transform;
+  transition: 0.5s ease 0.5s;
 `;
 
 export const Title = styled.h2`
-	margin: 0 0 67px;
-	color: ${fontColor};
-	font: bold 45px/40px 'NEXON Lv1 Gothic';
-	transition-property: opacity, transform;
-	transition: 0.5s ease 1s;
+  margin: 0 0 67px;
+  color: ${fontColor};
+  font: bold 45px/40px 'NEXON Lv1 Gothic';
+  transition-property: opacity, transform;
+  transition: 0.5s ease 1s;
 `;
 
 export const SubTitle = styled.h3`
-	width: 368px;
-	margin: 0 auto 75px;
-	color: ${fontColor};
-	font: normal 24px/40px 'NEXON Lv1 Gothic';
-	text-align: center;
-	transition-property: opacity, transform;
-	transition: 0.5s ease 1.3s;
+  width: 368px;
+  margin: 0 auto 75px;
+  color: ${fontColor};
+  font: normal 24px/40px 'NEXON Lv1 Gothic';
+  text-align: center;
+  transition-property: opacity, transform;
+  transition: 0.5s ease 1.3s;
 `;
 
 export const EmphasisTitle = styled.span`
-	color: ${mainColor};
+  color: ${mainColor};
 `;
 
 const rotate = keyframes`
@@ -99,78 +99,78 @@ const storm = keyframes`
 export const StormAnimatedText = styled.span``;
 
 export const RouteIntroductionButton = styled.a`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 266px;
-	height: 63px;
-	margin: 0 auto;
-	border: 2px solid #df4d3e;
-	border-radius: 20px;
-	font: bold 20px/23px 'NEXON Lv1 Gothic';
-	color: ${mainColor};
-	background: white;
-	text-decoration: none;
-	text-align: center;
-	line-height: 63px;
-	transition-property: opacity, transform;
-	transition: 0.5s ease 1.6s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 266px;
+  height: 63px;
+  margin: 0 auto;
+  border: 2px solid #df4d3e;
+  border-radius: 20px;
+  font: bold 20px/23px 'NEXON Lv1 Gothic';
+  color: ${mainColor};
+  background: white;
+  text-decoration: none;
+  text-align: center;
+  line-height: 63px;
+  transition-property: opacity, transform;
+  transition: 0.5s ease 1.6s;
 
-	&:hover {
-		animation: ${rotate} 0.7s ease-in-out both;
+  &:hover {
+    animation: ${rotate} 0.7s ease-in-out both;
 
-		${StormAnimatedText} {
-			animation: ${storm} 0.7s ease-in-out both;
-			animation-delay: 0.06s;
-		}
-	}
+    ${StormAnimatedText} {
+      animation: ${storm} 0.7s ease-in-out both;
+      animation-delay: 0.06s;
+    }
+  }
 `;
 
 interface IntroductionProps {
-	show: boolean;
+  show: boolean;
 }
 
 export const Introduction = styled.div<IntroductionProps>`
-	position: absolute;
-	top: calc(50% - 238px);
-	width: 100%;
-	height: 476px;
-	${(props) =>
-		props.show
-			? css`
-					${CompanyName} {
-						opacity: 1;
-						transform: translateY(0);
-					}
-					${Title} {
-						opacity: 1;
-						transform: translateY(0);
-					}
-					${SubTitle} {
-						opacity: 1;
-						transform: translateY(0);
-					}
-					${RouteIntroductionButton} {
-						opacity: 1;
-						transform: translateY(0);
-					}
-			  `
-			: css`
-					${CompanyName} {
-						opacity: 0;
-						transform: translateY(-20px);
-					}
-					${Title} {
-						opacity: 0;
-						transform: translateY(-20px);
-					}
-					${SubTitle} {
-						opacity: 0;
-						transform: translateY(-20px);
-					}
-					${RouteIntroductionButton} {
-						opacity: 0;
-						transform: translateY(-20px);
-					}
-			  `}
+  position: absolute;
+  top: calc(50% - 238px);
+  width: 100%;
+  height: 476px;
+  ${(props) =>
+    props.show
+      ? css`
+          ${CompanyName} {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          ${Title} {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          ${SubTitle} {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          ${RouteIntroductionButton} {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        `
+      : css`
+          ${CompanyName} {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          ${Title} {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          ${SubTitle} {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          ${RouteIntroductionButton} {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+        `}
 `;

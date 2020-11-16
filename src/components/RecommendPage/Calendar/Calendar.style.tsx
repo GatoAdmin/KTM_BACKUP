@@ -14,13 +14,9 @@ export const CalendarController = styled.div`
   color: ${fontColor};
 `;
 
-export const CalendarPrevButton = styled.button`
+export const CalendarPrevButton = styled.button``;
 
-`;
-
-export const CalendarNextButton = styled.button`
-
-`;
+export const CalendarNextButton = styled.button``;
 
 export const CalendarHeadRow = styled.div`
   display: flex;
@@ -45,14 +41,14 @@ export const CalendarDateContainer = styled.tbody``;
 
 export const CalendarDateRow = styled.tr`
   border-bottom: 1px solid #70707042;
-  
+
   ::before {
     display: table-cell;
     width: 30px;
     height: 100%;
     content: '';
   }
-  
+
   ::after {
     display: table-cell;
     width: 30px;
@@ -60,7 +56,6 @@ export const CalendarDateRow = styled.tr`
     content: '';
   }
 `;
-
 
 interface CalendarDateProps {
   disabled: boolean;
@@ -74,8 +69,9 @@ export const CalendarDate = styled.td<CalendarDateProps>`
   height: 92px;
   font: 24px/92px NEXON Lv1 Gothic;
   text-align: center;
-  
-  ${props => (props.isStartDate || props.isEndDate) &&
+
+  ${(props) =>
+    (props.isStartDate || props.isEndDate) &&
     css`
       color: white;
 
@@ -90,52 +86,53 @@ export const CalendarDate = styled.td<CalendarDateProps>`
         z-index: -1;
         content: '';
       }
-  `};
-  
-  ${props => props.isInRange && 
+    `};
+
+  ${(props) =>
+    props.isInRange &&
     css`
-    ::after {
-      position: absolute;
-      top: calc(50% - 24px);
-      left: ${props.isStartDate ? "unset" : 0};
-      right: ${props.isStartDate ? 0 : "unset"};
-      width: ${(props.isStartDate || props.isEndDate) ? "50%" : "100%"};
-      height: 46px;
-      background-color: #FFEBEB;
-      z-index: -2;
-      content: '';
-    }
-    
-    &:first-child::after {
-      left: unset;
-      right: 0;
-      width: calc(50% + 20px);
-      border-radius: 20px 0 0 20px;
-      content: ${props.isEndDate ? "unset" : "''"};
-    }
-    
-    &:last-child::after {
-      width: calc(50% + 20px);
-      border-radius: 0 20px 20px 0; 
-      content: ${props.isStartDate ? "unset" : "''"};
-    }
-  `};
+      ::after {
+        position: absolute;
+        top: calc(50% - 24px);
+        left: ${props.isStartDate ? 'unset' : 0};
+        right: ${props.isStartDate ? 0 : 'unset'};
+        width: ${props.isStartDate || props.isEndDate ? '50%' : '100%'};
+        height: 46px;
+        background-color: #ffebeb;
+        z-index: -2;
+        content: '';
+      }
+
+      &:first-child::after {
+        left: unset;
+        right: 0;
+        width: calc(50% + 20px);
+        border-radius: 20px 0 0 20px;
+        content: ${props.isEndDate ? 'unset' : "''"};
+      }
+
+      &:last-child::after {
+        width: calc(50% + 20px);
+        border-radius: 0 20px 20px 0;
+        content: ${props.isStartDate ? 'unset' : "''"};
+      }
+    `};
 `;
 
 export const CalendarDescription = styled.div`
   display: flex;
-  
+
   margin-top: 42px;
   font: normal bold 20px/44px NEXON Lv1 Gothic;
   letter-spacing: 1px;
-  
+
   ::before {
     display: block;
     width: 150px;
     height: 44px;
     margin-right: 19px;
     border-radius: 20px;
-    background: #FFEBEB;
+    background: #ffebeb;
     content: '';
   }
 `;

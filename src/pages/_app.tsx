@@ -31,15 +31,15 @@ const AppGlobalStyle = createGlobalStyle`
 `;
 
 function App({ Component, pageProps }: AppProps): JSX.Element {
-	return (
-		<>
-			<AppGlobalStyle />
-			<Head>
-				<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet" />
-			</Head>
-			<Component {...pageProps} />
-		</>
-	);
+  return (
+    <>
+      <AppGlobalStyle />
+      <Head>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet" />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
 }
 
 export default App;

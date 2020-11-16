@@ -1,11 +1,12 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   CalendarContainer,
   CalendarController,
   CalendarDate,
   CalendarDateContainer,
   CalendarDateRow,
-  CalendarDateTable, CalendarDescription,
+  CalendarDateTable,
+  CalendarDescription,
   CalendarHeadRow,
   CalendarWeekName,
 } from '@components/RecommendPage/Calendar/Calendar.style';
@@ -15,27 +16,23 @@ interface CalendarProps {
   endDate: string;
 }
 
-const weekName = ['일', '월', '화', '수', '목', '금', '토']
+const weekName = ['일', '월', '화', '수', '목', '금', '토'];
 
 const useMonthControl = (initialDateString: string): [Date, () => void, () => void] => {
   const [selectedDate, setSelectaedDate] = React.useState<Date>(new Date());
 
-  const setPreviousMonth = () => {
+  const setPreviousMonth = () => {};
 
-  };
-
-  const setNextMonth = () => {
-
-  };
+  const setNextMonth = () => {};
 
   React.useEffect(() => {
-    let initialDate = new Date(initialDateString);
+    const initialDate = new Date(initialDateString);
     initialDate.setDate(1);
     setSelectaedDate(initialDate);
   }, [initialDateString]);
 
-  return [selectedDate, setPreviousMonth, setNextMonth]
-}
+  return [selectedDate, setPreviousMonth, setNextMonth];
+};
 
 interface DateInfo {
   date: number;
@@ -48,23 +45,23 @@ interface DateInfo {
 const useDateInfoArray = (
   initialSelectedDate: Date,
   startDateString: string,
-  endDateString: string): Array<Array<DateInfo>> => {
+  endDateString: string,
+): Array<Array<DateInfo>> => {
   const selectedDate = new Date(initialSelectedDate);
   const startDateTime = new Date(startDateString).getTime();
   const endDateTime = new Date(endDateString).getTime();
 
   const selectedMonth = initialSelectedDate.getMonth();
   const dayOfFirstDateOfMonth = selectedDate.getDay();
-  if (dayOfFirstDateOfMonth !== 0)
-    selectedDate.setDate(-dayOfFirstDateOfMonth + 1)
+  if (dayOfFirstDateOfMonth !== 0) selectedDate.setDate(-dayOfFirstDateOfMonth + 1);
 
   function getCurrentDateInfo(): DateInfo {
     const currentDateNumber = selectedDate.getDate();
     const isContainedCurrentMonth = selectedDate.getMonth() === selectedMonth;
-    let selectedDateTime = selectedDate.getTime(),
-      isStartDate = false,
-      isInRange = false,
-      isEndDate = false;
+    const selectedDateTime = selectedDate.getTime();
+    let isStartDate = false;
+    let isInRange = false;
+    let isEndDate = false;
 
     if (selectedDateTime >= startDateTime && selectedDateTime <= endDateTime) {
       isInRange = true;
@@ -73,50 +70,41 @@ const useDateInfoArray = (
       if (selectedDateTime === endDateTime) isEndDate = true;
     }
 
-    selectedDate.setDate(currentDateNumber + 1)
+    selectedDate.setDate(currentDateNumber + 1);
 
     return {
       date: currentDateNumber,
       disabled: !isContainedCurrentMonth,
       isStartDate,
       isInRange,
-      isEndDate
+      isEndDate,
     };
   }
 
-  let dateArray = Array.from({length: 5}, () => Array.from({length: 7}))
-    .map((row) =>
-      row.map(getCurrentDateInfo)
-    )
+  const dateArray = Array.from({ length: 5 }, () => Array.from({ length: 7 })).map((row) =>
+    row.map(getCurrentDateInfo),
+  );
 
   if (selectedDate.getMonth() === selectedMonth) {
-    let lastWeek = Array.from({length : 7})
-      .map(getCurrentDateInfo);
+    const lastWeek = Array.from({ length: 7 }).map(getCurrentDateInfo);
 
     dateArray.push(lastWeek);
   }
 
   return dateArray;
-}
+};
 
-const Calendar: React.VFC<CalendarProps> = ({
-  startDate,
-  endDate
-}) => {
+const Calendar: React.VFC<CalendarProps> = ({ startDate, endDate }) => {
   const [selectedDate] = useMonthControl(startDate);
   const dateArray = useDateInfoArray(selectedDate, startDate, endDate);
-  const selectedDateString = `${selectedDate.getFullYear()} ${selectedDate.getMonth() + 1}월`
+  const selectedDateString = `${selectedDate.getFullYear()} ${selectedDate.getMonth() + 1}월`;
 
   return (
     <CalendarContainer>
-      <CalendarController>
-        {selectedDateString}
-      </CalendarController>
+      <CalendarController>{selectedDateString}</CalendarController>
       <CalendarHeadRow>
-        {weekName.map(value => (
-          <CalendarWeekName key={value}>
-            {value}
-          </CalendarWeekName>
+        {weekName.map((value) => (
+          <CalendarWeekName key={value}>{value}</CalendarWeekName>
         ))}
       </CalendarHeadRow>
       <CalendarDateTable>
@@ -129,7 +117,8 @@ const Calendar: React.VFC<CalendarProps> = ({
                   disabled={date.disabled}
                   isStartDate={date.isStartDate}
                   isEndDate={date.isEndDate}
-                  isInRange={date.isInRange}>
+                  isInRange={date.isInRange}
+                >
                   {!date.disabled ? date.date : null}
                 </CalendarDate>
               ))}
@@ -137,11 +126,9 @@ const Calendar: React.VFC<CalendarProps> = ({
           ))}
         </CalendarDateContainer>
       </CalendarDateTable>
-      <CalendarDescription>
-        = 신입생 모집기간
-      </CalendarDescription>
+      <CalendarDescription>= 신입생 모집기간</CalendarDescription>
     </CalendarContainer>
-  )
-}
+  );
+};
 
 export default Calendar;

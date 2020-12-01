@@ -1,14 +1,19 @@
 import styled from 'styled-components';
 import { mainColor } from '@util/style/color';
+import {defaultFont, vnFont} from "@util/style/font";
 
 export const Content = styled.main`
   width: 100%;
   min-width: 1400px;
   overflow: hidden;
+  
+  span {
+    color: ${mainColor};
+  }
 `;
 
-export const EmphasisText = styled.span`
-  color: ${mainColor};
+export const SubTitleContainer = styled.div`
+  display: inline;
 `;
 
 export const UnivImage = styled.img.attrs({
@@ -42,4 +47,8 @@ export const ClickImage = styled.img.attrs({
   right: 87px;
   width: 437px;
   height: 437px;
+`;
+
+export const FontProvider = styled.div<{lang: string}>`
+  font-family: ${props => props.lang == "ko" ? defaultFont : vnFont};
 `;

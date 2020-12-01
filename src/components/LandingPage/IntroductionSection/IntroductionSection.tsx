@@ -12,9 +12,15 @@ import {
   StormAnimatedText,
   Title,
   RouteIntroductionButton,
+  SubTitleContainer,
 } from './IntroductionSection.style';
 
-const IntroductionSection: React.FC = () => {
+// temp interface for temporary translation(delete if change to next.js 10
+interface IntroductionSectionProps {
+  t: (s: string) => string;
+}
+
+const IntroductionSection: React.FC<IntroductionSectionProps> = ({t}) => {
   const firstSection = React.useRef<HTMLDivElement>(null);
   const visible = useIntersection(firstSection);
 
@@ -24,15 +30,15 @@ const IntroductionSection: React.FC = () => {
       <Introduction show={visible}>
         <IntroductionContent>
           <CompanyName>katumm</CompanyName>
-          <Title>한국 유학의 모든 정보를 담다</Title>
+          <Title>{t('landing-title')}</Title>
           <SubTitle>
-            유학 준비부터 입학신청까지,
+            {t('landing-subtitle-1')}
             <br />
-            <EmphasisTitle>카툼</EmphasisTitle>과 성공적인 유학을 함께하세요
+            <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-1-subtitle-2')}} />
           </SubTitle>
           <Link href="/introduction" passHref>
             <RouteIntroductionButton>
-              <StormAnimatedText>회사 소개 바로가기</StormAnimatedText>
+              <StormAnimatedText>{t('landing-introduce-button')}</StormAnimatedText>
             </RouteIntroductionButton>
           </Link>
         </IntroductionContent>

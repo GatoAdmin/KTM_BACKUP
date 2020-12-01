@@ -9,6 +9,10 @@ export const IntroductionSectionContainer = styled.div`
   overflow: hidden;
 `;
 
+export const SubTitleContainer = styled.div`
+  display: inline;
+`;
+
 export const IntroductionSectionBackground = styled.img.attrs({
   src: '/images/main_image.jpg',
   alt: 'background image',
@@ -22,7 +26,6 @@ export const IntroductionSectionBackground = styled.img.attrs({
 
 export const IntroductionContent = styled.div`
   width: 1400px;
-  padding: 0 413px;
   margin: 0 auto;
   box-sizing: border-box;
 `;
@@ -42,12 +45,12 @@ export const Title = styled.h2`
   margin: 0 0 67px;
   color: ${fontColor};
   font: bold 45px/40px 'NEXON Lv1 Gothic';
+  text-align: center;
   transition-property: opacity, transform;
   transition: 0.5s ease 1s;
 `;
 
 export const SubTitle = styled.h3`
-  width: 368px;
   margin: 0 auto 75px;
   color: ${fontColor};
   font: normal 24px/40px 'NEXON Lv1 Gothic';

@@ -20,7 +20,7 @@ const AppGlobalStyle = createGlobalStyle`
   
   @font-face {
       font-family: "NEXON Lv1 Gothic";
-      src: local("NEXON Lv1 Gothic"), url("../font/NEXON Lv1 Gothic OTF Bold.woff") format("woff");
+      src: url("../font/NEXON Lv1 Gothic OTF Bold.woff") format("woff"), local("NEXON Lv1 Gothic Bold");
       font-weight: bold;
   }
   

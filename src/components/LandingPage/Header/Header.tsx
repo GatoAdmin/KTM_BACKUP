@@ -21,25 +21,31 @@ interface headerLink {
 
 const headerLinks: Array<headerLink> = [
   {
-    name: '회사 소개',
+    name: 'introduce',
     link: '/',
   },
   {
-    name: '대학 소개&추천',
+    name: 'university',
     link: '/recommend',
   },
   {
-    name: '입학 상담',
+    name: 'consult',
     link: '/',
   },
   {
-    name: '원클릭 입학솔루션',
+    name: 'one-click',
     link: '/',
   },
 ];
 
-const Header: React.FC = () => {
-  const [languageIndex, setLanguageIndex] = React.useState<number>(0);
+// temp interface for temporary translation(delete if change to next.js 10
+interface HeaderProps {
+  t: (s: string) => string;
+  lang: string;
+  changeLang: (s: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({t, lang, changeLang}) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
@@ -52,15 +58,16 @@ const Header: React.FC = () => {
         if (tick) return undefined;
         tick = true;
         return requestAnimationFrame(() => {
-          setIsTop(window.pageYOffset <= 100);
+          console.log(window.pageYOffset)
+          setIsTop(window.pageYOffset <= 150);
           tick = false;
         });
       };
     }
     setIsTop(window.pageYOffset <= 100);
-    window.addEventListener('wheel', makeScrollCallback());
+    window.addEventListener('scroll', makeScrollCallback());
     return () => {
-      window.removeEventListener('wheel', makeScrollCallback());
+      window.removeEventListener('scroll', makeScrollCallback());
     };
   }, []);
 
@@ -74,18 +81,18 @@ const Header: React.FC = () => {
         <Navigation>
           {headerLinks.map(({ name, link }) => (
             <Link href={link} key={name} passHref>
-              <NavLink>{name}</NavLink>
+              <NavLink>{t(name)}</NavLink>
             </Link>
           ))}
         </Navigation>
         <LocalizationButtonContainer>
-          <LocalizationButton onClick={() => setLanguageIndex(0)}>KR</LocalizationButton>
-          <LocalizationButton onClick={() => setLanguageIndex(1)}>EN</LocalizationButton>
-          <LocalizationButton onClick={() => setLanguageIndex(2)}>VE</LocalizationButton>
-          <LocalizationSelector selectedIndex={languageIndex} />
+          <LocalizationButton onClick={() => changeLang("ko")}>KR</LocalizationButton>
+          <LocalizationButton onClick={() => {}}>EN</LocalizationButton>
+          <LocalizationButton onClick={() => changeLang("vn")}>VN</LocalizationButton>
+          <LocalizationSelector selectedIndex={lang == "ko" ? 0 : 2} />
         </LocalizationButtonContainer>
         <Link href="/login" passHref>
-          <LoginLink>로그인</LoginLink>
+          <LoginLink>{t('login')}</LoginLink>
         </Link>
       </NavigationContainer>
     </HeaderContainer>

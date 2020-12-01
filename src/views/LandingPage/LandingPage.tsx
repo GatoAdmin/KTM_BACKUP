@@ -3,52 +3,58 @@ import * as React from 'react';
 import Header from '@components/LandingPage/Header/Header';
 import IntroductionSection from '@components/LandingPage/IntroductionSection/IntroductionSection';
 import NumberSection from '@components/LandingPage/NumberSection/NumberSection';
-import { Content, ClickImage, ConsultImage, UnivImage, EmphasisText } from './LandingPage.style';
+import {Content, ClickImage, ConsultImage, UnivImage, SubTitleContainer, FontProvider} from './LandingPage.style';
+import { NextPage } from "next";
+import useTranslate from "@util/hooks/useTranslate";
+import i18nResource from "../../assets/i18n/landingPage.json";
 
-const LandingPage: React.FC = () => {
+const LandingPage: NextPage = () => {
+  const {t, lang, changeLang} = useTranslate(i18nResource);
   return (
-    <>
-      <Header />
+    <FontProvider lang={lang}>
+      <Header
+        t={t} lang={lang} changeLang={changeLang} />
       <Content>
-        <IntroductionSection />
+        <IntroductionSection
+          t={t} />
         <NumberSection
-          buttonName="대학 소개&추천 바로가기"
-          buttonHref="/search-univ"
+          buttonName={t('landing-section-1-button')}
+          buttonHref="/recommend"
           number={1}
           Image={UnivImage}
-          titleFirst="유학의 첫걸음,"
-          titleSecond="나만의 대학을 검색하세요"
+          titleFirst={t('landing-section-1-title-1')}
+          titleSecond={t('landing-section-1-title-2')}
         >
-          한국 대학교에 입학하기 위한 정보,
+          {t('landing-section-1-subtitle-1')}
           <br />
-          <EmphasisText>카툼</EmphasisText>이 추천하는 나를 위한 대학을 확인하세요.
+          <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-1-subtitle-2')}} />
         </NumberSection>
         <NumberSection
-          buttonName="입학 상담 바로가기"
+          buttonName={t('landing-section-2-button')}
           buttonHref="/admission-consult"
           number={2}
           Image={ConsultImage}
-          titleFirst="유학의 지름길,"
-          titleSecond="유학 전문가와 상담하세요"
+          titleFirst={t('landing-section-2-title-1')}
+          titleSecond={t('landing-section-2-title-2')}
         >
-          <EmphasisText>카툼</EmphasisText>이 제공하는 입학 가이드라인,
+          <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-2-subtitle-1')}} />
           <br />
-          유학 전문가와의 상담을 통해 유학을 준비하세요.
+          {t('landing-section-2-subtitle-2')}
         </NumberSection>
         <NumberSection
-          buttonName="원클릭입학솔루션 바로가기"
+          buttonName={t('landing-section-3-button')}
           buttonHref="/search-univ"
           number={3}
           Image={ClickImage}
-          titleFirst="빠르고 저렴한 유학 신청"
-          titleSecond="원클릭입학솔루션"
+          titleFirst={t('landing-section-3-title-1')}
+          titleSecond={t('landing-section-3-title-2')}
         >
-          유학에 필요한 서류를 등록하고
+          {t('landing-section-3-subtitle-1')}
           <br />
-          원하는 대학에 <EmphasisText>클릭 한 번</EmphasisText>으로 입학하세요.
+          <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-3-subtitle-2')}} />
         </NumberSection>
       </Content>
-    </>
+    </FontProvider>
   );
 };
 

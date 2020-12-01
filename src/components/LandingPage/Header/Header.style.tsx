@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
+import LogoIcon from "../../../assets/logo.svg";
 
 interface HeaderContainerProps {
   show: boolean;
@@ -24,10 +25,14 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   transform-origin: top center;
 `;
 
-export const Logo = styled.img`
+export const Logo = styled(LogoIcon)`
   width: 81px;
   height: 81px;
   margin-right: 19px;
+  
+  > path {
+    fill: ${mainColor};
+  }
 `;
 
 export const LogoContainer = styled.div`

@@ -19,4 +19,9 @@ module.exports = {
 
 		return config;
 	},
+	// enable when change to serverless-next with next.js 10
+	// i18n: {
+	// 	locales: ["ko", "vn"],
+	// 	defaultLocale: "ko",
+	// }
 };

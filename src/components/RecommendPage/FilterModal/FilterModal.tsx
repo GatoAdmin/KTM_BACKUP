@@ -12,7 +12,8 @@ export type FilterModalRef = HTMLDivElement;
 
 interface FilterModalProps {
   visible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  toggleVisible: () => void;
+  submitFilter: () => void;
   width: string;
   height: string;
   description?: string;
@@ -20,21 +21,14 @@ interface FilterModalProps {
 }
 
 const FilterModal = React.forwardRef<FilterModalRef, FilterModalProps>(
-  ({ visible, setVisible, width, height, description, children }, ref) => {
+  ({ visible, toggleVisible, submitFilter, width, height, description, children }, ref) => {
     const onClose = () => {
-      setVisible(false);
+      toggleVisible();
     };
     const onSubmit = () => {
-      // submitFilter(ref)
-      setVisible(false);
+      submitFilter();
+      toggleVisible();
     };
-    React.useEffect(() => {
-      const isBrowser = typeof window !== 'undefined';
-      if (isBrowser) window.addEventListener('click', onSubmit);
-      return () => {
-        if (isBrowser) window.removeEventListener('click', onSubmit);
-      };
-    }, [onSubmit]);
     return (
       <FilterModalContainer ref={ref} width={width} height={height} show={visible} hasDescription={!!description}>
         {description ? <FilterModalDescription>{description}</FilterModalDescription> : null}

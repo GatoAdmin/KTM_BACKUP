@@ -23,9 +23,6 @@ import {
   FilterCheckBoxLabel,
   FilterCheckLabelBox,
   SearchFilter,
-  LocationFilterCheckBoxContainer,
-  LocationFilterCheckBoxLabel,
-  LocationFilterCheckLabelBox,
   TuitionFilterCheckBoxContainer,
   TuitionFilterCheckBoxLabel,
   TuitionFilterCheckLabelBox,
@@ -39,34 +36,16 @@ import {
   UnivListNextButton,
 } from '@views/RecommendPage/RecommendListPage/RecommendListPage.style';
 import UnivItem from '@components/RecommendPage/UnivItem/UnivItem';
-import LocationIcon from '../../../assets/location.svg';
 import EducationIcon from '../../../assets/education-cost.svg';
 import LicenseIcon from '../../../assets/driving-license.svg';
 import GrantIcon from '../../../assets/grant.svg';
 import DiversifyIcon from '../../../assets/diversify.svg';
 import CheckIcon from '../../../assets/check.svg';
+import LocationFilter, { locationArray } from "@components/RecommendPage/LocationFilter/LocationFilter";
 
-const location: Array<string> = [
-  '서울',
-  '인천',
-  '경기',
-  '강원',
-  '대전',
-  '세종',
-  '충남',
-  '충북',
-  '부산',
-  '대구',
-  '울산',
-  '경남',
-  '경북',
-  '광주',
-  '전남',
-  '전북',
-  '제주',
-];
+
 // @ts-ignore
-const tuitionFee: Array<number> = Array.apply(null, { length: 10 }).map((_, index) => (index + 1) * 100);
+const tuitionFee: Array<number> = [100, 200, 300, 400,];
 const topik: Array<string> = ['1급', '2급', '3급', '4급', '5급', '6급'];
 const univList = [
   {
@@ -95,16 +74,8 @@ const useStateWithToggle = (initialState: boolean) => {
 
 const RecommendListPage: NextPage = () => {
   const [filterShow, toggleFilterShow] = useStateWithToggle(false);
-  const [locationModalShow, toggleLocationModal, setLocationModalShow] = useStateWithToggle(false);
-  const locationModalRef = React.useRef<FilterModalRef>(null);
-  const [tuitionFeeModalShow, toggleTuitionFeeModal, setTuitionFeeModalShow] = useStateWithToggle(false);
-  const tuitionFeeModalRef = React.useRef<FilterModalRef>(null);
-  const [topikModalShow, toggleTopikFeeModal, setTopikFeeModalShow] = useStateWithToggle(false);
-  const topikModalRef = React.useRef<FilterModalRef>(null);
+  const [locationValue, setLocationValue] = React.useState<Array<typeof locationArray[number]['value']>>([]);
   const [page, setPage] = React.useState<number>(1);
-  const onClickModal = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-  };
 
   return (
     <>
@@ -124,85 +95,9 @@ const RecommendListPage: NextPage = () => {
               <FilterShowIcon />
             </FilterShowLabel>
           </SearchBarContainer>
+          {locationValue}
           <FilterContainer show={filterShow}>
-            <SearchFilter onClick={onClickModal}>
-              <FilterButton onClick={toggleLocationModal}>
-                <LocationIcon />
-                <FilterIconDescription>위치</FilterIconDescription>
-              </FilterButton>
-              <FilterModal
-                visible={locationModalShow}
-                setVisible={setLocationModalShow}
-                ref={locationModalRef}
-                width="634px"
-                height="230px"
-              >
-                {location.map((locationValue, index) => (
-                  <LocationFilterCheckBoxContainer key={locationValue}>
-                    <CheckBox id={`location-${index}`} />
-                    <LocationFilterCheckBoxLabel htmlFor={`location-${index}`}>
-                      {locationValue}
-                      <LocationFilterCheckLabelBox>
-                        <CheckIcon />
-                      </LocationFilterCheckLabelBox>
-                    </LocationFilterCheckBoxLabel>
-                  </LocationFilterCheckBoxContainer>
-                ))}
-              </FilterModal>
-            </SearchFilter>
-
-            <SearchFilter onClick={onClickModal}>
-              <FilterButton onClick={toggleTuitionFeeModal}>
-                <EducationIcon />
-                <FilterIconDescription>등록금</FilterIconDescription>
-              </FilterButton>
-              <FilterModal
-                visible={tuitionFeeModalShow}
-                setVisible={setTuitionFeeModalShow}
-                ref={tuitionFeeModalRef}
-                description="연평균 기준"
-                width="634px"
-                height="230px"
-              >
-                {tuitionFee.map((tuitionFeeValue, index) => (
-                  <TuitionFilterCheckBoxContainer key={tuitionFeeValue}>
-                    <CheckBox id={`tuition-${index}`} onChange={() => console.log('시발')} />
-                    <TuitionFilterCheckBoxLabel htmlFor={`tuition-${index}`}>
-                      {tuitionFeeValue} ~ {tuitionFeeValue + 100}만원
-                      <TuitionFilterCheckLabelBox>
-                        <CheckIcon />
-                      </TuitionFilterCheckLabelBox>
-                    </TuitionFilterCheckBoxLabel>
-                  </TuitionFilterCheckBoxContainer>
-                ))}
-              </FilterModal>
-            </SearchFilter>
-
-            <SearchFilter onClick={onClickModal}>
-              <FilterButton onClick={toggleTopikFeeModal}>
-                <LicenseIcon />
-                <FilterIconDescription>TOPIK</FilterIconDescription>
-              </FilterButton>
-              <FilterModal
-                visible={topikModalShow}
-                setVisible={setTopikFeeModalShow}
-                ref={topikModalRef}
-                width="460px"
-                height="167px"
-              >
-                {topik.map((topikValue, index) => (
-                  <TopikFilterCheckBoxContainer key={topikValue}>
-                    <CheckBox id={`topik-${index}`} />
-                    <TopikFilterCheckBoxLabel htmlFor={`topik-${index}`}>
-                      {topikValue}
-                      <TopikFilterCheckLabelBox>
-                        <CheckIcon />
-                      </TopikFilterCheckLabelBox>
-                    </TopikFilterCheckBoxLabel>
-                  </TopikFilterCheckBoxContainer>
-                ))}
-              </FilterModal>
-            </SearchFilter>
+            <LocationFilter filterValue={locationValue} setFilterValue={setLocationValue} />
 
             <FilterIconContainer>
               <GrantIcon />

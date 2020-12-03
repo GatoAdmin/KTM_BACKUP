@@ -7,6 +7,7 @@ import {Content, ClickImage, ConsultImage, UnivImage, SubTitleContainer, FontPro
 import { NextPage } from "next";
 import useTranslate from "@util/hooks/useTranslate";
 import i18nResource from "../../assets/i18n/landingPage.json";
+import Footer from "@components/Shared/Footer/Footer";
 
 const LandingPage: NextPage = () => {
   const {t, lang, changeLang} = useTranslate(i18nResource);
@@ -54,6 +55,7 @@ const LandingPage: NextPage = () => {
           <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-3-subtitle-2')}} />
         </NumberSection>
       </Content>
+      <Footer />
     </FontProvider>
   );
 };

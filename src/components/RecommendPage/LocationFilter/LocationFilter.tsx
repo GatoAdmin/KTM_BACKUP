@@ -44,17 +44,24 @@ const LocationFilter: React.VFC<LocationFilterProps> = ({
   setFilterValue
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const modalRef = React.useRef<HTMLDivElement>(null);
+  const [tempValue, setTempValue] = React.useState<Array<string>>([])
   const [visible, toggleVisible] = useVisible(containerRef);
   const submitFilter = () => {
-    const nextValueArray: Array<string> = [];
-    const checkBoxArray = modalRef?.current?.getElementsByTagName("input");
-    if (!checkBoxArray) return;
-    Array.from(checkBoxArray).forEach(element => {
-      if (element.checked)
-        nextValueArray.push(element.value);
-    })
-    setFilterValue(nextValueArray);
+    toggleVisible();
+    setFilterValue(tempValue);
+  }
+  const closeModal = () => {
+    toggleVisible();
+    setTempValue(filterValue)
+  }
+  const onChangeCheckBox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = event;
+    if (tempValue.includes(target.value)) {
+      const targetIndex = tempValue.indexOf(target.value)
+      setTempValue(state => state.splice(targetIndex, 1))
+    } else {
+      setTempValue(state => state.concat(target.value))
+    }
   }
 
   return (
@@ -64,17 +71,20 @@ const LocationFilter: React.VFC<LocationFilterProps> = ({
         <FilterIconDescription>위치</FilterIconDescription>
       </FilterButton>
       <FilterModal
-        ref={modalRef}
         visible={visible}
         toggleVisible={toggleVisible}
+        closeModal={closeModal}
         submitFilter={submitFilter}
         width="634px"
         height="230px"
       >
         {locationArray.map((location, index) => (
           <LocationFilterCheckBoxContainer key={location.name}>
-            {console.log(filterValue.includes(location.value))}
-            <CheckBox id={`location-${index}`} defaultChecked={filterValue.includes(location.value)} />
+            <CheckBox
+              id={`location-${index}`}
+              value={location.value}
+              checked={tempValue.includes(location.value)}
+              onChange={onChangeCheckBox} />
             <LocationFilterCheckBoxLabel htmlFor={`location-${index}`}>
               {location.name}
               <LocationFilterCheckLabelBox>

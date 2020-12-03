@@ -61,18 +61,6 @@ interface LabelProps {
   htmlFor: string;
 }
 
-export const FilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htmlFor }) => ({
-  htmlFor,
-}))`
-  display: flex;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 15px;
-  font: normal normal normal 10px/15px NEXON Lv1 Gothic;
-  cursor: pointer;
-`;
-
 export const LocationFilterCheckBoxContainer = styled.div`
   display: inline-block;
   width: 80px;
@@ -95,11 +83,13 @@ export const LocationFilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htm
 
 interface CheckBoxProps {
   id: string;
+  value: string;
   defaultChecked: boolean;
 }
 
-export const CheckBox = styled.input.attrs<CheckBoxProps>(({ id, defaultChecked }) => ({
+export const CheckBox = styled.input.attrs<CheckBoxProps>(({ id, value, defaultChecked }) => ({
   id,
+  value,
   defaultChecked,
   type: 'checkbox',
 }))`

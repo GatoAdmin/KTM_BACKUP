@@ -14,6 +14,7 @@ interface FilterModalProps {
   visible: boolean;
   toggleVisible: () => void;
   submitFilter: () => void;
+  closeModal: () => void;
   width: string;
   height: string;
   description?: string;
@@ -21,21 +22,22 @@ interface FilterModalProps {
 }
 
 const FilterModal = React.forwardRef<FilterModalRef, FilterModalProps>(
-  ({ visible, toggleVisible, submitFilter, width, height, description, children }, ref) => {
-    const onClose = () => {
-      toggleVisible();
-    };
-    const onSubmit = () => {
-      submitFilter();
-      toggleVisible();
-    };
+  ({ visible,
+    toggleVisible,
+    submitFilter,
+    closeModal,
+    width,
+    height,
+    description,
+    children
+  }, ref) => {
     return (
       <FilterModalContainer ref={ref} width={width} height={height} show={visible} hasDescription={!!description}>
         {description ? <FilterModalDescription>{description}</FilterModalDescription> : null}
         {children}
         <FilterModalButtonContainer>
-          <FilterModalDoneButton onClick={onSubmit}>완료</FilterModalDoneButton>
-          <FilterModalButton onClick={onClose}>취소</FilterModalButton>
+          <FilterModalDoneButton onClick={submitFilter}>완료</FilterModalDoneButton>
+          <FilterModalButton onClick={closeModal}>취소</FilterModalButton>
         </FilterModalButtonContainer>
       </FilterModalContainer>
     );

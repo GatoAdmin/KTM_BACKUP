@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {fontColor} from "@util/style/color";
 
-export const LocationFilterContainer = styled.div`
+export const TuitionFilterContainer = styled.div`
   position: relative;
 `;
 
@@ -11,18 +11,6 @@ export const FilterButton = styled.button`
   border: 0;
   background: transparent;
   cursor: pointer;
-
-  > svg {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 10px;
-  }
-`;
-
-export const FilterIconContainer = styled.div`
-  position: relative;
-  width: 92px;
-  height: 100%;
 
   > svg {
     width: 48px;
@@ -55,42 +43,33 @@ export const FilterCheckLabelBox = styled.div`
   }
 `;
 
+export const FilterIconDescription = styled.div`
+  width: 100%;
+  font: normal normal normal 15px/18px NEXON Lv1 Gothic;
+  color: white;
+`;
+
 interface LabelProps {
   htmlFor: string;
 }
 
-interface CheckBoxProps {
-  id: string;
-}
-
-export const FilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htmlFor }) => ({
-  htmlFor,
-}))`
-  display: flex;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 15px;
-  font: normal normal normal 10px/15px NEXON Lv1 Gothic;
-  cursor: pointer;
-`;
-
-export const LocationFilterCheckBoxContainer = styled.div`
+export const TuitionFilterCheckBoxContainer = styled.div`
   display: inline-block;
-  width: 80px;
-  height: 21px;
-  margin: 0 46px 34px 0;
+  width: 130px;
+  height: 18px;
+  margin: 0 20px 39px 0;
 
-  :nth-child(5n) {
+  :nth-child(4n + 1) {
     margin-right: 0;
   }
 `;
 
-export const LocationFilterCheckLabelBox = styled.div`
-  position: relative;
+export const TuitionFilterCheckLabelBox = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 18px;
   height: 18px;
-  margin-left: 25px;
   border: 1px solid ${fontColor};
   border-radius: 3px;
 
@@ -106,11 +85,31 @@ export const LocationFilterCheckLabelBox = styled.div`
   }
 `;
 
-export const LocationFilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htmlFor }) => ({
+export const TuitionFilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htmlFor }) => ({
   htmlFor,
 }))`
+  position: relative;
   display: flex;
-  font: normal normal 700 18px/21px NEXON Lv1 Gothic;
+  font: normal normal bold 13px/18px NEXON Lv1 Gothic;
   color: ${fontColor};
   cursor: pointer;
+`;
+
+interface CheckBoxProps {
+  id: string;
+  value: string;
+  defaultChecked: boolean;
+}
+
+export const CheckBox = styled.input.attrs<CheckBoxProps>(({ id, value, defaultChecked }) => ({
+  id,
+  value,
+  defaultChecked,
+  type: 'checkbox',
+}))`
+  display: none;
+
+  &:checked + ${TuitionFilterCheckBoxLabel} ${TuitionFilterCheckLabelBox} > svg {
+    display: block;
+  }
 `;

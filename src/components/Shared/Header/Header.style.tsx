@@ -21,7 +21,7 @@ export const LogoContainer = styled.div`
 
 interface HeaderContainerProps {
   background: 'light' | 'dark';
-  position: 'relative' | 'fixed';
+  position: 'relative' | 'absolute';
 }
 
 export const HeaderContainer = styled.header<HeaderContainerProps>`
@@ -63,7 +63,7 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
           position: relative;
         `
       : css`
-          position: fixed;
+          position: absolute;
         `}
 `;
 

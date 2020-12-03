@@ -42,6 +42,8 @@ import GrantIcon from '../../../assets/grant.svg';
 import DiversifyIcon from '../../../assets/diversify.svg';
 import CheckIcon from '../../../assets/check.svg';
 import LocationFilter, { locationArray } from "@components/RecommendPage/LocationFilter/LocationFilter";
+import TuitionFilter from '@components/RecommendPage/TuitionFilter/TuitionFilter';
+import ExamFilter from '@components/RecommendPage/ExamFilter/ExamFilter';
 
 
 // @ts-ignore
@@ -75,11 +77,13 @@ const useStateWithToggle = (initialState: boolean) => {
 const RecommendListPage: NextPage = () => {
   const [filterShow, toggleFilterShow] = useStateWithToggle(false);
   const [locationValue, setLocationValue] = React.useState<Array<typeof locationArray[number]['value']>>([]);
-  const [page, setPage] = React.useState<number>(1);
+  const [tuitionValue, setTuitionValue] = React.useState<number | null>(null);
+  const [topikValue, setTopikValue] = React.useState<Array<number>>([]);
+  const [selfTestValue, setSelfTestValue] = React.useState<boolean>(false);
 
   return (
     <>
-      <Header background="dark" />
+      <Header background="dark" position="absolute" />
       <SearchSectionContainer>
         <SearchSection>
           모든 대학을 알려드립니다
@@ -95,9 +99,16 @@ const RecommendListPage: NextPage = () => {
               <FilterShowIcon />
             </FilterShowLabel>
           </SearchBarContainer>
-          {locationValue}
           <FilterContainer show={filterShow}>
             <LocationFilter filterValue={locationValue} setFilterValue={setLocationValue} />
+
+            <TuitionFilter filterValue={tuitionValue} setFilterValue={setTuitionValue} />
+
+            <ExamFilter
+              topikValue={topikValue}
+              setTopikValue={setTopikValue}
+              selfTestValue={selfTestValue}
+              setSelfTestValue={setSelfTestValue}/>
 
             <FilterIconContainer>
               <GrantIcon />
@@ -168,7 +179,7 @@ const RecommendListPage: NextPage = () => {
       </UnivListSection>
       <UnivListPagination>
         <UnivListPrevButton />
-        {page}
+        {1}
         <UnivListNextButton />
       </UnivListPagination>
     </>

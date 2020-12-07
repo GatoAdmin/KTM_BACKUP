@@ -5,7 +5,7 @@ import Certificate from '../../../assets/guarantee.svg';
 import Exam from '../../../assets/test.svg';
 
 export const Main = styled.main`
-  width: 100vw;
+  width: 100%;
   min-width: 1400px;
 `;
 

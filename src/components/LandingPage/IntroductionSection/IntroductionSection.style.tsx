@@ -44,7 +44,10 @@ export const CompanyName = styled.h1`
 export const Title = styled.h2`
   margin: 0 0 67px;
   color: ${fontColor};
-  font: bold 45px/40px 'NEXON Lv1 Gothic';
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 45px;
+  line-height: 40px;
   text-align: center;
   transition-property: opacity, transform;
   transition: 0.5s ease 1s;
@@ -53,7 +56,10 @@ export const Title = styled.h2`
 export const SubTitle = styled.h3`
   margin: 0 auto 75px;
   color: ${fontColor};
-  font: normal 24px/40px 'NEXON Lv1 Gothic';
+  font-family: inherit;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 40px;
   text-align: center;
   transition-property: opacity, transform;
   transition: 0.5s ease 1.3s;
@@ -110,7 +116,9 @@ export const RouteIntroductionButton = styled.a`
   margin: 0 auto;
   border: 2px solid #df4d3e;
   border-radius: 20px;
-  font: bold 20px/23px 'NEXON Lv1 Gothic';
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 20px;
   color: ${mainColor};
   background: white;
   text-decoration: none;

@@ -18,28 +18,26 @@ const reasonArray = [
   '일반인',
 ];
 
-const MoreInformationPage: NextPage = () => {
-  return (
-    <UserLayout width={524} height={504}>
-      <MoreInformationTitle>
-        OO님,
-        <br />
-        남은 절차를 완료해주세요.
-      </MoreInformationTitle>
-      <MoreInformationForm>
-        <InputGroup>
-          <TextInput placeholder="영문이름" />
-        </InputGroup>
-        <InputGroup>
-          <Select options={countryArray} placeholder="국가선택" />
-        </InputGroup>
-        <InputGroup>
-          <Select placeholder="현재 준비 중이신 단계를 입력해주세요." options={reasonArray} />
-        </InputGroup>
-        <SubmitButton>완료</SubmitButton>
-      </MoreInformationForm>
-    </UserLayout>
-  );
-};
+const MoreInformationPage: NextPage = () => (
+  <UserLayout width={524} height={504}>
+    <MoreInformationTitle>
+      OO님,
+      <br />
+      남은 절차를 완료해주세요.
+    </MoreInformationTitle>
+    <MoreInformationForm>
+      <InputGroup>
+        <TextInput placeholder="영문이름" />
+      </InputGroup>
+      <InputGroup>
+        <Select options={countryArray} placeholder="국가선택" />
+      </InputGroup>
+      <InputGroup>
+        <Select placeholder="현재 준비 중이신 단계를 입력해주세요." options={reasonArray} />
+      </InputGroup>
+      <SubmitButton>완료</SubmitButton>
+    </MoreInformationForm>
+  </UserLayout>
+);
 
 export default MoreInformationPage;

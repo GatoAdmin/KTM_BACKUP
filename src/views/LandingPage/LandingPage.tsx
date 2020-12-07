@@ -3,21 +3,32 @@ import * as React from 'react';
 import Header from '@components/LandingPage/Header/Header';
 import IntroductionSection from '@components/LandingPage/IntroductionSection/IntroductionSection';
 import NumberSection from '@components/LandingPage/NumberSection/NumberSection';
-import {Content, ClickImage, ConsultImage, UnivImage, SubTitleContainer, FontProvider} from './LandingPage.style';
+import {
+  Content,
+  ClickImage,
+  ConsultImage,
+  UnivImage,
+  SubTitleContainer,
+  FontProvider
+} from './LandingPage.style';
 import { NextPage } from "next";
 import useTranslate from "@util/hooks/useTranslate";
 import i18nResource from "../../assets/i18n/landingPage.json";
 import Footer from "@components/Shared/Footer/Footer";
 
 const LandingPage: NextPage = () => {
-  const {t, lang, changeLang} = useTranslate(i18nResource);
+  const { t, lang, changeLang } = useTranslate(i18nResource);
   return (
     <FontProvider lang={lang}>
       <Header
-        t={t} lang={lang} changeLang={changeLang} />
+        t={t}
+        lang={lang}
+        changeLang={changeLang}
+      />
       <Content>
         <IntroductionSection
-          t={t} />
+          t={t}
+        />
         <NumberSection
           buttonName={t('landing-section-1-button')}
           buttonHref="/recommend"
@@ -28,7 +39,7 @@ const LandingPage: NextPage = () => {
         >
           {t('landing-section-1-subtitle-1')}
           <br />
-          <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-1-subtitle-2')}} />
+          <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-section-1-subtitle-2') }} />
         </NumberSection>
         <NumberSection
           buttonName={t('landing-section-2-button')}
@@ -38,7 +49,7 @@ const LandingPage: NextPage = () => {
           titleFirst={t('landing-section-2-title-1')}
           titleSecond={t('landing-section-2-title-2')}
         >
-          <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-2-subtitle-1')}} />
+          <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-section-2-subtitle-1') }} />
           <br />
           {t('landing-section-2-subtitle-2')}
         </NumberSection>
@@ -52,7 +63,7 @@ const LandingPage: NextPage = () => {
         >
           {t('landing-section-3-subtitle-1')}
           <br />
-          <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-3-subtitle-2')}} />
+          <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-section-3-subtitle-2') }} />
         </NumberSection>
       </Content>
       <Footer />

@@ -19,8 +19,7 @@ export const FilterModalContainer = styled.div<FilterModalContainerProps>`
   box-shadow: 3px 3px 5px #00000029;
   z-index: 4;
 
-  ${(props) =>
-    css`
+  ${(props) => css`
       width: ${props.width};
       height: ${props.height};
       padding: ${props.hasDescription ? '59px 21px 33px' : '33px 21px'};

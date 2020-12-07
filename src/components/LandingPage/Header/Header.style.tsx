@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
-import LogoIcon from "../../../assets/logo.svg";
+import LogoIcon from '../../../assets/logo.svg';
 
 interface HeaderContainerProps {
   show: boolean;

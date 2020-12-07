@@ -3,7 +3,7 @@ import { fontColor, mainColor } from '@util/style/color';
 import Filter from '../../../assets/filter.svg';
 
 export const SearchSectionContainer = styled.div`
-  width: 100vw;
+  width: 100%;
   min-width: 1400px;
   height: 397px;
   background: url('/images/search_background.jpg') center/cover no-repeat;
@@ -118,14 +118,13 @@ export const FilterContainer = styled.div<FilterContainerProps>`
   height: 84px;
   margin: 30px 0 0;
 
-  ${(props) =>
-    props.show
-      ? css`
+  ${(props) => (props.show
+    ? css`
           display: flex;
         `
-      : css`
+    : css`
           display: none;
-        `}
+        `)}
 `;
 
 export const FilterIconDescription = styled.div`

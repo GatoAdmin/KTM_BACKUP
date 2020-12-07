@@ -38,11 +38,11 @@ const headerLinks: Array<headerLink> = [
 ];
 
 interface HeaderProps {
-  position?: 'relative' | 'fixed';
+  position?: 'relative' | 'absolute';
   background: 'light' | 'dark';
 }
 
-const Header: React.VFC<HeaderProps> = ({ background, position = 'fixed' }) => {
+const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute' }) => {
   const [languageIndex, setLanguageIndex] = React.useState<number>(0);
 
   return (

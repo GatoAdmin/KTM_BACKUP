@@ -45,20 +45,19 @@ interface HeaderProps {
   changeLang: (s: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({t, lang, changeLang}) => {
+const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
   React.useEffect(() => {
+    const isBrowser = typeof window !== 'undefined';
+    if (!isBrowser) return;
     function makeScrollCallback() {
-      const isBrowser = typeof window !== `undefined`;
-      if (!isBrowser) return () => undefined;
       let tick = false;
       return function onWheel() {
         if (tick) return undefined;
         tick = true;
         return requestAnimationFrame(() => {
-          console.log(window.pageYOffset)
           setIsTop(window.pageYOffset <= 150);
           tick = false;
         });
@@ -86,10 +85,10 @@ const Header: React.FC<HeaderProps> = ({t, lang, changeLang}) => {
           ))}
         </Navigation>
         <LocalizationButtonContainer>
-          <LocalizationButton onClick={() => changeLang("ko")}>KR</LocalizationButton>
-          <LocalizationButton onClick={() => {}}>EN</LocalizationButton>
-          <LocalizationButton onClick={() => changeLang("vn")}>VN</LocalizationButton>
-          <LocalizationSelector selectedIndex={lang == "ko" ? 0 : 2} />
+          <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
+          <LocalizationButton>EN</LocalizationButton>
+          <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
+          <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 2} />
         </LocalizationButtonContainer>
         <Link href="/login" passHref>
           <LoginLink>{t('login')}</LoginLink>

@@ -70,9 +70,8 @@ export const CalendarDate = styled.td<CalendarDateProps>`
   font: 24px/92px NEXON Lv1 Gothic;
   text-align: center;
 
-  ${(props) =>
-    (props.isStartDate || props.isEndDate) &&
-    css`
+  ${(props) => (props.isStartDate || props.isEndDate)
+    && css`
       color: white;
 
       ::before {
@@ -88,9 +87,8 @@ export const CalendarDate = styled.td<CalendarDateProps>`
       }
     `};
 
-  ${(props) =>
-    props.isInRange &&
-    css`
+  ${(props) => props.isInRange
+    && css`
       ::after {
         position: absolute;
         top: calc(50% - 24px);

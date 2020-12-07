@@ -36,9 +36,8 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   user-select: none;
   z-index: 3;
 
-  ${(props) =>
-    props.background === 'light'
-      ? css`
+  ${(props) => (props.background === 'light'
+    ? css`
           color: ${fontColor};
           border-color: ${fontColor};
 
@@ -52,19 +51,18 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
 
           box-shadow: 0 0 5px #0f0f0f33;
         `
-      : css`
+    : css`
           color: white;
           border-color: white;
-        `}
+        `)}
 
-  ${(props) =>
-    props.position === 'relative'
-      ? css`
+  ${(props) => (props.position === 'relative'
+    ? css`
           position: relative;
         `
-      : css`
+    : css`
           position: absolute;
-        `}
+        `)}
 `;
 
 export const Navigation = styled.div``;

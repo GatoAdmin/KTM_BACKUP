@@ -138,9 +138,8 @@ export const Introduction = styled.div<IntroductionProps>`
   top: calc(50% - 238px);
   width: 100%;
   height: 476px;
-  ${(props) =>
-    props.show
-      ? css`
+  ${(props) => (props.show
+    ? css`
           ${CompanyName} {
             opacity: 1;
             transform: translateY(0);
@@ -158,7 +157,7 @@ export const Introduction = styled.div<IntroductionProps>`
             transform: translateY(0);
           }
         `
-      : css`
+    : css`
           ${CompanyName} {
             opacity: 0;
             transform: translateY(-20px);
@@ -175,5 +174,5 @@ export const Introduction = styled.div<IntroductionProps>`
             opacity: 0;
             transform: translateY(-20px);
           }
-        `}
+        `)}
 `;

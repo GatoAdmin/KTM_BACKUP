@@ -20,7 +20,7 @@ interface IntroductionSectionProps {
   t: (s: string) => string;
 }
 
-const IntroductionSection: React.FC<IntroductionSectionProps> = ({t}) => {
+const IntroductionSection: React.FC<IntroductionSectionProps> = ({ t }) => {
   const firstSection = React.useRef<HTMLDivElement>(null);
   const visible = useIntersection(firstSection);
 
@@ -34,7 +34,7 @@ const IntroductionSection: React.FC<IntroductionSectionProps> = ({t}) => {
           <SubTitle>
             {t('landing-subtitle-1')}
             <br />
-            <SubTitleContainer dangerouslySetInnerHTML={{__html: t('landing-section-1-subtitle-2')}} />
+            <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-section-1-subtitle-2') }} />
           </SubTitle>
           <Link href="/introduction" passHref>
             <RouteIntroductionButton>

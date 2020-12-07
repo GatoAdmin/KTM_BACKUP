@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Option, OptionContainer, SelectContainer, SelectDisplay } from '@components/UserPage/Select/Select.style';
-import useVisible from "@util/hooks/useVisible";
+import {
+  Option, OptionContainer, SelectContainer, SelectDisplay,
+} from '@components/UserPage/Select/Select.style';
+import useVisible from '@util/hooks/useVisible';
 
 interface option {
   value: string;

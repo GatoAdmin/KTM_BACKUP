@@ -54,14 +54,13 @@ export const OptionContainer = styled.div<showProps>`
   scrollbar-width: none;
   z-index: 3;
 
-  ${(props) =>
-    props.show
-      ? css`
+  ${(props) => (props.show
+    ? css`
           display: block;
         `
-      : css`
+    : css`
           display: none;
-        `}
+        `)}
 
   ::-webkit-scrollbar {
     width: 0;

@@ -81,9 +81,11 @@ const useDateInfoArray = (
     };
   }
 
-  const dateArray = Array.from({ length: 5 }, () => Array.from({ length: 7 })).map((row) =>
-    row.map(getCurrentDateInfo),
-  );
+  const dateArray = Array
+    .from(
+      { length: 5 },
+      () => Array.from({ length: 7 }))
+    .map((row) => row.map(getCurrentDateInfo));
 
   if (selectedDate.getMonth() === selectedMonth) {
     const lastWeek = Array.from({ length: 7 }).map(getCurrentDateInfo);

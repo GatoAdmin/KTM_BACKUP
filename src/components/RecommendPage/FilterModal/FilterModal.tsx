@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Dispatch, SetStateAction } from 'react';
 import {
   FilterModalButton,
   FilterModalButtonContainer,
@@ -22,26 +21,25 @@ interface FilterModalProps {
 }
 
 const FilterModal = React.forwardRef<FilterModalRef, FilterModalProps>(
-  ({ visible,
+  ({
+    visible,
     toggleVisible,
     submitFilter,
     closeModal,
     width,
     height,
     description,
-    children
-  }, ref) => {
-    return (
-      <FilterModalContainer ref={ref} width={width} height={height} show={visible} hasDescription={!!description}>
-        {description ? <FilterModalDescription>{description}</FilterModalDescription> : null}
-        {children}
-        <FilterModalButtonContainer>
-          <FilterModalDoneButton onClick={submitFilter}>완료</FilterModalDoneButton>
-          <FilterModalButton onClick={closeModal}>취소</FilterModalButton>
-        </FilterModalButtonContainer>
-      </FilterModalContainer>
-    );
-  },
+    children,
+  }, ref) => (
+    <FilterModalContainer ref={ref} width={width} height={height} show={visible} hasDescription={!!description}>
+      {description ? <FilterModalDescription>{description}</FilterModalDescription> : null}
+      {children}
+      <FilterModalButtonContainer>
+        <FilterModalDoneButton onClick={submitFilter}>완료</FilterModalDoneButton>
+        <FilterModalButton onClick={closeModal}>취소</FilterModalButton>
+      </FilterModalButtonContainer>
+    </FilterModalContainer>
+  ),
 );
 
 export default FilterModal;

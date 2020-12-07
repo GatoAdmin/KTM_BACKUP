@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import {fontColor} from "@util/style/color";
+import styled from 'styled-components';
+import { fontColor } from '@util/style/color';
 
 export const LocationFilterContainer = styled.div`
   position: relative;

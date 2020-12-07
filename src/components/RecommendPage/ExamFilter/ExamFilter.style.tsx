@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import {fontColor} from "@util/style/color";
+import styled from 'styled-components';
+import { fontColor } from '@util/style/color';
 
 export const ExamFilterContainer = styled.div`
   position: relative;
@@ -98,8 +98,6 @@ export const ExamFilterCheckLabelBox = styled.div`
   }
 `;
 
-
-
 export const ExamFilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htmlFor }) => ({
   htmlFor,
 }))`
@@ -113,12 +111,12 @@ export const ExamFilterCheckBoxLabel = styled.label.attrs<LabelProps>(({ htmlFor
 
 interface CheckBoxProps {
   id: string;
-  defaultChecked: boolean;
+  checked: boolean;
 }
 
-export const CheckBox = styled.input.attrs<CheckBoxProps>(({ id, defaultChecked }) => ({
+export const CheckBox = styled.input.attrs<CheckBoxProps>(({ id, checked }) => ({
   id,
-  defaultChecked,
+  checked,
   type: 'checkbox',
 }))`
   display: none;

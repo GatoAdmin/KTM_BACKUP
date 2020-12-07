@@ -49,7 +49,10 @@ const NumberSection: React.FC<NumberSectionProps> = ({
           </Link>
         </TextContainer>
         <ImageContainer>
-          <BackgroundNumber isNumberEven={isNumberEven}>0{number}</BackgroundNumber>
+          <BackgroundNumber isNumberEven={isNumberEven}>
+            0
+            {number}
+          </BackgroundNumber>
           <Image />
         </ImageContainer>
       </NumberSectionContent>

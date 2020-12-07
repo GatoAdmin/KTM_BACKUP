@@ -1,5 +1,7 @@
-import * as React from "react";
-import {Dispatch, SetStateAction} from "react";
+import * as React from 'react';
+import { Dispatch, SetStateAction } from 'react';
+import FilterModal from '@components/RecommendPage/FilterModal/FilterModal';
+import useVisible from '@util/hooks/useVisible';
 import {
   CheckBox,
   FilterButton,
@@ -7,12 +9,10 @@ import {
   TuitionFilterContainer,
   TuitionFilterCheckBoxContainer,
   TuitionFilterCheckBoxLabel,
-  TuitionFilterCheckLabelBox
-} from "./TuitionFilter.style";
-import FilterModal from "@components/RecommendPage/FilterModal/FilterModal";
-import CheckIcon from "../../../assets/check.svg";
-import useVisible from "@util/hooks/useVisible";
-import EducationIcon from "../../../assets/education-cost.svg";
+  TuitionFilterCheckLabelBox,
+} from './TuitionFilter.style';
+import CheckIcon from '../../../assets/check.svg';
+import EducationIcon from '../../../assets/education-cost.svg';
 
 const tuitionFee = [100, 200, 300, 400];
 
@@ -23,27 +23,23 @@ interface TuitionFilterProps {
 
 const TuitionFilter: React.VFC<TuitionFilterProps> = ({
   filterValue,
-  setFilterValue
+  setFilterValue,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visible, toggleVisible] = useVisible(containerRef);
   const [value, setValue] = React.useState<number | null>(filterValue);
   const submitFilter = () => {
     toggleVisible();
-    setFilterValue(value)
-  }
+    setFilterValue(value);
+  };
   const closeModal = () => {
     toggleVisible();
     setValue(filterValue);
-  }
+  };
   const onChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
-    console.log(target.value, value)
-    if (Number(target.value) === value)
-      setValue(null);
-    else
-      setValue(Number(target.value))
-  }
+    if (Number(target.value) === value) { setValue(null); } else { setValue(Number(target.value)); }
+  };
 
   return (
     <TuitionFilterContainer ref={containerRef}>
@@ -66,9 +62,14 @@ const TuitionFilter: React.VFC<TuitionFilterProps> = ({
               id={`tuition-${index}`}
               value={index + 1}
               checked={index + 1 === value}
-              onChange={onChangeCheckbox} />
+              onChange={onChangeCheckbox}
+            />
             <TuitionFilterCheckBoxLabel htmlFor={`tuition-${index}`}>
-              {tuitionFeeValue} ~ {tuitionFeeValue + 100}만원
+              {tuitionFeeValue}
+              {' '}
+              ~
+              {tuitionFeeValue + 100}
+              만원
               <TuitionFilterCheckLabelBox>
                 <CheckIcon />
               </TuitionFilterCheckLabelBox>
@@ -77,7 +78,7 @@ const TuitionFilter: React.VFC<TuitionFilterProps> = ({
         ))}
       </FilterModal>
     </TuitionFilterContainer>
-  )
-}
+  );
+};
 
 export default TuitionFilter;

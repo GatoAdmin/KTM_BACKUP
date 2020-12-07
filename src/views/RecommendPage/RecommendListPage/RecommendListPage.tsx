@@ -60,7 +60,7 @@ const filterInitialValue = {
 };
 
 interface SearchValue {
-  word: string | null;
+  word: string;
 }
 
 const changeQueryToBoolParamsValue = (value: string | string[] | undefined): boolean | null => {
@@ -72,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let univListResponse: Response;
   const { query } = context;
   const searchParams: SearchValue = {
-    word: String(query.search_word),
+    word: encodeURI(String(query.search_word ?? "")),
   };
   const filterParams: FilterValue = {
     location: query.location
@@ -88,7 +88,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
   if (context.query.hasOwnProperty('search_word')) {
     univListResponse = await fetch(
-      `${process.env.API_PATH}api/?action=search&params=${JSON.stringify(searchParams)}`,
+      `${process.env.API_PATH}api/?action=search&params=${
+        JSON.stringify(
+          Object.assign(
+            searchParams,
+            { page: query.page ? String(query.page) : '1' },
+          ),
+        )}`,
       {
         method: 'GET',
         headers: {
@@ -120,8 +126,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       filterParams,
       searchParams,
-      univList: univListData.univs,
-      pageInfo: univListData.pages,
+      univList: univListData.univs ?? [],
+      pageInfo: univListData.pages ?? {
+        current_page: 1,
+        per_page: 5,
+        max_page: 1
+      },
       hasQuery: query.hasOwnProperty('page'),
     },
   };
@@ -147,7 +157,9 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
   hasQuery,
 }) => {
   const router = useRouter();
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
   const [filterShow, toggleFilterShow] = useStateWithToggle(false);
+
   // TODO: Change to mobx
   const [locationValue, setLocationValue] = React.useState<Array<KoreaLocation>>(filterParams.location);
   const [tuitionValue, setTuitionValue] = React.useState<number | null>(filterParams.tuition);
@@ -205,6 +217,14 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
     setPage((state) => state + 1);
   };
 
+  const clickSearchButton = () => {
+    const searchWord = searchInputRef?.current?.value;
+    if(searchWord) {
+
+      router.push(`/recommend?search_word=${searchWord}&page=1`);
+    }
+  }
+
   return (
     <>
       <Header background="dark" position="absolute" />
@@ -213,8 +233,9 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
           모든 대학을 알려드립니다
           <SearchBarContainer>
             <SearchBar>
-              <SearchInput />
-              <SearchButton>
+              {console.log(searchParams.word ?? "sibal")}
+              <SearchInput ref={searchInputRef} defaultValue={decodeURI(searchParams.word)} />
+              <SearchButton onClick={clickSearchButton}>
                 <SearchIcon src="/images/search.png" />
               </SearchButton>
             </SearchBar>
@@ -330,7 +351,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
       </UnivListSection>
       <UnivListPagination>
         <UnivListPrevButton onClick={paginatePrevious} />
-        {page}
+        {pageInfo.current_page}
         <UnivListNextButton onClick={paginateNext} />
       </UnivListPagination>
     </>

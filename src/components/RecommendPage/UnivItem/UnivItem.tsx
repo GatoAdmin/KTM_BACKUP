@@ -55,8 +55,8 @@ const UnivItem: React.VFC<UnivInfo> = ({
   logo,
 }) => (
   <UnivItemContainer>
-    {thumbnail ? <UnivItemImage src={thumbnail} alt={kor_name} /> : <UnivItemNoImage />}
-    {logo ? <UnivItemLogo src={logo} alt={`${name} logo`} /> : null}
+    {thumbnail ? <UnivItemImage src={`${process.env.API_PATH}univ_photos/${thumbnail}`} alt={kor_name} /> : <UnivItemNoImage />}
+    {logo ? <UnivItemLogo src={`${process.env.API_PATH}univ_photos/${logo}`} alt={`${kor_name} logo`} /> : null}
     <UnivItemDescriptionContainer>
       <UnivItemTitle>{kor_name}</UnivItemTitle>
       <UnivItemAddress>
@@ -79,7 +79,7 @@ const UnivItem: React.VFC<UnivInfo> = ({
       </UnivItemDescription>
       <UnivItemDescription>
         대학 종류:
-        {category}
+        {category === "UN" ? "4년제" : category == "CG" ? "전문대" : "어학원"}
       </UnivItemDescription>
     </UnivItemDescriptionContainer>
     <UnivItemLinkContainer>

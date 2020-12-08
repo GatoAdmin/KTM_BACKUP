@@ -56,7 +56,7 @@ export const UnivItemImage = styled.img`
   height: 153px;
   margin-right: 36px;
   border-radius: 25px;
-  object-fit: contain;
+  object-fit: cover;
 `;
 
 export const UnivItemNoImage = styled.div`

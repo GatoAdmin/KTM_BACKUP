@@ -18,13 +18,17 @@ const Select: React.VFC<SelectProps> = ({ options, placeholder }) => {
   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visible, toggleVisible] = useVisible(containerRef);
+  const getTriggerChangeOption = (optionValue: string | number) => () => {
+    setInputValue(optionValue);
+    toggleVisible();
+  }
 
   return (
     <SelectContainer ref={containerRef}>
       <SelectDisplay onClick={toggleVisible}>{inputValue}</SelectDisplay>
       <OptionContainer show={visible}>
         {options.map((value) => (
-          <Option key={value}>{value}</Option>
+          <Option key={value} onClick={getTriggerChangeOption(value)}>{value}</Option>
         ))}
       </OptionContainer>
     </SelectContainer>

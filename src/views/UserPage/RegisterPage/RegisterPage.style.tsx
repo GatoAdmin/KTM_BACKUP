@@ -131,14 +131,15 @@ export const RegisterInputTitle = styled.h3`
 `;
 
 export const RegisterThirdPartyButtonContainer = styled.div`
-  width: 318px;
+  display: flex;
+  justify-content: center;
   margin: 0 auto 40px;
 `;
 
 export const RegisterThirdPartyButton = styled.button`
   display: inline-flex;
   align-items: center;
-  width: 152px;
+  width: 160px;
   height: 30px;
   margin-right: 14px;
   padding-left: 21px;

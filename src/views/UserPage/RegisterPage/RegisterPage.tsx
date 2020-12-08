@@ -49,19 +49,19 @@ const RegisterPage: NextPage = () => (
       <RegisterFieldset>
         <RegisterInputRow>
           <RegisterInputSmallGroup>
-            <RegisterInput placeholder="이름" autoComplete="name" />
-            <RegisterAlert>영문으로 기입해주세요.</RegisterAlert>
+            <RegisterInput placeholder="성" />
+            {/*<RegisterAlert>영문으로 기입해주세요.</RegisterAlert>*/}
           </RegisterInputSmallGroup>
           <RegisterInputSmallGroup>
-            <RegisterInput placeholder="닉네임" />
-            <RegisterAlert>이미 존재하는 닉네임입니다.</RegisterAlert>
+            <RegisterInput placeholder="이름" />
+            {/*<RegisterAlert>영문으로 기입해주세요.</RegisterAlert>*/}
           </RegisterInputSmallGroup>
         </RegisterInputRow>
 
         <RegisterInputRow>
           <RegisterInputSmallGroup>
             <RegisterInput placeholder="이메일" />
-            <RegisterAlert>형식이 맞지 않습니다.</RegisterAlert>
+            {/*<RegisterAlert>형식이 맞지 않습니다.</RegisterAlert>*/}
           </RegisterInputSmallGroup>
           @
           <RegisterInputSmallGroup>
@@ -71,13 +71,13 @@ const RegisterPage: NextPage = () => (
         <RegisterInputRow>
           <RegisterInputGroup>
             <RegisterInput type="password" placeholder="비밀번호" autoComplete="new-password" />
-            <RegisterAlert>비밀번호는 최대 15자리이며, 숫자와 영문 조합이어야 합니다.</RegisterAlert>
+            {/*<RegisterAlert>비밀번호는 최대 15자리이며, 숫자와 영문 조합이어야 합니다.</RegisterAlert>*/}
           </RegisterInputGroup>
         </RegisterInputRow>
         <RegisterInputRow>
           <RegisterInputGroup>
             <RegisterInput type="password" placeholder="비밀번호 확인" autoComplete="new-password" />
-            <RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert>
+            {/*<RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert>*/}
           </RegisterInputGroup>
         </RegisterInputRow>
         <RegisterInputRow>

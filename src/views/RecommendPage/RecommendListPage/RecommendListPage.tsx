@@ -68,6 +68,7 @@ const changeQueryToBoolParamsValue = (value: string | string[] | undefined): boo
   return value === 'true';
 };
 
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let univListResponse: Response;
   const { query } = context;
@@ -122,11 +123,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
   }
   const univListData = await univListResponse.json();
+  const univList = (univListData.univs ?? []).map(
+      (univ: { photos: any[]; }) => ({
+        ...univ,
+        logo: univ.photos.find(photoInfo => photoInfo.photo_category === "logo")?.file,
+        thumbnail: univ.photos.find(photoInfo => photoInfo.photo_category === "main_photo")?.file
+    })
+  )
   return {
     props: {
       filterParams,
       searchParams,
-      univList: univListData.univs ?? [],
+      univList,
       pageInfo: univListData.pages ?? {
         current_page: 1,
         per_page: 5,

@@ -1,128 +1,133 @@
 import * as React from 'react';
-import { Dispatch, SetStateAction } from 'react';
-import FilterModal from '@components/RecommendPage/FilterModal/FilterModal';
-import useVisible from '@util/hooks/useVisible';
+import Checkbox from '@components/Shared/Checkbox/Checkbox';
 import {
-  CheckBox,
-  FilterButton,
-  FilterIconDescription,
-  ExamFilterCheckBoxContainer,
-  ExamFilterCheckBoxLabel,
-  ExamFilterCheckLabelBox,
   ExamFilterContainer,
-  ExamFilterRow,
-  ExamFilterRowTitle,
-  ExamFilterRowContent,
-  ExamFilterCheckBoxDescription,
+  ExamFilterIcon,
+  ExamFilterCheckboxShort,
+  ExamFilterShortContainer,
+  ExamFilterTitle,
+  ExamFilterCheckbox,
 } from './ExamFilter.style';
-import CheckIcon from '../../../assets/check.svg';
-import LicenseIcon from '../../../assets/driving-license.svg';
 
-interface LocationFilterProps {
+export interface ExamFilterRef {
   topikValue: Array<number>;
-  setTopikValue: Dispatch<SetStateAction<Array<number>>>;
-  selfTestValue: boolean | null;
-  setSelfTestValue: Dispatch<SetStateAction<boolean | null>>
+  testValue: boolean | null;
+}
+
+interface ExamFilterProps {
+  initialTopikValue: Array<number>;
+  initialTestValue: boolean | null;
 }
 
 const topik: Array<{name: string; value: number}> = [
+  { name: '1급', value: 1 },
   { name: '2급', value: 2 },
   { name: '3급', value: 3 },
   { name: '4급', value: 4 },
   { name: '5급', value: 5 },
   { name: '6급', value: 6 },
-  { name: '상관 없음', value: 0 },
 ];
 
-const ExamFilter: React.VFC<LocationFilterProps> = ({
-  topikValue,
-  setTopikValue,
-  selfTestValue,
-  setSelfTestValue,
-}) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const [tempTopikValue, setTempTopikValue] = React.useState<Array<number>>(topikValue);
-  const [tempSelfTestValue, setTempSelfTestValue] = React.useState<boolean | null>(selfTestValue);
-  const [visible, toggleVisible] = useVisible(containerRef);
-
-  const onChangeTempTopikCheckBox = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    if (!Number.isNaN(Number(target.value)) && topikValue.includes(Number(target.value))) {
-      const targetIndex = tempTopikValue.indexOf(Number(target.value));
-      const newTempTopikValue = Array.from(tempTopikValue);
-      newTempTopikValue.splice(targetIndex, 1);
-      setTempTopikValue(newTempTopikValue);
+const useTopikFilter = (initialTopikValue: Array<number>)
+  : [Array<number>, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+  const [topikValue, setTopikValue] = React.useState<Array<number>>(initialTopikValue);
+  const handleClickTopikCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target: { value } } = event;
+    const currentTopikValue = Number(value);
+    if (topikValue.includes(currentTopikValue)) {
+      const newTopikValue = Array.from(topikValue);
+      const targetIndex = newTopikValue.indexOf(currentTopikValue);
+      newTopikValue.splice(targetIndex, 1);
+      setTopikValue(newTopikValue);
     } else {
-      setTempTopikValue((state) => state.concat(Number(target.value)));
+      setTopikValue((state) => state.concat(currentTopikValue));
     }
   };
-  const onChangeTempSelfTestValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    setTempSelfTestValue(target.checked);
+
+  return [topikValue, handleClickTopikCheckbox];
+};
+
+const useTestFilter = (initialTestValue: boolean | null)
+  : [boolean | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+  const [testValue, setTestValue] = React.useState<boolean | null>(initialTestValue);
+  const handleClickTestCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target: { value } } = event;
+    if (String(testValue) === value) {
+      setTestValue(null);
+    } else {
+      setTestValue(value === 'true');
+    }
   };
 
-  const submitFilter = () => {
-    toggleVisible();
-    setTopikValue(tempTopikValue);
-    setSelfTestValue(tempSelfTestValue);
-  };
-  const closeModal = () => {
-    toggleVisible();
-    setTempTopikValue(topikValue);
-    setTempSelfTestValue(selfTestValue);
-  };
+  return [testValue, handleClickTestCheckbox];
+};
+
+const ExamFilter = React.forwardRef<ExamFilterRef, ExamFilterProps>(({
+  initialTopikValue,
+  initialTestValue,
+}, ref) => {
+  const [topikValue, handleClickTopikCheckbox] = useTopikFilter(initialTopikValue);
+  const [testValue, handleClickTestCheckbox] = useTestFilter(initialTestValue);
+
+  React.useImperativeHandle<ExamFilterRef, ExamFilterRef>(ref, () => ({
+    topikValue,
+    testValue,
+  }), [topikValue, testValue]);
 
   return (
-    <ExamFilterContainer ref={containerRef}>
-      <FilterButton onClick={toggleVisible}>
-        <LicenseIcon />
-        <FilterIconDescription>어학요건</FilterIconDescription>
-      </FilterButton>
-      <FilterModal
-        visible={visible}
-        toggleVisible={toggleVisible}
-        submitFilter={submitFilter}
-        closeModal={closeModal}
-        width="460px"
-        height="220px"
-      >
-        <ExamFilterRow>
-          <ExamFilterRowTitle>TOPIK</ExamFilterRowTitle>
-          <ExamFilterRowContent>
-            {topik.map((topikValue, index) => (
-              <ExamFilterCheckBoxContainer key={topikValue.name}>
-                <CheckBox
-                  id={`topik-${index}`}
-                  value={topikValue.value}
-                  checked={tempTopikValue.includes(topikValue.value)}
-                  onChange={onChangeTempTopikCheckBox}
-                />
-                <ExamFilterCheckBoxLabel htmlFor={`topik-${index}`}>
-                  <ExamFilterCheckBoxDescription>{topikValue.name}</ExamFilterCheckBoxDescription>
-                  <ExamFilterCheckLabelBox>
-                    <CheckIcon />
-                  </ExamFilterCheckLabelBox>
-                </ExamFilterCheckBoxLabel>
-              </ExamFilterCheckBoxContainer>
-            ))}
-          </ExamFilterRowContent>
-        </ExamFilterRow>
-        <ExamFilterRow>
-          <ExamFilterRowTitle>자체 시험</ExamFilterRowTitle>
-          <ExamFilterRowContent>
-            <ExamFilterCheckBoxContainer>
-              <CheckBox id="self-test" checked={!!tempSelfTestValue} onChange={onChangeTempSelfTestValue} />
-              <ExamFilterCheckBoxLabel htmlFor="self-test">
-                <ExamFilterCheckLabelBox>
-                  <CheckIcon />
-                </ExamFilterCheckLabelBox>
-              </ExamFilterCheckBoxLabel>
-            </ExamFilterCheckBoxContainer>
-          </ExamFilterRowContent>
-        </ExamFilterRow>
-      </FilterModal>
+    <ExamFilterContainer>
+      <ExamFilterIcon />
+      <ExamFilterTitle>
+        어학시험
+        <br />
+        TOPIK
+      </ExamFilterTitle>
+      <ExamFilterShortContainer>
+        {topik.map((topikInfoValue) => (
+          <ExamFilterCheckboxShort key={topikInfoValue.value}>
+            <Checkbox
+              id={`topik${String(topikInfoValue.value)}`}
+              value={String(topikInfoValue.value)}
+              checked={topikValue.includes(topikInfoValue.value)}
+              onChange={handleClickTopikCheckbox}
+            >
+              {topikInfoValue.name}
+            </Checkbox>
+          </ExamFilterCheckboxShort>
+        ))}
+        <ExamFilterCheckbox>
+          <Checkbox
+            id="topik-0"
+            value="0"
+            checked={topikValue.includes(0)}
+            onChange={handleClickTopikCheckbox}
+          >
+            토픽 급수제한 없음
+          </Checkbox>
+        </ExamFilterCheckbox>
+        <ExamFilterCheckbox>
+          <Checkbox
+            id="test-true"
+            value={String(true)}
+            checked={testValue === true}
+            onChange={handleClickTestCheckbox}
+          >
+            학교 자체시험
+          </Checkbox>
+        </ExamFilterCheckbox>
+        <ExamFilterCheckbox>
+          <Checkbox
+            id="test-false"
+            value={String(false)}
+            checked={testValue === false}
+            onChange={handleClickTestCheckbox}
+          >
+            어학시험 필요 없음
+          </Checkbox>
+        </ExamFilterCheckbox>
+      </ExamFilterShortContainer>
     </ExamFilterContainer>
   );
-};
+});
 
 export default ExamFilter;

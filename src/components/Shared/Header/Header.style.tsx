@@ -1,22 +1,12 @@
 import styled, { css } from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
-import LogoIcon from '../../../assets/logo.svg';
-
-export const Logo = styled(LogoIcon)`
-  width: 81px;
-  height: 81px;
-  margin-right: 19px;
-
-  > path {
-    fill: white;
-  }
-`;
+import { defaultFont, logoFont } from '@util/style/font';
 
 export const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 29px;
-  font: 900 45px/116px Nunito, sans-serif;
+  margin: 0 50px 0 60px;
+  font: 700 24px/29px ${logoFont};
 `;
 
 interface HeaderContainerProps {
@@ -26,35 +16,22 @@ interface HeaderContainerProps {
 
 export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
+  align-items: center;
   top: 0;
   justify-content: space-between;
-  width: 100%;
-  min-width: 1400px;
-  height: 116px;
-  font: normal normal normal 20px/116px NEXON Lv1 Gothic;
+  padding-top: 44px;
+  width: 1100px;
+  font: normal normal normal 14px/19px ${defaultFont};
   background-color: transparent;
   user-select: none;
   z-index: 3;
 
   ${(props) => (props.background === 'light'
     ? css`
-          color: ${fontColor};
-          border-color: ${fontColor};
-
-          ${LogoContainer} {
-            color: ${mainColor};
-          }
-
-          ${Logo} > path {
-            fill: ${mainColor};
-          }
 
           box-shadow: 0 0 5px #0f0f0f33;
         `
-    : css`
-          color: white;
-          border-color: white;
-        `)}
+    : null)}
 
   ${(props) => (props.position === 'relative'
     ? css`
@@ -65,66 +42,43 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
         `)}
 `;
 
-export const Navigation = styled.div``;
+export const Navigation = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex: 1 1 0;
+  padding: 0 30px;
+`;
 
 export const NavigationContainer = styled.nav`
   display: flex;
-  margin-right: 89px;
+  flex: 1 1 0;
+  margin-right: 50px;
 `;
 
 export const NavLink = styled.a`
-  margin-left: 60px;
   color: inherit;
   text-decoration: none;
 `;
 
 export const LocalizationButtonContainer = styled.div`
+  display: flex;
   position: relative;
-  width: 144px;
-  margin-left: 90px;
-`;
-
-interface LocalizationSelectorProps {
-  selectedIndex: number;
-}
-
-export const LocalizationSelector = styled.div<LocalizationSelectorProps>`
-  position: absolute;
-  left: 0;
-  bottom: 40px;
-  width: 26px;
-  border: 1px solid currentColor;
-  transition: transform ease 0.3s;
-  transform: ${(props) => `translateX(${props.selectedIndex * 58}px)`};
+  width: 50px;
 `;
 
 export const LocalizationButton = styled.button`
   display: inline-block;
   width: 26px;
-  margin-right: 32px;
   padding: 0;
   border: 0;
   color: inherit;
+  font: normal normal normal 14px/19px ${defaultFont};
   background-color: transparent;
   cursor: pointer;
-
-  :last-of-type {
-    margin: 0;
-  }
-
-  :nth-child(1):hover ~ ${LocalizationSelector} {
-    transform: translateX(0);
-  }
-  :nth-child(2):hover ~ ${LocalizationSelector} {
-    transform: translateX(58px);
-  }
-  :nth-child(3):hover ~ ${LocalizationSelector} {
-    transform: translateX(116px);
-  }
 `;
 
 export const LoginLink = styled.a`
-  margin-left: 50px;
+  margin-left: 30px;
   color: inherit;
   text-decoration: none;
 `;

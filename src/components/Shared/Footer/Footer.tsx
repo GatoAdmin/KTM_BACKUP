@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import LogoIcon from "../../../assets/logo.svg";
-import {mainBackgroundColor, mainColor} from "@util/style/color";
+import { mainBackgroundColor, mainColor } from '@util/style/color';
+import LogoIcon from '../../../assets/logo.svg';
 
 const FooterContainer = styled.footer`
   width: 100%;
@@ -45,20 +45,18 @@ const SponsorImage = styled.img`
   object-fit: contain;
 `;
 
-const Footer: React.FC = () => {
-  return (
-    <FooterContainer>
-      <FooterContent>
-        <LogoContainer>
-          <Logo />
-          katumm
-        </LogoContainer>
-        <SponsorContainer>
-          <SponsorImage src="/images/CN_support.png" alt="충남컨텐츠코리아랩" />
-        </SponsorContainer>
-      </FooterContent>
-    </FooterContainer>
-  )
-}
+const Footer: React.FC = () => (
+  <FooterContainer>
+    <FooterContent>
+      <LogoContainer>
+        <Logo />
+        katumm
+      </LogoContainer>
+      <SponsorContainer>
+        <SponsorImage src="/images/CN_support.png" alt="충남컨텐츠코리아랩" />
+      </SponsorContainer>
+    </FooterContent>
+  </FooterContainer>
+);
 
 export default Footer;

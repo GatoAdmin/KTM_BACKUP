@@ -14,7 +14,7 @@ const useVisible = (ref: React.MutableRefObject<HTMLElement | null>): [boolean, 
     return () => {
       if (isBrowser) window.removeEventListener('click', onCloseSelect);
     };
-  }, []);
+  }, [ref]);
 
   return [visible, () => setVisible((state) => !state)];
 };

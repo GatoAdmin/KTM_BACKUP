@@ -1,45 +1,36 @@
 import * as React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useSWRInfinite } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import {
-  FilterContainer,
-  FilterIconContainer,
-  FilterShowButton,
-  FilterShowIcon,
-  FilterShowLabel,
-  SearchBar,
-  SearchBarContainer,
+  FilterModalContainer,
+  FilterSection,
   SearchButton,
-  SearchIcon,
+  SearchFilterButton,
+  SearchFilterContainer,
   SearchInput,
-  SearchSection,
+  SearchInputContainer,
   SearchSectionContainer,
-  FilterIconDescription,
-  FilterInputContainer,
-  CheckBox,
-  FilterCheckBoxContainer,
-  FilterCheckBoxLabel,
-  FilterCheckLabelBox,
+  SearchSectionContent,
+  SearchSectionTitle,
   UnivListSection,
   UnivListTitle,
-  UnivListPagination,
-  UnivListPrevButton,
-  UnivListNextButton,
 } from '@views/RecommendPage/RecommendListPage/RecommendListPage.style';
+import SearchIcon from '@assets/svg/search_icon.svg';
+import FilterIcon from '@assets/svg/filter_icon.svg';
+import useVisible from '@util/hooks/useVisible';
+import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import UnivItem, { UnivInfo } from '@components/RecommendPage/UnivItem/UnivItem';
-import LocationFilter, { KoreaLocation } from '@components/RecommendPage/LocationFilter/LocationFilter';
-import TuitionFilter from '@components/RecommendPage/TuitionFilter/TuitionFilter';
-import ExamFilter from '@components/RecommendPage/ExamFilter/ExamFilter';
-import { useRouter } from 'next/router';
-import CheckIcon from '../../../assets/check.svg';
-import DiversifyIcon from '../../../assets/diversify.svg';
-import GrantIcon from '../../../assets/grant.svg';
-
-const useStateWithToggle = (initialState: boolean) => {
-  const [toggle, setToggle] = React.useState<boolean>(initialState);
-
-  return [toggle, () => setToggle((state) => !state), setToggle] as const;
-};
+import LocationFilter, {
+  KoreaLocation,
+  LocationFilterRef,
+} from '@components/RecommendPage/LocationFilter/LocationFilter';
+import TuitionFilter, { TuitionFilterRef } from '@components/RecommendPage/TuitionFilter/TuitionFilter';
+import ExamFilter, { ExamFilterRef } from '@components/RecommendPage/ExamFilter/ExamFilter';
+import ScholarshipFilter, { ScholarShipFilterRef } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter';
+import CategoryFilter, { CategoryFilterRef } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
+import axios from 'axios';
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -48,6 +39,8 @@ interface FilterValue {
   has_own_exam: boolean | null;
   has_scholarship: boolean | null;
   category: Array<'UN' | 'CG' | 'IT'>;
+  word: string;
+  // sort_by: string;
 }
 
 const filterInitialValue = {
@@ -63,18 +56,60 @@ interface SearchValue {
   word: string;
 }
 
+const fetchUnivList = (url: string) => axios.get(url)
+  .then(
+    (res) => {
+      const {
+        univs,
+        pages,
+      }: {
+          univs: Array<{
+            univ_code: string;
+            tuition: number;
+            kor_name: string;
+            eng_name: string;
+            category: string;
+            kor_short_address: string;
+            photos: {
+              photo_category: string;
+              file: string;
+            }[];
+            topik: string;
+          }>,
+          pages: {
+            max_page: number;
+          }
+        } = res.data;
+
+      return {
+        univList: univs.map((value) => ({
+          id: value.univ_code,
+          name: value.kor_name,
+          nameEng: value.eng_name,
+          city: value.kor_short_address,
+          category: value.category,
+          tuition: value.tuition,
+          topik: value.topik,
+          thumbnail: value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string,
+        })),
+        maxPage: pages.max_page,
+      };
+    },
+  );
+
 const changeQueryToBoolParamsValue = (value: string | string[] | undefined): boolean | null => {
   if (value === '' || value === undefined) { return null; }
   return value === 'true';
 };
 
+interface RecommendListPageProps {
+  filterParams: FilterValue;
+  initialUnivList: Array<UnivInfo>;
+  maxPage: number;
+}
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let univListResponse: Response;
+export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = async (context) => {
   const { query } = context;
-  const searchParams: SearchValue = {
-    word: encodeURI(String(query.search_word ?? "")),
-  };
   const filterParams: FilterValue = {
     location: query.location
       ? String(query.location).split(',') as Array<KoreaLocation>
@@ -86,283 +121,166 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     category: query.category
       ? String(query.category).split(',') as Array<'UN' | 'CG' | 'IT'>
       : filterInitialValue.category,
+    word: query.word ? String(query.word) : '',
   };
-  if (context.query.hasOwnProperty('search_word')) {
-    univListResponse = await fetch(
-      `${process.env.API_PATH}api/?action=search&params=${
-        JSON.stringify(
-          Object.assign(
-            searchParams,
-            { page: query.page ? String(query.page) : '1' },
-          ),
-        )}`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-  } else {
-    univListResponse = await fetch(
-      `${process.env.API_PATH}api/?action=filter_search&params=${
-        JSON.stringify(
-          Object.assign(
-            filterParams,
-            { page: query.page ? String(query.page) : '1' },
-          ),
-        )}`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-  }
-  const univListData = await univListResponse.json();
-  const univList = (univListData.univs ?? []).map(
-      (univ: { photos: any[]; }) => ({
-        ...univ,
-        logo: univ.photos.find(photoInfo => photoInfo.photo_category === "logo")?.file,
-        thumbnail: univ.photos.find(photoInfo => photoInfo.photo_category === "main_photo")?.file
-    })
-  )
+  const {
+    univList,
+    maxPage,
+  } = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
+    JSON.stringify(
+      Object.assign(
+        filterParams,
+        { page: 1 },
+      ),
+    )}`);
   return {
     props: {
       filterParams,
-      searchParams,
-      univList,
-      pageInfo: univListData.pages ?? {
-        current_page: 1,
-        per_page: 5,
-        max_page: 1
-      },
-      hasQuery: query.hasOwnProperty('page'),
+      initialUnivList: univList,
+      maxPage,
     },
   };
 };
 
-interface RecommendListPageProps {
-  filterParams: FilterValue;
-  searchParams: SearchValue;
-  univList: Array<UnivInfo>;
-  pageInfo: {
-    current_page: string;
-    per_page: number;
-    max_page: number;
-  },
-  hasQuery: boolean;
+interface FilterRefObject {
+  location: React.RefObject<LocationFilterRef>;
+  tuition: React.RefObject<TuitionFilterRef>;
+  exam: React.RefObject<ExamFilterRef>;
+  scholarship: React.RefObject<ScholarShipFilterRef>;
+  category: React.RefObject<CategoryFilterRef>;
+  searchInput: React.RefObject<HTMLInputElement>;
 }
+
+const useFilterRefObject = (): FilterRefObject => {
+  const location = React.useRef<LocationFilterRef>(null);
+  const tuition = React.useRef<TuitionFilterRef>(null);
+  const exam = React.useRef<ExamFilterRef>(null);
+  const scholarship = React.useRef<ScholarShipFilterRef>(null);
+  const category = React.useRef<CategoryFilterRef>(null);
+  const searchInput = React.useRef<HTMLInputElement>(null);
+
+  return {
+    location,
+    tuition,
+    exam,
+    scholarship,
+    category,
+    searchInput,
+  };
+};
+
+const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivInfo>) => {
+  const { data, size, setSize } = useSWRInfinite(
+    (index) => `${process.env.API_PATH}api/${JSON.stringify(Object.assign(filterParams, { page: index }))}`,
+    (url) => fetchUnivList(url).then((info) => info.univList),
+    {
+      initialData: initialUnivList,
+    },
+  );
+
+  return {
+    univList: data ? data.flat(2) : [],
+  };
+};
+
+export interface UpdateUrlQueryFunction {
+  (propertyKey: string, newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<'UN' | 'CG' | 'IT'> | boolean | null): void;
+}
+
+const usePushRouterWithFiiterValue = ({
+  location,
+  tuition,
+  exam,
+  scholarship,
+  category,
+  searchInput,
+}: FilterRefObject): UpdateUrlQueryFunction => {
+  const router = useRouter();
+  return (propertyKey, newPropertyValue) => {
+    const queryUrlObject = {
+      location: String(location.current?.value),
+      tuition: tuition.current?.value,
+      topik: String(exam.current?.topikValue),
+      exam: exam.current?.testValue,
+      scholarship: scholarship.current?.value,
+      category: String(category.current?.value),
+      word: searchInput.current?.value,
+      [propertyKey]: Array.isArray(newPropertyValue) ? String(newPropertyValue) : newPropertyValue,
+    };
+    router
+      .replace({
+        pathname: '/recommend',
+        query: queryUrlObject,
+      });
+  };
+};
 
 const RecommendListPage: NextPage<RecommendListPageProps> = ({
   filterParams,
-  searchParams,
-  univList,
-  pageInfo,
-  hasQuery,
+  initialUnivList,
+  maxPage,
 }) => {
-  const router = useRouter();
-  const searchInputRef = React.useRef<HTMLInputElement>(null);
-  const [filterShow, toggleFilterShow] = useStateWithToggle(false);
+  const filterRefObject = useFilterRefObject();
+  const updateUrlQuery = usePushRouterWithFiiterValue(filterRefObject);
 
-  // TODO: Change to mobx
-  const [locationValue, setLocationValue] = React.useState<Array<KoreaLocation>>(filterParams.location);
-  const [tuitionValue, setTuitionValue] = React.useState<number | null>(filterParams.tuition);
-  const [topikValue, setTopikValue] = React.useState<Array<number>>(filterParams.topik);
-  const [selfTestValue, setSelfTestValue] = React.useState<boolean | null>(filterParams.has_own_exam);
-  const [scholarshipValue, setScholarshipValue] = React.useState<boolean | null>(filterParams.has_scholarship);
-  const onChangeScholarShipValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    if ((target.value === 'true') === scholarshipValue) {
-      setScholarshipValue(null);
-      return
-    }
-      setScholarshipValue((target.value === 'true'));
-  };
-  const [univValue, setUnivValue] = React.useState<Array<string>>(filterParams.category);
-  const onChangeUnivValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    if (univValue.includes(target.value)) {
-      const targetIndex = univValue.indexOf(target.value);
-      const newUnivValue = Array.from(univValue);
-      newUnivValue.splice(targetIndex, 1);
-      setUnivValue(newUnivValue);
-    } else {
-      setUnivValue((state) => state.concat(target.value));
-    }
-  };
-
-  const [page, setPage] = React.useState<number>(Number(pageInfo.current_page));
-
-  React.useEffect(() => {
-    if (!hasQuery
-      && locationValue.length === 0
-      && tuitionValue === filterInitialValue.tuition
-      && topikValue.length === 0
-      && selfTestValue === filterInitialValue.has_own_exam
-      && scholarshipValue === filterInitialValue.has_scholarship
-      && univValue.length === 0
-      && page === 1) return;
-    const tuition = tuitionValue || '';
-    const hasOwnExam = selfTestValue !== null ? selfTestValue : '';
-    const hasScholarship = scholarshipValue !== null ? scholarshipValue : '';
-    router
-      .push(`/recommend?location=${locationValue}&tuition=${tuition}&topik=${topikValue}&has_own_exam=${hasOwnExam}&has_scholarship=${hasScholarship}&category=${univValue}&page=${page}`)
-      .then(() => window.scrollTo(0, 0));
-  }, [locationValue, tuitionValue, topikValue, selfTestValue, scholarshipValue, univValue, page]);
-
-  // TODO: Error on pagination please use mobx
-  const paginatePrevious = () => {
-    if (pageInfo.current_page === '1') return;
-    setPage((state) => state - 1);
-  };
-
-  const paginateNext = () => {
-    if (pageInfo.current_page === String(pageInfo.max_page)) return;
-    setPage((state) => state + 1);
-  };
-
-  const clickSearchButton = () => {
-    const searchWord = searchInputRef?.current?.value;
-    if(searchWord) {
-
-      router.push(`/recommend?search_word=${searchWord}&page=1`);
-    }
-  }
+  const filterButtonRef = React.useRef<HTMLDivElement>(null);
+  const [isFilterShow, toggleIsFilterShow] = useVisible(filterButtonRef);
+  const { univList } = useUnivListData(filterParams, initialUnivList);
 
   return (
-    <>
+    <DefaultLayout>
       <Header background="dark" position="absolute" />
       <SearchSectionContainer>
-        <SearchSection>
+        <SearchSectionTitle>
           모든 대학을 알려드립니다
-          <SearchBarContainer>
-            <SearchBar>
-              {console.log(searchParams.word ?? "sibal")}
-              <SearchInput ref={searchInputRef} defaultValue={decodeURI(searchParams.word)} />
-              <SearchButton onClick={clickSearchButton}>
-                <SearchIcon src="/images/search.png" />
-              </SearchButton>
-            </SearchBar>
-            <FilterShowButton onChange={toggleFilterShow} />
-            <FilterShowLabel>
-              <FilterShowIcon />
-            </FilterShowLabel>
-          </SearchBarContainer>
-          {/* TODO: Export to another components */}
-          <FilterContainer show={filterShow}>
-            <LocationFilter filterValue={locationValue} setFilterValue={setLocationValue} />
+        </SearchSectionTitle>
+        <SearchSectionContent>
+          <SearchFilterContainer ref={filterButtonRef}>
+            <SearchFilterButton onClick={toggleIsFilterShow}>
+              <FilterIcon />
+            </SearchFilterButton>
+            <FilterModalContainer show={isFilterShow}>
+              <FilterSection>
+                <LocationFilter
+                  ref={filterRefObject.location}
+                  initialLocationValue={filterParams.location}
+                  updateUrlQuery={updateUrlQuery}
+                />
+              </FilterSection>
+              <FilterSection>
+                <TuitionFilter
+                  ref={filterRefObject.tuition}
+                  initialTuitionValue={null}
+                  updateUrlQuery={updateUrlQuery}
+                />
+              </FilterSection>
+              <FilterSection>
+                <ExamFilter ref={filterRefObject.exam} initialTopikValue={[]} initialTestValue={null} />
+              </FilterSection>
+              <FilterSection>
+                <ScholarshipFilter ref={filterRefObject.scholarship} initialScholarshipValue={null} />
+              </FilterSection>
+              <FilterSection>
+                <CategoryFilter ref={filterRefObject.category} initialCategoryValue={[]} />
+              </FilterSection>
+            </FilterModalContainer>
+          </SearchFilterContainer>
 
-            <TuitionFilter filterValue={tuitionValue} setFilterValue={setTuitionValue} />
-
-            <ExamFilter
-              topikValue={topikValue}
-              setTopikValue={setTopikValue}
-              selfTestValue={selfTestValue}
-              setSelfTestValue={setSelfTestValue}
-            />
-
-            <FilterIconContainer>
-              <GrantIcon />
-              <FilterIconDescription>외국인 장학금</FilterIconDescription>
-              <FilterInputContainer>
-                <FilterCheckBoxContainer>
-                  <CheckBox
-                    id="exist"
-                    value="true"
-                    checked={scholarshipValue === true}
-                    onChange={onChangeScholarShipValue}
-                  />
-                  <FilterCheckBoxLabel htmlFor="exist">
-                    <FilterCheckLabelBox>
-                      <CheckIcon />
-                    </FilterCheckLabelBox>
-                    있음
-                  </FilterCheckBoxLabel>
-                </FilterCheckBoxContainer>
-                <FilterCheckBoxContainer>
-                  <CheckBox
-                    id="non-exist"
-                    value="false"
-                    checked={scholarshipValue === false}
-                    onChange={onChangeScholarShipValue}
-                  />
-                  <FilterCheckBoxLabel htmlFor="non-exist">
-                    <FilterCheckLabelBox>
-                      <CheckIcon />
-                    </FilterCheckLabelBox>
-                    없음
-                  </FilterCheckBoxLabel>
-                </FilterCheckBoxContainer>
-              </FilterInputContainer>
-            </FilterIconContainer>
-
-            <FilterIconContainer>
-              <DiversifyIcon />
-              <FilterIconDescription>대학 종류</FilterIconDescription>
-              <FilterInputContainer>
-                <FilterCheckBoxContainer>
-                  <CheckBox
-                    id="four"
-                    value="UN"
-                    checked={univValue.includes('UN')}
-                    onChange={onChangeUnivValue}
-                  />
-                  <FilterCheckBoxLabel htmlFor="four">
-                    <FilterCheckLabelBox>
-                      <CheckIcon />
-                    </FilterCheckLabelBox>
-                    4년제
-                  </FilterCheckBoxLabel>
-                </FilterCheckBoxContainer>
-                <FilterCheckBoxContainer>
-                  <CheckBox
-                    id="two"
-                    value="CG"
-                    checked={univValue.includes('CG')}
-                    onChange={onChangeUnivValue}
-                  />
-                  <FilterCheckBoxLabel htmlFor="two">
-                    <FilterCheckLabelBox>
-                      <CheckIcon />
-                    </FilterCheckLabelBox>
-                    전문대
-                  </FilterCheckBoxLabel>
-                </FilterCheckBoxContainer>
-                <FilterCheckBoxContainer>
-                  <CheckBox
-                    id="institute"
-                    value="IT"
-                    checked={univValue.includes('IT')}
-                    onChange={onChangeUnivValue}
-                  />
-                  <FilterCheckBoxLabel htmlFor="institute">
-                    <FilterCheckLabelBox>
-                      <CheckIcon />
-                    </FilterCheckLabelBox>
-                    어학원
-                  </FilterCheckBoxLabel>
-                </FilterCheckBoxContainer>
-              </FilterInputContainer>
-            </FilterIconContainer>
-          </FilterContainer>
-        </SearchSection>
+          <SearchInputContainer>
+            <SearchInput ref={filterRefObject.searchInput} />
+            <SearchButton>
+              <SearchIcon />
+            </SearchButton>
+          </SearchInputContainer>
+        </SearchSectionContent>
       </SearchSectionContainer>
       <UnivListSection>
         <UnivListTitle>대학 리스트</UnivListTitle>
-        {univList.map((univItem, index) => (
-          <UnivItem key={index} {...univItem} />
-        ))}
+        {univList ? univList.map((univItem) => (
+          <UnivItem key={univItem.id} {...univItem} />
+        )) : null}
       </UnivListSection>
-      <UnivListPagination>
-        <UnivListPrevButton onClick={paginatePrevious} />
-        {pageInfo.current_page}
-        <UnivListNextButton onClick={paginateNext} />
-      </UnivListPagination>
-    </>
+    </DefaultLayout>
   );
 };
 

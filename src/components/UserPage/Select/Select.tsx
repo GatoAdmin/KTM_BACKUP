@@ -21,7 +21,7 @@ const Select: React.VFC<SelectProps> = ({ options, placeholder }) => {
   const getTriggerChangeOption = (optionValue: string | number) => () => {
     setInputValue(optionValue);
     toggleVisible();
-  }
+  };
 
   return (
     <SelectContainer ref={containerRef}>

@@ -1,84 +1,71 @@
 import * as React from 'react';
-import { Dispatch, SetStateAction } from 'react';
-import FilterModal from '@components/RecommendPage/FilterModal/FilterModal';
-import useVisible from '@util/hooks/useVisible';
+import Checkbox from '@components/Shared/Checkbox/Checkbox';
 import {
-  CheckBox,
-  FilterButton,
-  FilterIconDescription,
+  TuitionCheckbox, TuitionCheckboxList, TuitionDescription,
   TuitionFilterContainer,
-  TuitionFilterCheckBoxContainer,
-  TuitionFilterCheckBoxLabel,
-  TuitionFilterCheckLabelBox,
+  TuitionFilterTitle,
+  TuitionIcon,
 } from './TuitionFilter.style';
-import CheckIcon from '../../../assets/check.svg';
-import EducationIcon from '../../../assets/education-cost.svg';
 
-const tuitionFee = [100, 200, 300, 400];
+const tuitionMaxValue = 4;
+const tuitionArray = Array.from({ length: tuitionMaxValue }).map((_, index) => index + 1);
 
-interface TuitionFilterProps {
-  filterValue: number | null;
-  setFilterValue: Dispatch<SetStateAction<number | null>>;
+export interface TuitionFilterRef {
+  value: number | null;
 }
 
-const TuitionFilter: React.VFC<TuitionFilterProps> = ({
-  filterValue,
-  setFilterValue,
-}) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const [visible, toggleVisible] = useVisible(containerRef);
-  const [value, setValue] = React.useState<number | null>(filterValue);
-  const submitFilter = () => {
-    toggleVisible();
-    setFilterValue(value);
+interface TuitionFilterProps {
+  initialTuitionValue: number | null;
+}
+
+const useTuitionFilter = (initialTuitionValue: number | null)
+  : [number | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+  const [filterValue, setFilterValue] = React.useState<number | null>(() => initialTuitionValue);
+  const handleClickTuitionCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target: { value } } = event;
+    if (String(filterValue) === value) {
+      setFilterValue(null);
+    } else {
+      setFilterValue(Number(value));
+    }
   };
-  const closeModal = () => {
-    toggleVisible();
-    setValue(filterValue);
-  };
-  const onChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    if (Number(target.value) === value) { setValue(null); } else { setValue(Number(target.value)); }
-  };
+  return [filterValue, handleClickTuitionCheckbox];
+};
+
+const TuitionFilter: React.ForwardRefRenderFunction<TuitionFilterRef, TuitionFilterProps> = ({
+  initialTuitionValue,
+}, ref) => {
+  const [filterValue, handleClickTuitionCheckbox] = useTuitionFilter(initialTuitionValue);
+
+  React.useImperativeHandle<TuitionFilterRef, TuitionFilterRef>(ref, () => ({
+    value: filterValue,
+  }), [filterValue]);
 
   return (
-    <TuitionFilterContainer ref={containerRef}>
-      <FilterButton onClick={toggleVisible}>
-        <EducationIcon />
-        <FilterIconDescription>등록금</FilterIconDescription>
-      </FilterButton>
-      <FilterModal
-        visible={visible}
-        toggleVisible={toggleVisible}
-        submitFilter={submitFilter}
-        closeModal={closeModal}
-        description="한 학기 기준"
-        width="634px"
-        height="230px"
-      >
-        {tuitionFee.map((tuitionFeeValue, index) => (
-          <TuitionFilterCheckBoxContainer key={tuitionFeeValue}>
-            <CheckBox
-              id={`tuition-${index}`}
-              value={index + 1}
-              checked={index + 1 === value}
-              onChange={onChangeCheckbox}
-            />
-            <TuitionFilterCheckBoxLabel htmlFor={`tuition-${index}`}>
-              {tuitionFeeValue}
-              {' '}
-              ~
-              {tuitionFeeValue + 100}
-              만원
-              <TuitionFilterCheckLabelBox>
-                <CheckIcon />
-              </TuitionFilterCheckLabelBox>
-            </TuitionFilterCheckBoxLabel>
-          </TuitionFilterCheckBoxContainer>
+    <TuitionFilterContainer>
+      <TuitionIcon />
+      <TuitionFilterTitle>등록금</TuitionFilterTitle>
+      <TuitionCheckboxList>
+        <TuitionDescription>(한 학기 기준)</TuitionDescription>
+        {tuitionArray.map((value) => (
+          <TuitionCheckbox key={value}>
+            <Checkbox
+              id={value}
+              value={String(value)}
+              checked={filterValue === value}
+              onChange={handleClickTuitionCheckbox}
+            >
+              {value}
+              백만원 ~
+              {value + 1}
+              백만원
+            </Checkbox>
+          </TuitionCheckbox>
         ))}
-      </FilterModal>
+      </TuitionCheckboxList>
+
     </TuitionFilterContainer>
   );
 };
 
-export default TuitionFilter;
+export default React.forwardRef(TuitionFilter);

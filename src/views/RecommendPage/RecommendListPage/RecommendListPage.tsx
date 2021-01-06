@@ -31,6 +31,7 @@ import ExamFilter, { ExamFilterRef } from '@components/RecommendPage/ExamFilter/
 import ScholarshipFilter, { ScholarShipFilterRef } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter';
 import CategoryFilter, { CategoryFilterRef } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
 import useIntersection from "@util/hooks/useInteraction";
+import axios from "axios";
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -51,10 +52,6 @@ const filterInitialValue = {
   has_scholarship: null,
   category: [],
 };
-
-interface SearchValue {
-  word: string;
-}
 
 const fetchUnivList = (url: string) => axios.get(url)
   .then(
@@ -90,7 +87,7 @@ const fetchUnivList = (url: string) => axios.get(url)
           category: value.category,
           tuition: value.tuition,
           topik: value.topik,
-          thumbnail: value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string,
+          thumbnail: value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string ?? null,
         })),
         maxPage: pages.max_page,
       };
@@ -123,10 +120,7 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
       : filterInitialValue.category,
     word: query.word ? String(query.word) : '',
   };
-  const {
-    univList,
-    maxPage,
-  } = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
+  const responseUnivList = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
     JSON.stringify(
       Object.assign(
         filterParams,
@@ -136,8 +130,8 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
   return {
     props: {
       filterParams,
-      initialUnivList: univList,
-      maxPage,
+      initialUnivList: responseUnivList.univList ?? [],
+      maxPage: responseUnivList.maxPage ?? 0,
     },
   };
 };
@@ -241,7 +235,6 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
   const isTriggerLoadUnivList = useIntersection(univListLoadRef, {threshold: 1});
   React.useEffect(() => {
     if (isTriggerLoadUnivList) {
-      console.log("triggered")
       loadUnivList();
     }
   }, [isTriggerLoadUnivList]);

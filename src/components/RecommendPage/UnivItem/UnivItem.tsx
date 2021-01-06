@@ -52,7 +52,7 @@ const UnivItem: React.VFC<UnivInfo> = ({
         </UnivItemDescription>
         <UnivItemDescription>
           <UnivItemDescriptionIcon><AbilityIcon /></UnivItemDescriptionIcon>
-          TOPIK :
+          TOPIK:
           {topik !== '0' ? `${topik}급` : '상관없음'}
         </UnivItemDescription>
         <UnivItemDescription>

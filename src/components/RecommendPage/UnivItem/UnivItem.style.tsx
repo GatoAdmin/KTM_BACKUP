@@ -37,6 +37,7 @@ export const UnivItemLink = styled.a`
 `;
 
 const ItemImageStyle = css`
+  flex: 0 0 auto;
   width: 210px;
   height: 280px;
   border-radius: 12px 0 0 12px;

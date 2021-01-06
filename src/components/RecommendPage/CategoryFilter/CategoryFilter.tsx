@@ -5,8 +5,9 @@ import {
   CategoryFilterContainer, CategoryFilterTitle, CategoryIcon,
 } from '@components/RecommendPage/CategoryFilter/Category.style';
 import BadgeCheckbox from '@components/RecommendPage/BadgeCheckbox/BadgeCheckbox';
+import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 
-const univCategoryInfo = [
+export const univCategoryInfo = [
   { name: '대학교', value: 'UN' },
   { name: '전문대학교', value: 'CG' },
   { name: '어학원', value: 'IT' },
@@ -20,25 +21,28 @@ export interface CategoryFilterRef {
 
 interface CategoryFilterProps {
   initialCategoryValue: Array<UnivCategory>;
+  updateUrlQuery: UpdateUrlQueryFunction;
 }
 
-const useCategoryFilter = (initialCategoryValue: Array<UnivCategory>)
+const useCategoryFilter = (initialCategoryValue: Array<UnivCategory>, updateUrlQuery: UpdateUrlQueryFunction)
   : [Array<UnivCategory>, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [
     categoryValue,
-    setCategoryValue
+    setCategoryValue,
   ] = React.useState<Array<UnivCategory>>(initialCategoryValue);
   const handleCategoryCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newCategoryValue: Array<UnivCategory>;
     const { target: { value } } = event;
     const currentCategoryValue = value as UnivCategory;
     if (categoryValue.includes(currentCategoryValue)) {
-      const newTopikValue = Array.from(categoryValue);
-      const targetIndex = newTopikValue.indexOf(currentCategoryValue);
-      newTopikValue.splice(targetIndex, 1);
-      setCategoryValue(newTopikValue);
+      newCategoryValue = Array.from(categoryValue);
+      const targetIndex = newCategoryValue.indexOf(currentCategoryValue);
+      newCategoryValue.splice(targetIndex, 1);
     } else {
-      setCategoryValue((state) => state.concat(currentCategoryValue));
+      newCategoryValue = categoryValue.concat(currentCategoryValue);
     }
+    setCategoryValue(newCategoryValue);
+    updateUrlQuery('category', newCategoryValue);
   };
 
   return [categoryValue, handleCategoryCheckbox];
@@ -46,8 +50,9 @@ const useCategoryFilter = (initialCategoryValue: Array<UnivCategory>)
 
 const CategoryFilter: React.ForwardRefRenderFunction<CategoryFilterRef, CategoryFilterProps> = ({
   initialCategoryValue,
+  updateUrlQuery,
 }, ref) => {
-  const [categoryValue, handleCategoryCheckbox] = useCategoryFilter(initialCategoryValue);
+  const [categoryValue, handleCategoryCheckbox] = useCategoryFilter(initialCategoryValue, updateUrlQuery);
 
   React.useImperativeHandle<CategoryFilterRef, CategoryFilterRef>(ref, () => ({
     value: categoryValue,

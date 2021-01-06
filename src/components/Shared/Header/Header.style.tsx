@@ -7,6 +7,7 @@ export const LogoContainer = styled.div`
   align-items: center;
   margin: 0 50px 0 60px;
   font: 700 24px/29px ${logoFont};
+  color: ${fontColor};
 `;
 
 interface HeaderContainerProps {
@@ -19,7 +20,7 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   align-items: center;
   top: 0;
   justify-content: space-between;
-  padding-top: 44px;
+  padding: 44px 0 22px;
   width: 1100px;
   font: normal normal normal 14px/19px ${defaultFont};
   background-color: transparent;
@@ -28,7 +29,6 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
 
   ${(props) => (props.background === 'light'
     ? css`
-
           box-shadow: 0 0 5px #0f0f0f33;
         `
     : null)}
@@ -36,6 +36,7 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   ${(props) => (props.position === 'relative'
     ? css`
           position: relative;
+          padding: 22px 0;
         `
     : css`
           position: absolute;
@@ -47,6 +48,7 @@ export const Navigation = styled.div`
   justify-content: space-around;
   flex: 1 1 0;
   padding: 0 30px;
+  color: ${fontColor};
 `;
 
 export const NavigationContainer = styled.nav`

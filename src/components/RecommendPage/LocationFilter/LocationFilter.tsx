@@ -42,7 +42,7 @@ const useLocation = (initialLocationValue: Array<KoreaLocation>, update: UpdateU
   : [Array<KoreaLocation>, (location: KoreaLocation) => () => void] => {
   const [
     filterValue,
-    setFilterValue
+    setFilterValue,
   ] = React.useState<Array<KoreaLocation>>(() => initialLocationValue);
 
   const handleClickLocationShape = (location: KoreaLocation) => () => {
@@ -66,8 +66,6 @@ const LocationFilter: React.ForwardRefRenderFunction<LocationFilterRef, Location
   updateUrlQuery,
 }, ref) => {
   const [filterValue, handleClickLocationShape] = useLocation(initialLocationValue, updateUrlQuery);
-
-  // React.useEffect(updateUrlQuery, [filterValue]);
 
   React.useImperativeHandle<LocationFilterRef, LocationFilterRef>(ref, () => ({
     value: filterValue,

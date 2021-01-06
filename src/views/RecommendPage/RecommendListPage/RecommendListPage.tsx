@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useSWRInfinite } from 'swr';
@@ -13,7 +14,8 @@ import {
   SearchInputContainer,
   SearchSectionContainer,
   SearchSectionContent,
-  SearchSectionTitle, UnivListLoadTrigger,
+  SearchSectionTitle,
+  UnivListLoadTrigger,
   UnivListSection,
   UnivListTitle,
 } from '@views/RecommendPage/RecommendListPage/RecommendListPage.style';
@@ -29,9 +31,8 @@ import LocationFilter, {
 import TuitionFilter, { TuitionFilterRef } from '@components/RecommendPage/TuitionFilter/TuitionFilter';
 import ExamFilter, { ExamFilterRef } from '@components/RecommendPage/ExamFilter/ExamFilter';
 import ScholarshipFilter, { ScholarShipFilterRef } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter';
-import CategoryFilter, { CategoryFilterRef } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
-import useIntersection from "@util/hooks/useInteraction";
-import axios from "axios";
+import CategoryFilter, { CategoryFilterRef, UnivCategory } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
+import useIntersection from '@util/hooks/useInteraction';
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -164,33 +165,36 @@ const useFilterRefObject = (): FilterRefObject => {
 };
 
 const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivInfo>, maxPage: number) => {
-  const getKey = (index: number) => `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(Object.assign(filterParams, { page: index + 1 }))}`
-  const { data, size, setSize } = useSWRInfinite(
+  const getKey = (index: number) => `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(Object.assign(filterParams, { page: index + 1 }))}`;
+  const {
+    data, size, setSize, mutate,
+  } = useSWRInfinite(
     getKey,
     (url) => fetchUnivList(url),
     {
       initialData: [{
         univList: initialUnivList,
-        maxPage: maxPage
+        maxPage,
       }],
     },
   );
   const loadUnivList = () => {
     setSize(size + 1);
-  }
+  };
 
   return {
-    univList: data ? data.map(value => value.univList).flat(2) : [],
+    univList: data ? data.map((value) => value.univList).flat(2) : [],
     loadUnivList,
-    setSize,
-    size
+    mutate,
   };
 };
 
+// TODO: Update with Types for filter value
 export interface UpdateUrlQueryFunction {
-  (propertyKey: string, newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<'UN' | 'CG' | 'IT'> | boolean | null): void;
+  (propertyKey: string,
+   newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<UnivCategory> | boolean | null)
+    : void;
 }
-
 const usePushRouterWithFiiterValue = ({
   location,
   tuition,
@@ -198,7 +202,8 @@ const usePushRouterWithFiiterValue = ({
   scholarship,
   category,
   searchInput,
-}: FilterRefObject): UpdateUrlQueryFunction => {
+}: FilterRefObject,
+mutate: ReturnType<typeof useSWRInfinite>['mutate']): UpdateUrlQueryFunction => {
   const router = useRouter();
   return (propertyKey, newPropertyValue) => {
     const queryUrlObject = {
@@ -215,7 +220,8 @@ const usePushRouterWithFiiterValue = ({
       .replace({
         pathname: '/recommend',
         query: queryUrlObject,
-      });
+      }, undefined, { shallow: true });
+    mutate();
   };
 };
 
@@ -225,14 +231,14 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
   maxPage,
 }) => {
   const filterRefObject = useFilterRefObject();
-  const updateUrlQuery = usePushRouterWithFiiterValue(filterRefObject);
 
   const filterButtonRef = React.useRef<HTMLDivElement>(null);
   const [isFilterShow, toggleIsFilterShow] = useVisible(filterButtonRef);
-  const { univList, loadUnivList, setSize, size } = useUnivListData(filterParams, initialUnivList, maxPage);
+  const { univList, loadUnivList } = useUnivListData(filterParams, initialUnivList, maxPage);
+  const updateUrlQuery = usePushRouterWithFiiterValue(filterRefObject, mutate);
 
   const univListLoadRef = React.useRef<HTMLDivElement>(null);
-  const isTriggerLoadUnivList = useIntersection(univListLoadRef, {threshold: 1});
+  const isTriggerLoadUnivList = useIntersection(univListLoadRef, { threshold: 1 });
   React.useEffect(() => {
     if (isTriggerLoadUnivList) {
       loadUnivList();
@@ -255,25 +261,38 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
               <FilterSection>
                 <LocationFilter
                   ref={filterRefObject.location}
-                  initialLocationValue={filterParams.location}
                   updateUrlQuery={updateUrlQuery}
+                  initialLocationValue={filterParams.location}
                 />
               </FilterSection>
               <FilterSection>
                 <TuitionFilter
                   ref={filterRefObject.tuition}
-                  initialTuitionValue={filterParams.tuition}
                   updateUrlQuery={updateUrlQuery}
+                  initialTuitionValue={filterParams.tuition}
                 />
               </FilterSection>
               <FilterSection>
-                <ExamFilter ref={filterRefObject.exam} initialTopikValue={[]} initialTestValue={null} />
+                <ExamFilter
+                  ref={filterRefObject.exam}
+                  updateUrlQuery={updateUrlQuery}
+                  initialTopikValue={filterParams.topik}
+                  initialTestValue={filterParams.has_own_exam}
+                />
               </FilterSection>
               <FilterSection>
-                <ScholarshipFilter ref={filterRefObject.scholarship} initialScholarshipValue={null} />
+                <ScholarshipFilter
+                  ref={filterRefObject.scholarship}
+                  updateUrlQuery={updateUrlQuery}
+                  initialScholarshipValue={filterParams.has_scholarship}
+                />
               </FilterSection>
               <FilterSection>
-                <CategoryFilter ref={filterRefObject.category} initialCategoryValue={[]} />
+                <CategoryFilter
+                  ref={filterRefObject.category}
+                  updateUrlQuery={updateUrlQuery}
+                  initialCategoryValue={filterParams.category}
+                />
               </FilterSection>
             </FilterModalContainer>
           </SearchFilterContainer>

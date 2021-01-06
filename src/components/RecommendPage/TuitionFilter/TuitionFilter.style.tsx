@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import {
-  fontColor, greyColor
-} from '@util/style/color';
+import { fontColor, greyColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import Tuition from '@assets/svg/tuition_icon.svg';
 

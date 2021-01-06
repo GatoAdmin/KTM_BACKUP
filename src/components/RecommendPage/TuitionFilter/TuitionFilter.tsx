@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Checkbox from '@components/Shared/Checkbox/Checkbox';
+import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import {
   TuitionCheckbox, TuitionCheckboxList, TuitionDescription,
   TuitionFilterContainer,
@@ -16,26 +17,31 @@ export interface TuitionFilterRef {
 
 interface TuitionFilterProps {
   initialTuitionValue: number | null;
+  updateUrlQuery: UpdateUrlQueryFunction;
 }
 
-const useTuitionFilter = (initialTuitionValue: number | null)
+const useTuitionFilter = (initialTuitionValue: number | null, updateUrlQuery: UpdateUrlQueryFunction)
   : [number | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [filterValue, setFilterValue] = React.useState<number | null>(() => initialTuitionValue);
   const handleClickTuitionCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newFilterValue: number | null;
     const { target: { value } } = event;
     if (String(filterValue) === value) {
-      setFilterValue(null);
+      newFilterValue = null;
     } else {
-      setFilterValue(Number(value));
+      newFilterValue = Number(value);
     }
+    setFilterValue(newFilterValue);
+    updateUrlQuery('tuition', newFilterValue);
   };
   return [filterValue, handleClickTuitionCheckbox];
 };
 
 const TuitionFilter: React.ForwardRefRenderFunction<TuitionFilterRef, TuitionFilterProps> = ({
   initialTuitionValue,
+  updateUrlQuery,
 }, ref) => {
-  const [filterValue, handleClickTuitionCheckbox] = useTuitionFilter(initialTuitionValue);
+  const [filterValue, handleClickTuitionCheckbox] = useTuitionFilter(initialTuitionValue, updateUrlQuery);
 
   React.useImperativeHandle<TuitionFilterRef, TuitionFilterRef>(ref, () => ({
     value: filterValue,

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Checkbox from '@components/Shared/Checkbox/Checkbox';
+import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import {
   ExamFilterContainer,
   ExamFilterIcon,
@@ -17,6 +18,7 @@ export interface ExamFilterRef {
 interface ExamFilterProps {
   initialTopikValue: Array<number>;
   initialTestValue: boolean | null;
+  updateUrlQuery: UpdateUrlQueryFunction;
 }
 
 const topik: Array<{name: string; value: number}> = [
@@ -28,35 +30,40 @@ const topik: Array<{name: string; value: number}> = [
   { name: '6급', value: 6 },
 ];
 
-const useTopikFilter = (initialTopikValue: Array<number>)
+const useTopikFilter = (initialTopikValue: Array<number>, updateUrlQuery: UpdateUrlQueryFunction)
   : [Array<number>, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [topikValue, setTopikValue] = React.useState<Array<number>>(initialTopikValue);
   const handleClickTopikCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newTopikValue: Array<number>;
     const { target: { value } } = event;
     const currentTopikValue = Number(value);
     if (topikValue.includes(currentTopikValue)) {
-      const newTopikValue = Array.from(topikValue);
+      newTopikValue = Array.from(topikValue);
       const targetIndex = newTopikValue.indexOf(currentTopikValue);
       newTopikValue.splice(targetIndex, 1);
-      setTopikValue(newTopikValue);
     } else {
-      setTopikValue((state) => state.concat(currentTopikValue));
+      newTopikValue = topikValue.concat(currentTopikValue);
     }
+    setTopikValue(newTopikValue);
+    updateUrlQuery('topik', newTopikValue);
   };
 
   return [topikValue, handleClickTopikCheckbox];
 };
 
-const useTestFilter = (initialTestValue: boolean | null)
+const useTestFilter = (initialTestValue: boolean | null, updateUrlQuery: UpdateUrlQueryFunction)
   : [boolean | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [testValue, setTestValue] = React.useState<boolean | null>(initialTestValue);
   const handleClickTestCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newTestValue: boolean | null;
     const { target: { value } } = event;
     if (String(testValue) === value) {
-      setTestValue(null);
+      newTestValue = null;
     } else {
-      setTestValue(value === 'true');
+      newTestValue = value === 'true';
     }
+    setTestValue(newTestValue);
+    updateUrlQuery('test', newTestValue);
   };
 
   return [testValue, handleClickTestCheckbox];
@@ -65,9 +72,10 @@ const useTestFilter = (initialTestValue: boolean | null)
 const ExamFilter = React.forwardRef<ExamFilterRef, ExamFilterProps>(({
   initialTopikValue,
   initialTestValue,
+  updateUrlQuery,
 }, ref) => {
-  const [topikValue, handleClickTopikCheckbox] = useTopikFilter(initialTopikValue);
-  const [testValue, handleClickTestCheckbox] = useTestFilter(initialTestValue);
+  const [topikValue, handleClickTopikCheckbox] = useTopikFilter(initialTopikValue, updateUrlQuery);
+  const [testValue, handleClickTestCheckbox] = useTestFilter(initialTestValue, updateUrlQuery);
 
   React.useImperativeHandle<ExamFilterRef, ExamFilterRef>(ref, () => ({
     topikValue,

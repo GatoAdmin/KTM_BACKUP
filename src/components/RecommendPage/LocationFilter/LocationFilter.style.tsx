@@ -1,4 +1,4 @@
-import styled  from 'styled-components';
+import styled from 'styled-components';
 import { fontColor, mainColor, whiteColor } from '@util/style/color';
 import Location from '@assets/svg/location_icon.svg';
 import { defaultFont } from '@util/style/font';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useSWRInfinite } from 'swr';
+import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import {
   FilterModalContainer,
@@ -31,7 +31,10 @@ import LocationFilter, {
 import TuitionFilter, { TuitionFilterRef } from '@components/RecommendPage/TuitionFilter/TuitionFilter';
 import ExamFilter, { ExamFilterRef } from '@components/RecommendPage/ExamFilter/ExamFilter';
 import ScholarshipFilter, { ScholarShipFilterRef } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter';
-import CategoryFilter, { CategoryFilterRef, UnivCategory } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
+import CategoryFilter, {
+  CategoryFilterRef,
+  UnivCategory
+} from '@components/RecommendPage/CategoryFilter/CategoryFilter';
 import useIntersection from '@util/hooks/useInteraction';
 
 interface FilterValue {
@@ -40,7 +43,7 @@ interface FilterValue {
   topik: Array<number>;
   has_own_exam: boolean | null;
   has_scholarship: boolean | null;
-  category: Array<'UN' | 'CG' | 'IT'>;
+  category: Array<UnivCategory>;
   word: string;
   // sort_by: string;
 }
@@ -66,7 +69,7 @@ const fetchUnivList = (url: string) => axios.get(url)
             tuition: number;
             kor_name: string;
             eng_name: string;
-            category: string;
+            category: UnivCategory;
             kor_short_address: string;
             photos: {
               photo_category: string;
@@ -117,7 +120,7 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
     has_own_exam: changeQueryToBoolParamsValue(query.has_own_exam),
     has_scholarship: changeQueryToBoolParamsValue(query.has_scholarship),
     category: query.category
-      ? String(query.category).split(',') as Array<'UN' | 'CG' | 'IT'>
+      ? String(query.category).split(',') as Array<UnivCategory>
       : filterInitialValue.category,
     word: query.word ? String(query.word) : '',
   };
@@ -195,6 +198,12 @@ export interface UpdateUrlQueryFunction {
    newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<UnivCategory> | boolean | null)
     : void;
 }
+
+interface SWRData {
+  univList: Array<UnivInfo>;
+  maxPage: number;
+}
+
 const usePushRouterWithFiiterValue = ({
   location,
   tuition,
@@ -203,7 +212,8 @@ const usePushRouterWithFiiterValue = ({
   category,
   searchInput,
 }: FilterRefObject,
-mutate: ReturnType<typeof useSWRInfinite>['mutate']): UpdateUrlQueryFunction => {
+  mutate: responseInterface<Array<SWRData>, any>["mutate"]
+): UpdateUrlQueryFunction => {
   const router = useRouter();
   return (propertyKey, newPropertyValue) => {
     const queryUrlObject = {
@@ -234,7 +244,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
 
   const filterButtonRef = React.useRef<HTMLDivElement>(null);
   const [isFilterShow, toggleIsFilterShow] = useVisible(filterButtonRef);
-  const { univList, loadUnivList } = useUnivListData(filterParams, initialUnivList, maxPage);
+  const { univList, loadUnivList, mutate } = useUnivListData(filterParams, initialUnivList, maxPage);
   const updateUrlQuery = usePushRouterWithFiiterValue(filterRefObject, mutate);
 
   const univListLoadRef = React.useRef<HTMLDivElement>(null);

@@ -13,7 +13,7 @@ import {
   SearchInputContainer,
   SearchSectionContainer,
   SearchSectionContent,
-  SearchSectionTitle,
+  SearchSectionTitle, UnivListLoadTrigger,
   UnivListSection,
   UnivListTitle,
 } from '@views/RecommendPage/RecommendListPage/RecommendListPage.style';
@@ -30,7 +30,7 @@ import TuitionFilter, { TuitionFilterRef } from '@components/RecommendPage/Tuiti
 import ExamFilter, { ExamFilterRef } from '@components/RecommendPage/ExamFilter/ExamFilter';
 import ScholarshipFilter, { ScholarShipFilterRef } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter';
 import CategoryFilter, { CategoryFilterRef } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
-import axios from 'axios';
+import useIntersection from "@util/hooks/useInteraction";
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -169,17 +169,27 @@ const useFilterRefObject = (): FilterRefObject => {
   };
 };
 
-const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivInfo>) => {
+const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivInfo>, maxPage: number) => {
+  const getKey = (index: number) => `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(Object.assign(filterParams, { page: index + 1 }))}`
   const { data, size, setSize } = useSWRInfinite(
-    (index) => `${process.env.API_PATH}api/${JSON.stringify(Object.assign(filterParams, { page: index }))}`,
-    (url) => fetchUnivList(url).then((info) => info.univList),
+    getKey,
+    (url) => fetchUnivList(url),
     {
-      initialData: initialUnivList,
+      initialData: [{
+        univList: initialUnivList,
+        maxPage: maxPage
+      }],
     },
   );
+  const loadUnivList = () => {
+    setSize(size + 1);
+  }
 
   return {
-    univList: data ? data.flat(2) : [],
+    univList: data ? data.map(value => value.univList).flat(2) : [],
+    loadUnivList,
+    setSize,
+    size
   };
 };
 
@@ -225,7 +235,16 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
 
   const filterButtonRef = React.useRef<HTMLDivElement>(null);
   const [isFilterShow, toggleIsFilterShow] = useVisible(filterButtonRef);
-  const { univList } = useUnivListData(filterParams, initialUnivList);
+  const { univList, loadUnivList, setSize, size } = useUnivListData(filterParams, initialUnivList, maxPage);
+
+  const univListLoadRef = React.useRef<HTMLDivElement>(null);
+  const isTriggerLoadUnivList = useIntersection(univListLoadRef, {threshold: 1});
+  React.useEffect(() => {
+    if (isTriggerLoadUnivList) {
+      console.log("triggered")
+      loadUnivList();
+    }
+  }, [isTriggerLoadUnivList]);
 
   return (
     <DefaultLayout>
@@ -250,7 +269,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
               <FilterSection>
                 <TuitionFilter
                   ref={filterRefObject.tuition}
-                  initialTuitionValue={null}
+                  initialTuitionValue={filterParams.tuition}
                   updateUrlQuery={updateUrlQuery}
                 />
               </FilterSection>
@@ -279,6 +298,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
         {univList ? univList.map((univItem) => (
           <UnivItem key={univItem.id} {...univItem} />
         )) : null}
+        <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
     </DefaultLayout>
   );

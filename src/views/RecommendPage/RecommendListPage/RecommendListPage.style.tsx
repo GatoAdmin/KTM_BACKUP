@@ -3,6 +3,7 @@ import { fontColor, mainBackgroundColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 export const UnivListSection = styled.section`
+  position: relative;
   width: 1000px;
   margin: 0 auto;
   padding: 42px 0 100px;
@@ -13,6 +14,11 @@ export const UnivListTitle = styled.h3`
   margin: 0 0 46px;
   font: normal normal bold 30px/35px NEXON Lv1 Gothic;
   color: ${fontColor};
+`;
+
+export const UnivListLoadTrigger = styled.div`
+  position: absolute;
+  bottom: 490px;
 `;
 
 export const SearchSectionContainer = styled.div`

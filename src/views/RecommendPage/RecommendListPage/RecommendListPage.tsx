@@ -212,7 +212,7 @@ const usePushRouterWithFiiterValue = ({
   category,
   searchInput,
 }: FilterRefObject,
-  mutate: responseInterface<Array<SWRData>, any>["mutate"]
+  mutate: responseInterface<Array<SWRData>, unknown>["mutate"]
 ): UpdateUrlQueryFunction => {
   const router = useRouter();
   return (propertyKey, newPropertyValue) => {

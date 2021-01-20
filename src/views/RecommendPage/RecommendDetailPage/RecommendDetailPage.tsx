@@ -1,218 +1,355 @@
 import * as React from 'react';
-import { NextPage } from 'next';
+import {GetServerSideProps, NextPage} from 'next';
+import axios from "axios";
 import { useRouter } from 'next/router';
 
+import UnivTuitionTable, {SubjectType} from "@components/RecommendPage/UnivTutionTable/UnivScholarshipTable";
 import Header from '@components/Shared/Header/Header';
 import Calendar from '@components/RecommendPage/Calendar/Calendar';
+import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
+import ImageCarousel from "@components/RecommendPage/ImageCarousel/ImageCarousel";
 import {
-  CertificateIcon,
   ContentSectionTitle,
-  ContentTypeRadio,
-  ContentTypeRadioLabel,
   DetailContent,
   DetailContentContainer,
-  ExamIcon,
-  FamilyIcon,
   HomePageLink,
-  ImageSection,
-  LargeImage,
   LogoImage,
   Main,
   PrepareSection,
-  PrepareStep,
-  PrepareStepContainer,
   PrepareStepItem,
   PrepareStepItemContainer,
-  PrepareStepTitle,
-  PriceSection,
-  PriceTable,
-  PriceTableCol,
-  PriceTableHeadCol,
-  PriceTableRow,
   SectionContainer,
   SideNav,
-  SideNavButton,
+  SideNavDescription,
+  SideNavImageLink,
   SideNavItem,
-  SideNavItemContainer,
   SideNavLink,
-  SideNavTitle,
-  SmallImage,
-  TableTitle,
   Title,
-  TitleSection,
+  InfoSection,
+  InfoTextContainer,
+  TitleRow,
+  UnivTypeLink,
+  InfoCardContainer,
+  UnivAddressRow,
+  UnivLinkRow,
+  LikeButton,
+  InfoCard,
+  InfoCardDescription,
+  InfoCardImageContainer,
+  InfoCardImage,
+  QualificationTitle,
+  QualificationImage,
+  QualificationDescription,
+  DocumentIconContainer,
+  DocumentIcon,
+  DocumentTypeIconContainer,
+  DocumentDescription,
+  DocumentEssentialDesc,
+  DocumentEssential,
+  CalendarSection, SideNavImage,
 } from '@views/RecommendPage/RecommendDetailPage/RecommendDetailPage.style';
-import HomePageLogo from '../../../assets/house.svg';
+import UnivScholarshipTable, {ScholarshipType} from "@components/RecommendPage/UnivScholarshipTable/UnivTuitionTable";
+import FamilyIcon from "@assets/svg/family_icon.svg";
+import EducationIcon from "@assets/svg/language_education_icon.svg";
+import CertificateIcon from "@assets/svg/education_qualification_icon.svg";
+import WritePictogram from "@assets/svg/write_pictogram.svg";
+import SearchPictogram from "@assets/svg/search_pictogram.svg";
+import StudyPictogram from "@assets/svg/study_pictogram.svg";
+import FamilyPictogram from "@assets/svg/family_pictogram.svg";
+import BalancePictogram from "@assets/svg/balance_pictogram.svg";
 
-const TempContentType = ['4년제 대학교', '어학연수'];
-const TempTableContent: Array<{ target: string; content: string }> = [
-  { target: '단과대학별 면접 성적 최상위자', content: '첫 학기 수업료 100%' },
-  { target: '서류제출 마감일까지 TOPIK6급 서류 제출자', content: '첫 학기 수업료 100%' },
-  { target: '서류제출 마감일까지 TOPIK5급 서류 제출자', content: '첫 학기 수업료 50%' },
-  { target: '국제교육원 또는 언어교육원 수료자 중 추천기준에 따라 원장이 추천한 자', content: '첫 학기 수업료 100%' },
-];
+const qualificationIcons = [
+  {type: "국적요건", icon: FamilyIcon},
+  {type: "어학요건", icon: EducationIcon},
+  {type: "학력요건", icon: CertificateIcon},
+] as const;
 
-const ConditionIconList: { [iconName: string]: typeof FamilyIcon } = {
-  family: FamilyIcon,
-  certificate: CertificateIcon,
-  exam: ExamIcon,
-};
+const documentPictogram = {
+  write: WritePictogram,
+  check: SearchPictogram,
+  study: StudyPictogram,
+  family: FamilyPictogram,
+  balance: BalancePictogram,
+} as const;
 
-const TempCondition: Array<{ icon: string; content: string }> = [
-  { icon: 'family', content: '본인과 부모가 외국인' },
-  { icon: 'certificate', content: 'TOPIK 5급이상' },
-  { icon: 'exam', content: '교내 한국어 시험 3급이상' },
-];
+type ConditionType = typeof qualificationIcons[number]["type"];
+type Pictogram = keyof typeof documentPictogram;
 
-const RecommendDetailPage: NextPage = () => {
-  const [contentType, setContentType] = React.useState<string>(TempContentType[1]);
-  const router = useRouter();
-  const { id } = router.query;
+const getQualificationIndex = (type: ConditionType): number => {
+  if (type === "국적요건") return 0;
+  if (type === "어학요건") return 1;
+  if (type === "학력요건") return 2;
+  return 0;
+}
+
+const formatKRW = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
+
+const fetchUnivDetailInfo = (univCode: string, lang ?: string) =>
+  axios.get(`${process.env.API_PATH}api/?action=detail_univ&params=${JSON.stringify({univ_code: univCode, lang})}`)
+    .then((res) => {
+      const {
+        univbadge,
+        university,
+        tuition,
+        scholarship,
+        supportcondition,
+        supportdocument,
+        additionalinfo,
+        calendar,
+        photo
+      }: {
+        univbadge: Array<{
+          pictogram: string;
+          name: string;
+        }>,
+        university: Array<{
+          kor_name: string;
+          eng_name: string;
+          category: string;
+          kor_full_address: string;
+          homepage_link: string;
+        }>,
+        tuition: Array<{
+          subjecttitle: SubjectType;
+          subjectname: string;
+          tuition: number;
+        }>,
+        scholarship: Array<{
+          scholarshiptype: ScholarshipType;
+          target: string;
+          statement: string;
+        }>,
+        supportcondition: Array<{
+          qualification: ConditionType;
+          qualificationname: string;
+        }>,
+        supportdocument: Array<{
+          document: string;
+          documenttype: string;
+          pictogram: Pictogram;
+          additionalinfo: string | null;
+        }>,
+        additionalinfo: Array<{
+
+        }>,
+        calendar: Array<{
+          calendartype: string;
+          calendarname: string;
+          starttime: string;
+          endtime?: string;
+        }>,
+        photo: Array<{
+          photo_category: string;
+          file: string;
+        }>
+      } = res.data;
+
+      const mainPhoto = photo.find(photo => photo.photo_category === 'main_photo');
+      const normalPhotos = photo.filter(photo => photo.photo_category === 'normal_photo');
+      const logoPhoto = photo.find(photo => photo.photo_category === 'logo');
+
+      return {
+        images: [
+          mainPhoto ? mainPhoto.file : "",
+          ...normalPhotos.map(value => value.file)],
+        logo: logoPhoto?.file,
+        university: {
+          name: university[0].kor_name,
+          nameEng: university[0].eng_name,
+          category: university[0].category,
+          address: university[0].kor_full_address,
+          homepage: university[0].homepage_link
+        },
+        tuition: tuition.map(tuitionInfo => ({
+          name: tuitionInfo.subjectname,
+          type: tuitionInfo.subjecttitle,
+          tuition: formatKRW.format(tuitionInfo.tuition)
+        })),
+        condition: supportcondition,
+        document: supportdocument.map(documentInfo => ({
+          name: documentInfo.document,
+          type: documentInfo.documenttype,
+          pictogram: documentInfo.pictogram,
+          info: documentInfo.additionalinfo,
+        })),
+        scholarship: scholarship,
+        badge: univbadge,
+        calendar: calendar.map(dateInfo => ({
+          type: dateInfo.calendartype,
+          name: dateInfo.calendarname,
+          start: dateInfo.starttime,
+          end: dateInfo?.endtime,
+        })).sort((a, b) => ((new Date(a.start)).getTime() - (new Date(b.start)).getTime()))
+      }
+    })
+
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
+
+interface RecommendDetailPageProps extends ThenArg<ReturnType<typeof fetchUnivDetailInfo>> {
+}
+
+export const getServerSideProps: GetServerSideProps<RecommendDetailPageProps, {id: string;}> = async ({params}) => {
+  const univInfo = await fetchUnivDetailInfo(params ? params.id : "");
+  return {
+    props: {
+      ...univInfo
+    }
+  }
+}
+
+const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
+  university,
+  badge,
+  images,
+  tuition,
+  scholarship,
+  condition,
+  document,
+  logo,
+  calendar,
+}) => {
 
   return (
-    <>
+    <DefaultLayout>
       <Header background="light" position="relative" />
       <Main>
         <SectionContainer>
-          <ImageSection>
-            <SmallImage src="/images/aboard.jpg" />
-            <SmallImage src="/images/aboard.jpg" />
-            <LargeImage src="/images/aboard.jpg" />
-            <SmallImage src="/images/aboard.jpg" />
-            <SmallImage src="/images/aboard.jpg" />
-          </ImageSection>
+          <ImageCarousel image={images} />
+            <InfoSection>
+              <LogoImage src={logo} />
+              <InfoTextContainer>
+                <TitleRow>
+                  <Title>{university.name}</Title>
+                  <UnivTypeLink active>{'전문대학교'}</UnivTypeLink>
+                  <UnivTypeLink active={false}>어학원</UnivTypeLink>
+                </TitleRow>
+                <UnivAddressRow>
+                  {university.nameEng}
+                  <br/>
+                  {university.address}
+                </UnivAddressRow>
+                <UnivLinkRow>
+                  <HomePageLink>
+                    홈페이지 바로가기
+                  </HomePageLink>
+                  <LikeButton aria-pressed={false} pressed={false}>
+                    Like
+                  </LikeButton>
+                </UnivLinkRow>
+
+              </InfoTextContainer>
+              <InfoCardContainer>
+                {badge.map(value => {
+                  return (
+                    <InfoCard key={value.name}>
+                      <InfoCardImageContainer>
+                        <InfoCardImage src={value.pictogram} />
+                      </InfoCardImageContainer>
+                      <InfoCardDescription>
+                        {value.name}
+                      </InfoCardDescription>
+                    </InfoCard>
+                  )
+                })}
+              </InfoCardContainer>
+            </InfoSection>
           <DetailContentContainer>
             <DetailContent>
-              <TitleSection>
-                <LogoImage src="/images/aboard_logo.svg" />
-                <Title>{`${id}한국기술교육대학교`}</Title>
-                <HomePageLink>
-                  <HomePageLogo />
-                </HomePageLink>
-                {TempContentType.map((value, index) => (
-                  <React.Fragment key={value}>
-                    <ContentTypeRadio
-                      id={`content-type-${index}`}
-                      name="content-type"
-                      checked={contentType === value}
-                      onChange={() => setContentType(value)}
-                    />
-                    <ContentTypeRadioLabel htmlFor={`content-type-${index}`}>{value}</ContentTypeRadioLabel>
-                  </React.Fragment>
-                ))}
-              </TitleSection>
-              <PriceSection>
-                <ContentSectionTitle>등록금</ContentSectionTitle>
-                <TableTitle>수원캠퍼스</TableTitle>
-                <PriceTable>
-                  <thead>
-                    <tr>
-                      <PriceTableHeadCol>수혜대상</PriceTableHeadCol>
-                      <PriceTableHeadCol>장학내용</PriceTableHeadCol>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TempTableContent.map((value) => (
-                      <PriceTableRow key={value.target}>
-                        <PriceTableCol>{value.target}</PriceTableCol>
-                        <PriceTableCol>{value.content}</PriceTableCol>
-                      </PriceTableRow>
-                    ))}
-                  </tbody>
-                </PriceTable>
-              </PriceSection>
-              <PriceSection>
-                <ContentSectionTitle>외국인 장학</ContentSectionTitle>
-                <TableTitle>입학 장학</TableTitle>
-                <PriceTable>
-                  <thead>
-                    <tr>
-                      <PriceTableHeadCol>수혜대상</PriceTableHeadCol>
-                      <PriceTableHeadCol>장학내용</PriceTableHeadCol>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TempTableContent.map((value) => (
-                      <PriceTableRow key={value.target}>
-                        <PriceTableCol>{value.target}</PriceTableCol>
-                        <PriceTableCol>{value.content}</PriceTableCol>
-                      </PriceTableRow>
-                    ))}
-                  </tbody>
-                </PriceTable>
-                <TableTitle>재학 장학</TableTitle>
-                <PriceTable>
-                  <thead>
-                    <tr>
-                      <PriceTableHeadCol>수혜대상</PriceTableHeadCol>
-                      <PriceTableHeadCol>장학내용</PriceTableHeadCol>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TempTableContent.map((value) => (
-                      <PriceTableRow key={value.target}>
-                        <PriceTableCol>{value.target}</PriceTableCol>
-                        <PriceTableCol>{value.content}</PriceTableCol>
-                      </PriceTableRow>
-                    ))}
-                  </tbody>
-                </PriceTable>
-              </PriceSection>
+              <UnivTuitionTable
+                tableData={tuition}
+                additionalInfo={"."}/>
+              <UnivScholarshipTable
+                tableData={scholarship}
+                additionalInfo={"."}/>
+              <PrepareSection>
+                <ContentSectionTitle>입학지원 자격요건</ContentSectionTitle>
+                <PrepareStepItemContainer>
+                  {condition.map((value) => {
+                    const QualificationIcon = qualificationIcons[getQualificationIndex(value.qualification)].icon;
+                    return (
+                      <PrepareStepItem
+                        key={value.qualification}
+                        size="lg">
+                        <QualificationTitle>
+                          {value.qualification}
+                        </QualificationTitle>
+                        <QualificationImage>
+                          <QualificationIcon />
+                        </QualificationImage>
+                        <QualificationDescription>
+                          {value.qualificationname}
+                        </QualificationDescription>
+                      </PrepareStepItem>
+                    );
+                  })}
+                </PrepareStepItemContainer>
+              </PrepareSection>
               <PrepareSection>
                 <ContentSectionTitle>지원준비</ContentSectionTitle>
-                <PrepareStepContainer>
-                  <PrepareStep>
-                    <PrepareStepTitle>1. 자격조건</PrepareStepTitle>
-                    <PrepareStepItemContainer>
-                      {TempCondition.map((value) => {
-                        const ConditionIcon = ConditionIconList[value.icon];
-                        return (
-                          <PrepareStepItem key={value.content}>
-                            <ConditionIcon />
-                            {value.content}
-                          </PrepareStepItem>
-                        );
-                      })}
-                    </PrepareStepItemContainer>
-                  </PrepareStep>
-                  <PrepareStep>
-                    <PrepareStepTitle>2. 제출서류</PrepareStepTitle>
-                    <PrepareStepItemContainer>
-                      {TempCondition.map((value) => {
-                        const ConditionIcon = ConditionIconList[value.icon];
-                        return (
-                          <PrepareStepItem key={value.content}>
-                            <ConditionIcon />
-                            {value.content}
-                          </PrepareStepItem>
-                        );
-                      })}
-                    </PrepareStepItemContainer>
-                  </PrepareStep>
-                </PrepareStepContainer>
+                <PrepareStepItemContainer>
+                  {document.map((value, index) => {
+                    const Pictogram = documentPictogram[value.pictogram];
+                    return (
+                      <PrepareStepItem
+                        size="sm"
+                        key={value.name}>
+                        <DocumentIconContainer>
+                          <DocumentIcon />
+                          <DocumentTypeIconContainer>
+                            <Pictogram />
+                          </DocumentTypeIconContainer>
+                        </DocumentIconContainer>
+                        <DocumentDescription>
+                          {value.info ? (
+                            <DocumentEssential>
+                              <DocumentEssentialDesc>
+                                {document.info}
+                              </DocumentEssentialDesc>
+                            </DocumentEssential>
+                          ) : null}
+                          {value.name}
+                        </DocumentDescription>
+                      </PrepareStepItem>
+                    );
+                  })}
+                </PrepareStepItemContainer>
               </PrepareSection>
-              <Calendar startDate="2020-10-15" endDate="2020-10-27" />
+              <CalendarSection>
+                <Calendar data={calendar} />
+              </CalendarSection>
             </DetailContent>
-            <SideNav>
-              <SideNavTitle>입학 도우미</SideNavTitle>
-              <SideNavItemContainer>
-                <SideNavItem>
-                  대학이 마음에 드시나요?
-                  <SideNavButton>선호대학 추가</SideNavButton>
-                </SideNavItem>
-                <SideNavItem>
-                  카툼에 입학신청을 준비하세요.
-                  <SideNavLink>원클릭 입학솔루션</SideNavLink>
-                </SideNavItem>
-                <SideNavItem>
-                  입학을 위한 상담이 필요한가요?
-                  <SideNavLink>입학상담 신청하기</SideNavLink>
-                </SideNavItem>
-              </SideNavItemContainer>
-            </SideNav>
           </DetailContentContainer>
+          <SideNav>
+            <SideNavItem background="main">
+              <SideNavDescription>
+                해당 대학의
+                <br/>
+                입학을
+                <br/>
+                준비하세요!
+                <br/>
+              </SideNavDescription>
+              <SideNavLink>
+                입학솔루션
+                <br/>
+                바로가기
+              </SideNavLink>
+            </SideNavItem>
+            <SideNavItem background="light">
+              <SideNavDescription>
+                입학 상담이
+                <br/>
+                필요하신가요?
+                <br/>
+              </SideNavDescription>
+              <SideNavImageLink>
+                <SideNavImage src="/images/consult_button_icon.png" />
+              </SideNavImageLink>
+            </SideNavItem>
+          </SideNav>
         </SectionContainer>
       </Main>
-    </>
+    </DefaultLayout>
   );
 };
 

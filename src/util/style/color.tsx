@@ -1,5 +1,7 @@
 export const mainColor = '#DF4D3E';
 
+export const mainColor600 = '#FF7263';
+
 // TODO: Change to Black###Color
 
 export const fontColor = '#232323';

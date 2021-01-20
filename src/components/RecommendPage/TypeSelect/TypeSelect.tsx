@@ -1,8 +1,8 @@
-import * as React from "react";
+,import React from 'react';
 import {
   TypeSelectContainer, TypeSelectLabel,
-  TypeSelectOption
-} from "@components/RecommendPage/TypeSelect/TypeSelect.style";
+  TypeSelectOption,
+} from '@components/RecommendPage/TypeSelect/TypeSelect.style';
 
 interface IProps {
   name: string;
@@ -17,25 +17,24 @@ const TypeSelect: React.FC<IProps> = ({
   types,
   value,
   typeFooter,
-  onChange
-}) => {
-  return (
-    <TypeSelectContainer>
-      {types.map(type => (
-        <React.Fragment key={type}>
-          <TypeSelectOption
-            name={name}
-            id={`${name}-${type}`}
-            value={type}
-            checked={value === type}
-            onChange={onChange} />
-          <TypeSelectLabel htmlFor={`${name}-${type}`}>
-            {`${type} ${typeFooter}`}
-          </TypeSelectLabel>
-        </React.Fragment>
-      ))}
-    </TypeSelectContainer>
-  )
-}
+  onChange,
+}) => (
+  <TypeSelectContainer>
+    {types.map((type) => (
+      <React.Fragment key={type}>
+        <TypeSelectOption
+          name={name}
+          id={`${name}-${type}`}
+          value={type}
+          checked={value === type}
+          onChange={onChange}
+        />
+        <TypeSelectLabel htmlFor={`${name}-${type}`}>
+          {`${type} ${typeFooter}`}
+        </TypeSelectLabel>
+      </React.Fragment>
+    ))}
+  </TypeSelectContainer>
+);
 
-export default TypeSelect
+export default TypeSelect;

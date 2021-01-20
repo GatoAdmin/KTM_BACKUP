@@ -6,10 +6,10 @@ import {
   mainBackgroundColor,
   mainColor,
   mainColor600,
-  whiteColor
+  whiteColor,
 } from '@util/style/color';
-import { defaultFont } from "@util/style/font";
-import DocumentSVG from "@assets/svg/document_icon.svg";
+import { defaultFont } from '@util/style/font';
+import DocumentSVG from '@assets/svg/document_icon.svg';
 
 export const Main = styled.main`
   width: 100%;
@@ -58,7 +58,6 @@ export const Title = styled.h1`
   font: normal bold 22px/30px ${defaultFont};
 `;
 
-
 interface IUnivTypeLink {
   active: boolean;
 }
@@ -66,7 +65,7 @@ interface IUnivTypeLink {
 export const UnivTypeLink = styled.a<IUnivTypeLink>`
   margin-right: 8px;
   font: normal normal 12px/16px ${defaultFont};
-  color: ${props => props.active ? mainColor : lightGreyColor};
+  color: ${(props) => (props.active ? mainColor : lightGreyColor)};
   text-decoration: none;
   cursor: pointer;
 `;
@@ -81,7 +80,6 @@ export const UnivLinkRow = styled.div`
   display: flex;
   margin-bottom: 40px;
 `;
-
 
 export const HomePageLink = styled.a.attrs({
   target: '_blank',
@@ -109,9 +107,9 @@ export const LikeButton = styled.button<ILikeButton>`
   padding: 0;
   border: 1px solid ${mainColor};
   border-radius: 16px;
-  background: ${props => props.pressed ? mainColor : whiteColor};
+  background: ${(props) => (props.pressed ? mainColor : whiteColor)};
   font: normal bold 12px/16px ${defaultFont};
-  color: ${props => props.pressed ? whiteColor : mainColor};
+  color: ${(props) => (props.pressed ? whiteColor : mainColor)};
   cursor: pointer;
 `;
 
@@ -259,13 +257,13 @@ export const DocumentDescription = styled.div`
 `;
 
 interface IPrepareStepItem {
-  size: "lg" | "sm";
+  size: 'lg' | 'sm';
 }
 
 export const PrepareStepItem = styled.li<IPrepareStepItem>`
   list-style: none;
-  width: ${props => props.size === 'lg' ? '236px' : '176px'};
-  height: ${props => props.size === 'lg' ? '336px' : '246px'};
+  width: ${(props) => (props.size === 'lg' ? '236px' : '176px')};
+  height: ${(props) => (props.size === 'lg' ? '336px' : '246px')};
   margin: 0 12px 10px 0;
   border: 2px solid ${mainBackgroundColor};
   border-radius: 9px;
@@ -301,7 +299,7 @@ export const SideNav = styled.ul`
 `;
 
 interface SideNavItemProps {
-  background: "light" | "main";
+  background: 'light' | 'main';
 }
 
 export const SideNavItem = styled.li<SideNavItemProps>`
@@ -315,8 +313,8 @@ export const SideNavItem = styled.li<SideNavItemProps>`
   padding: 15px 13px 13px;
   border-radius: 18px;
   font: normal normal bold 14px/17px ${defaultFont};
-  color: ${props => props.background === "light" ? fontColor : whiteColor};
-  background: ${props => props.background === "light" ? whiteColor : mainColor600};
+  color: ${(props) => (props.background === 'light' ? fontColor : whiteColor)};
+  background: ${(props) => (props.background === 'light' ? whiteColor : mainColor600)};
   box-shadow: 0 0 5px #00000040;
 `;
 

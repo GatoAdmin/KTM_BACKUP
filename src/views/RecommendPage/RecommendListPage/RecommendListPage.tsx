@@ -1,4 +1,4 @@
-import * as React from 'react';
+,import React from 'react';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -33,7 +33,7 @@ import ExamFilter, { ExamFilterRef } from '@components/RecommendPage/ExamFilter/
 import ScholarshipFilter, { ScholarShipFilterRef } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter';
 import CategoryFilter, {
   CategoryFilterRef,
-  UnivCategory
+  UnivCategory,
 } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
 import useIntersection from '@util/hooks/useInteraction';
 
@@ -212,8 +212,7 @@ const usePushRouterWithFiiterValue = ({
   category,
   searchInput,
 }: FilterRefObject,
-  mutate: responseInterface<Array<SWRData>, unknown>["mutate"]
-): UpdateUrlQueryFunction => {
+mutate: responseInterface<Array<SWRData>, unknown>['mutate']): UpdateUrlQueryFunction => {
   const router = useRouter();
   return (propertyKey, newPropertyValue) => {
     const queryUrlObject = {

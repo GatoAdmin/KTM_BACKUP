@@ -1,5 +1,4 @@
-import styled from "styled-components";
-
+import styled from 'styled-components';
 
 export const UnivTuitionSection = styled.section`
   margin: 0 0 80px;

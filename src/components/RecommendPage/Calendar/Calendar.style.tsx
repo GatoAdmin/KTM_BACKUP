@@ -1,8 +1,10 @@
 import styled, { css } from 'styled-components';
-import {fontColor, greyColor, mainColor, whiteColor} from '@util/style/color';
-import {defaultFont} from "@util/style/font";
-import LeftArrowSVG from "@assets/svg/arrow_left_icon.svg";
-import RightArrowSVG from "@assets/svg/arrow_right_icon.svg";
+import {
+  fontColor, greyColor, mainColor, whiteColor,
+} from '@util/style/color';
+import { defaultFont } from '@util/style/font';
+import LeftArrowSVG from '@assets/svg/arrow_left_icon.svg';
+import RightArrowSVG from '@assets/svg/arrow_right_icon.svg';
 
 export const CalendarContainer = styled.div`
   display: inline-block;
@@ -35,7 +37,6 @@ export const CalendarControlButton = styled.button`
     margin-left: 5px;
   }
 `;
-
 
 export const LeftArrow = styled(LeftArrowSVG)`
   width: auto;
@@ -107,7 +108,7 @@ export const CalendarCol = styled.td<CalendarDateProps>`
   padding: 0;
   color: ${greyColor};
 
-  ${(props) => (props.isStartDate || props.isEndDate)&& !props.disabled && css`
+  ${(props) => (props.isStartDate || props.isEndDate) && !props.disabled && css`
     color: ${whiteColor};
     ::before {
       position: absolute;
@@ -183,7 +184,7 @@ export const CalendarDescription = styled.div<ICalendarDescriptionProps>`
     height: 14px;
     margin-right: 7px;
     border-radius: 7px;
-    background: ${props => getCalendarColor[props.index](1)};
+    background: ${(props) => getCalendarColor[props.index](1)};
     content: '';
   }
 `;

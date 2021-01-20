@@ -1,4 +1,4 @@
-import * as React from 'react';
+,import React from 'react';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import {
   LocationFilterContainer,

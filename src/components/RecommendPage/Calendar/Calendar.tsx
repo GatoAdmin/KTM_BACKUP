@@ -1,4 +1,4 @@
-import * as React from 'react';
+,import React from 'react';
 import {
   CalendarCol,
   CalendarContainer, CalendarControlButton,
@@ -11,7 +11,7 @@ import {
   CalendarHeadRow,
   CalendarWeekName, LeftArrow, RightArrow,
 } from '@components/RecommendPage/Calendar/Calendar.style';
-import TypeSelect from "@components/RecommendPage/TypeSelect/TypeSelect";
+import TypeSelect from '@components/RecommendPage/TypeSelect/TypeSelect';
 
 interface DateInfo {
   type: string;
@@ -33,20 +33,20 @@ const isSemeseter = (str: string): str is Semester => (semester as ReadonlyArray
 const useSelectSemester = (data: Array<DateInfo>) => {
   const [selectedSemester, setSelectedSemester] = React.useState<Semester>(semester[0]);
   const handleChangeTypeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { target: { value }} = e;
-    if(isSemeseter(value)) setSelectedSemester(value);
-  }
+    const { target: { value } } = e;
+    if (isSemeseter(value)) setSelectedSemester(value);
+  };
 
   return {
     selectedSemester,
-    selectedData: data.filter(dateInfo => dateInfo.type === selectedSemester),
+    selectedData: data.filter((dateInfo) => dateInfo.type === selectedSemester),
     handleChangeTypeSelect,
-  }
+  };
 };
 
 const getNowISOString = () => (
   new Date(
-    Date.now() - ((new Date()).getTimezoneOffset() * 60000)
+    Date.now() - ((new Date()).getTimezoneOffset() * 60000),
   ).toISOString()
     .slice(0, -1)
 );
@@ -56,24 +56,24 @@ const getFirstDateOfCalendar = (date: Date) => {
   const dayOfFirstDateOfMonth = selectedDate.getDay();
   if (dayOfFirstDateOfMonth !== 0) selectedDate.setDate(-dayOfFirstDateOfMonth + 1);
   return selectedDate;
-}
+};
 
 const initialStartDate = (dateString?: string) => {
   const startDateString = dateString ?? getNowISOString();
   const selectedDate = new Date(startDateString);
   selectedDate.setDate(1);
   return selectedDate;
-}
+};
 
-const getDateTime = (dateString?: string) => dateString ? (new Date(dateString)).getTime() : -1;
+const getDateTime = (dateString?: string) => (dateString ? (new Date(dateString)).getTime() : -1);
 
 const createGetCurrentDateInfo = (selectedSemesterData: Array<DateInfo>, date: Date) => {
   const selectedMonth = date.getMonth();
   const dateController = getFirstDateOfCalendar(date);
-  let count = selectedSemesterData.findIndex(data => (
-    data.end ?
-      (new Date(data.end).getTime()) >= date.getTime() :
-      (new Date(data.start).getTime()) >= date.getTime()
+  let count = selectedSemesterData.findIndex((data) => (
+    data.end
+      ? (new Date(data.end).getTime()) >= date.getTime()
+      : (new Date(data.start).getTime()) >= date.getTime()
   ));
 
   if (count === -1) count = 0;
@@ -84,7 +84,8 @@ const createGetCurrentDateInfo = (selectedSemesterData: Array<DateInfo>, date: D
     const currentDateNumber = dateController.getDate();
     const isContainedCurrentMonth = dateController.getMonth() !== selectedMonth;
     const selectedDateTime = dateController.getTime();
-    let isStartDate = false, isInRange = -1, isEndDate = false;
+    let isStartDate = false; let isInRange = -1; let
+      isEndDate = false;
     if (endDateTime === -1 && selectedDateTime === startDateTime) {
       isInRange = count;
       isStartDate = true;
@@ -109,7 +110,7 @@ const createGetCurrentDateInfo = (selectedSemesterData: Array<DateInfo>, date: D
       isEndDate,
     };
   };
-}
+};
 
 // DateInfo 의 날짜 범위는 겹치지 않아야 한다.
 const useDateInfoArray = (
@@ -117,7 +118,7 @@ const useDateInfoArray = (
   selectedSemester: Semester,
 ) => {
   const [selectedDate, setSelectedDate] = React.useState(
-    () => initialStartDate(selectedSemesterData?.[0].start)
+    () => initialStartDate(selectedSemesterData?.[0].start),
   );
 
   React.useEffect(() => {
@@ -129,13 +130,13 @@ const useDateInfoArray = (
     const newSelectedDate = new Date(selectedDate);
     newSelectedDate.setMonth(newSelectedDate.getMonth() + 1);
     setSelectedDate(newSelectedDate);
-  }
+  };
 
   const previousCalendar = () => {
     const newSelectedDate = new Date(selectedDate);
     newSelectedDate.setMonth(newSelectedDate.getMonth() - 1);
     setSelectedDate(newSelectedDate);
-  }
+  };
   const getFirstCalendarInfo = createGetCurrentDateInfo(selectedSemesterData, selectedDate);
   const getSecondCalendarInfo = createGetCurrentDateInfo(selectedSemesterData, nextMonthSelectedDate);
 
@@ -144,7 +145,7 @@ const useDateInfoArray = (
       {
         formattedDate: selectedDate.toLocaleDateString('en-US', {
           month: 'short',
-          year: 'numeric'
+          year: 'numeric',
         }),
         calendar: Array.from(
           { length: 6 },
@@ -154,23 +155,22 @@ const useDateInfoArray = (
       {
         formattedDate: nextMonthSelectedDate.toLocaleDateString('en-US', {
           month: 'short',
-          year: 'numeric'
+          year: 'numeric',
         }),
         calendar: Array.from(
           { length: 6 },
           () => Array.from({ length: 7 }),
         ).map((row) => row.map(getSecondCalendarInfo)),
-      }
+      },
     ],
     nextCalendar,
     previousCalendar,
   };
 };
 
-
 const Calendar: React.VFC<CalendarProps> = ({ data }) => {
   const { selectedData, selectedSemester, handleChangeTypeSelect } = useSelectSemester(data);
-  const { nextCalendar, previousCalendar, calendars} = useDateInfoArray(selectedData, selectedSemester);
+  const { nextCalendar, previousCalendar, calendars } = useDateInfoArray(selectedData, selectedSemester);
   return (
     <>
       <TypeSelect
@@ -178,8 +178,9 @@ const Calendar: React.VFC<CalendarProps> = ({ data }) => {
         value={selectedSemester}
         typeFooter="학기"
         types={semester}
-        onChange={handleChangeTypeSelect} />
-      {calendars.map(calendarInfo => (
+        onChange={handleChangeTypeSelect}
+      />
+      {calendars.map((calendarInfo) => (
         <CalendarContainer key={calendarInfo.formattedDate}>
           <CalendarController>
             <CalendarControlButton onClick={previousCalendar}><LeftArrow /></CalendarControlButton>

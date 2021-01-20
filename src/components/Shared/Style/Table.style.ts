@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import {fontColor, lightGreyColor, mainBackgroundColor} from "@util/style/color";
-import {defaultFont} from "@util/style/font";
+import styled from 'styled-components';
+import { fontColor, lightGreyColor, mainBackgroundColor } from '@util/style/color';
+import { defaultFont } from '@util/style/font';
 
 export const TableTitle = styled.h3`
   margin: 0 0 40px;
@@ -18,7 +18,7 @@ interface IHeadCol {
 }
 
 export const TableHeadCol = styled.th<IHeadCol>`
-  width: ${props => props.width ?? 'auto'};
+  width: ${(props) => props.width ?? 'auto'};
   padding: 20px 17px;
   font: normal bold 16px/22px ${defaultFont};
   color: ${fontColor};

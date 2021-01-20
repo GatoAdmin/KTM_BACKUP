@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import {lightGreyColor, mainColor} from "@util/style/color";
-import {defaultFont} from "@util/style/font";
+import styled from 'styled-components';
+import { lightGreyColor, mainColor } from '@util/style/color';
+import { defaultFont } from '@util/style/font';
 
 export const TypeSelectContainer = styled.div`
   display: flex;
@@ -9,10 +9,10 @@ export const TypeSelectContainer = styled.div`
   border-bottom: 1px solid ${lightGreyColor};
 `;
 export const TypeSelectOption = styled.input.attrs({
-  type: "radio"
+  type: 'radio',
 })`
   display: none;
-`
+`;
 
 export const TypeSelectLabel = styled.label`
   display: block;

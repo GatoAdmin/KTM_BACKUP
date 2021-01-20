@@ -1,4 +1,4 @@
-import * as React from 'react';
+,import React from 'react';
 
 import Header from '@components/LandingPage/Header/Header';
 import IntroductionSection from '@components/LandingPage/IntroductionSection/IntroductionSection';

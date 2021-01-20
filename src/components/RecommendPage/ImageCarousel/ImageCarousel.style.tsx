@@ -1,7 +1,7 @@
-import styled, { css } from "styled-components";
-import LeftArrowSVG from "@assets/svg/arrow_left_icon.svg";
-import RightArrowSVG from "@assets/svg/arrow_right_icon.svg";
-import {fontColor} from "@util/style/color";
+import styled, { css } from 'styled-components';
+import LeftArrowSVG from '@assets/svg/arrow_left_icon.svg';
+import RightArrowSVG from '@assets/svg/arrow_right_icon.svg';
+import { fontColor } from '@util/style/color';
 
 export const ImageCarouselContainer = styled.section`
   position: relative;
@@ -20,7 +20,7 @@ interface ImageCarouselButtonProps {
 export const ImageCarouselButton = styled.button<ImageCarouselButtonProps>`
   position: absolute;
   top: calc(50% - 13px);
-  ${props => props.isRight ? "right" : "left"}: 60px;
+  ${(props) => (props.isRight ? 'right' : 'left')}: 60px;
   width: 26px;
   height: 26px;
   padding: 0;
@@ -42,29 +42,32 @@ export const CarouselImage = styled.img<CarouselImageProps>`
   height: 450px;
   object-fit: cover;
   
-  ${({index}) => {
-    if (index === 0)
+  ${({ index }) => {
+    if (index === 0) {
       return css`
         transform: translateZ(-150px) translateX(-800px);
         filter: opacity(0.5);
         z-index: 1;
       `;
-    else if(index === 1)
+    }
+    if (index === 1) {
       return css`
         transform: translateZ(0) translateX(0);
         z-index: 2;
       `;
-    else if (index == 2)
+    }
+    if (index == 2) {
       return css`
         transform: translateZ(-150px) translateX(800px);
         filter: opacity(0.5);
         z-index: 1;
       `;
+    }
     return null;
   }}
 `;
 
-  export const LeftArrow = styled(LeftArrowSVG)`
+export const LeftArrow = styled(LeftArrowSVG)`
     height: 25px;
     path {
       stroke: ${fontColor};
@@ -72,7 +75,7 @@ export const CarouselImage = styled.img<CarouselImageProps>`
     }
   `;
 
-  export const RightArrow = styled(RightArrowSVG)`
+export const RightArrow = styled(RightArrowSVG)`
     height: 25px;
     path {
       stroke: ${fontColor};

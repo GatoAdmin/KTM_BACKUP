@@ -1,4 +1,4 @@
-import * as React from 'react';
+,import React from 'react';
 import Link from 'next/link';
 import {
   UnivItemContainer,
@@ -13,7 +13,7 @@ import {
   UnivItemSubTitle,
   UnivItemTitle,
 } from '@components/RecommendPage/UnivItem/UnivItem.style';
-import {UnivCategory, univCategoryInfo} from "@components/RecommendPage/CategoryFilter/CategoryFilter";
+import { UnivCategory, univCategoryInfo } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
 
 import TuitionIcon from '@assets/svg/item_tuition_icon.svg';
 import AbilityIcon from '@assets/svg/item_abilty_icon.svg';
@@ -41,33 +41,33 @@ const UnivItem: React.VFC<UnivInfo> = ({
   topik,
   thumbnail,
 }) => {
-  let categoryName = univCategoryInfo.find(univCategory => univCategory.value == category)?.name;
+  const categoryName = univCategoryInfo.find((univCategory) => univCategory.value == category)?.name;
 
   return (
     <UnivItemContainer>
-      {thumbnail ? <UnivItemImage src={thumbnail} alt={id}/> : <UnivItemNoImage/>}
+      {thumbnail ? <UnivItemImage src={thumbnail} alt={id} /> : <UnivItemNoImage />}
       <UnivItemDescriptionContainer>
         <UnivItemTitle>{name}</UnivItemTitle>
         <UnivItemSubTitle>{nameEng}</UnivItemSubTitle>
         <UnivItemInformation>
           <UnivItemDescription>
-            <UnivItemDescriptionIcon><TuitionIcon/></UnivItemDescriptionIcon>
+            <UnivItemDescriptionIcon><TuitionIcon /></UnivItemDescriptionIcon>
             등록금:
             {tuition}
             만원
           </UnivItemDescription>
           <UnivItemDescription>
-            <UnivItemDescriptionIcon><AbilityIcon/></UnivItemDescriptionIcon>
+            <UnivItemDescriptionIcon><AbilityIcon /></UnivItemDescriptionIcon>
             TOPIK:
             {topik !== '0' ? `${topik}급` : '상관없음'}
           </UnivItemDescription>
           <UnivItemDescription>
-            <UnivItemDescriptionIcon><CategoryIcon/></UnivItemDescriptionIcon>
+            <UnivItemDescriptionIcon><CategoryIcon /></UnivItemDescriptionIcon>
             대학 종류:
             {categoryName}
           </UnivItemDescription>
           <UnivItemDescription disabled>
-            <UnivItemDescriptionIcon><LocationIcon/></UnivItemDescriptionIcon>
+            <UnivItemDescriptionIcon><LocationIcon /></UnivItemDescriptionIcon>
             {city}
           </UnivItemDescription>
         </UnivItemInformation>

@@ -1,4 +1,4 @@
-,import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { StyledComponentBase } from 'styled-components';
 import useIntersection from '@util/hooks/useInteraction';

@@ -1,4 +1,4 @@
-,import React from 'react';
+import React from 'react';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';

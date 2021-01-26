@@ -1,4 +1,4 @@
-,import React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { mainBackgroundColor, mainColor } from '@util/style/color';
 import LogoIcon from '../../../assets/logo.svg';

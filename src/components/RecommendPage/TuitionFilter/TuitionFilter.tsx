@@ -1,4 +1,4 @@
-,import React from 'react';
+import React from 'react';
 import Checkbox from '@components/Shared/Checkbox/Checkbox';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import {

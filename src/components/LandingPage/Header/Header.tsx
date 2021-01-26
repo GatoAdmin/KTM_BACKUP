@@ -1,4 +1,4 @@
-,import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import useIntersection from '@util/hooks/useInteraction';
 import {
@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>
       <LogoContainer>
-        <Logo src="/images/logo.png" alt="KATUMM Logo" />
+        <Logo />
         katumm
       </LogoContainer>
       <NavigationContainer>

@@ -1,4 +1,4 @@
-,import React from 'react';
+import React from 'react';
 
 const useVisible = (ref: React.MutableRefObject<HTMLElement | null>): [boolean, () => void] => {
   const [visible, setVisible] = React.useState<boolean>(false);

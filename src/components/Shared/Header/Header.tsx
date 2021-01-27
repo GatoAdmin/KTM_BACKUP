@@ -1,12 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   HeaderContainer,
-  Logo,
   LogoContainer,
   LocalizationButton,
   LocalizationButtonContainer,
-  LocalizationSelector,
   LoginLink,
   Navigation,
   NavigationContainer,
@@ -48,7 +46,6 @@ const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute' }) =
   return (
     <HeaderContainer background={background} position={position}>
       <LogoContainer>
-        <Logo />
         katumm
       </LogoContainer>
       <NavigationContainer>
@@ -61,9 +58,8 @@ const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute' }) =
         </Navigation>
         <LocalizationButtonContainer>
           <LocalizationButton onClick={() => setLanguageIndex(0)}>KR</LocalizationButton>
-          <LocalizationButton onClick={() => setLanguageIndex(1)}>EN</LocalizationButton>
+          /
           <LocalizationButton onClick={() => setLanguageIndex(2)}>VE</LocalizationButton>
-          <LocalizationSelector selectedIndex={languageIndex} />
         </LocalizationButtonContainer>
         <Link href="/login" passHref>
           <LoginLink>로그인</LoginLink>

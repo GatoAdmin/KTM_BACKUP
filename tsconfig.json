@@ -22,7 +22,8 @@
     "paths": {
       "@components/*": ["./src/components/*"],
       "@util/*": ["./src/util/*"],
-      "@views/*": ["./src/views/*"]
+      "@views/*": ["./src/views/*"],
+      "@assets/*": ["./src/assets/*"]
     }
   },
   "include": [

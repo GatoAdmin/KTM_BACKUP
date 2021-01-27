@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
@@ -31,11 +31,11 @@ const LoginPage: NextPage = () => (
         <LoginLegend>카툼 로그인</LoginLegend>
         <LoginInputGroup>
           <LoginInput placeholder="이메일" autoComplete="username" />
-          {/*<LoginAlert>등록되지 않은 이메일입니다.</LoginAlert>*/}
+          {/* <LoginAlert>등록되지 않은 이메일입니다.</LoginAlert> */}
         </LoginInputGroup>
         <LoginInputGroup>
           <LoginInput placeholder="비밀번호" type="password" autoComplete="current-password" />
-          {/*<LoginAlert>비밀번호가 올바르지 않습니다.</LoginAlert>*/}
+          {/* <LoginAlert>비밀번호가 올바르지 않습니다.</LoginAlert> */}
         </LoginInputGroup>
         <LoginButton type="submit">로그인</LoginButton>
       </LoginFieldset>

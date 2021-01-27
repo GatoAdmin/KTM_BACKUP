@@ -1,20 +1,20 @@
-import * as React from 'react';
+import React from 'react';
 
 import Header from '@components/LandingPage/Header/Header';
 import IntroductionSection from '@components/LandingPage/IntroductionSection/IntroductionSection';
 import NumberSection from '@components/LandingPage/NumberSection/NumberSection';
+import { NextPage } from 'next';
+import useTranslate from '@util/hooks/useTranslate';
+import Footer from '@components/Shared/Footer/Footer';
+import i18nResource from '../../assets/i18n/landingPage.json';
 import {
   Content,
   ClickImage,
   ConsultImage,
   UnivImage,
   SubTitleContainer,
-  FontProvider
+  FontProvider,
 } from './LandingPage.style';
-import { NextPage } from "next";
-import useTranslate from "@util/hooks/useTranslate";
-import i18nResource from "../../assets/i18n/landingPage.json";
-import Footer from "@components/Shared/Footer/Footer";
 
 const LandingPage: NextPage = () => {
   const { t, lang, changeLang } = useTranslate(i18nResource);

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
   Option, OptionContainer, SelectContainer, SelectDisplay,
 } from '@components/UserPage/Select/Select.style';
@@ -21,7 +21,7 @@ const Select: React.VFC<SelectProps> = ({ options, placeholder }) => {
   const getTriggerChangeOption = (optionValue: string | number) => () => {
     setInputValue(optionValue);
     toggleVisible();
-  }
+  };
 
   return (
     <SelectContainer ref={containerRef}>

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { mainColor } from '@util/style/color';
-import { defaultFont, vnFont } from '@util/style/font';
 
 export const Content = styled.main`
   width: 100%;
@@ -50,5 +49,4 @@ export const ClickImage = styled.img.attrs({
 `;
 
 export const FontProvider = styled.div<{lang: string}>`
-  font-family: ${(props) => (props.lang == 'ko' ? defaultFont : vnFont)};
 `;

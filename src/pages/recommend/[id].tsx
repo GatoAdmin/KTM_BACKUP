@@ -1,1 +1,1 @@
-export { default } from '@views/RecommendPage/RecommendDetailPage/RecommendDetailPage';
+export { default, getServerSideProps } from '@views/RecommendPage/RecommendDetailPage/RecommendDetailPage';

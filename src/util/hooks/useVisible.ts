@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 const useVisible = (ref: React.MutableRefObject<HTMLElement | null>): [boolean, () => void] => {
   const [visible, setVisible] = React.useState<boolean>(false);
@@ -14,7 +14,7 @@ const useVisible = (ref: React.MutableRefObject<HTMLElement | null>): [boolean, 
     return () => {
       if (isBrowser) window.removeEventListener('click', onCloseSelect);
     };
-  }, []);
+  }, [ref]);
 
   return [visible, () => setVisible((state) => !state)];
 };

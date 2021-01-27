@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { NextPage } from 'next';
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import {
@@ -50,18 +50,18 @@ const RegisterPage: NextPage = () => (
         <RegisterInputRow>
           <RegisterInputSmallGroup>
             <RegisterInput placeholder="성" />
-            {/*<RegisterAlert>영문으로 기입해주세요.</RegisterAlert>*/}
+            {/* <RegisterAlert>영문으로 기입해주세요.</RegisterAlert> */}
           </RegisterInputSmallGroup>
           <RegisterInputSmallGroup>
             <RegisterInput placeholder="이름" />
-            {/*<RegisterAlert>영문으로 기입해주세요.</RegisterAlert>*/}
+            {/* <RegisterAlert>영문으로 기입해주세요.</RegisterAlert> */}
           </RegisterInputSmallGroup>
         </RegisterInputRow>
 
         <RegisterInputRow>
           <RegisterInputSmallGroup>
             <RegisterInput placeholder="이메일" />
-            {/*<RegisterAlert>형식이 맞지 않습니다.</RegisterAlert>*/}
+            {/* <RegisterAlert>형식이 맞지 않습니다.</RegisterAlert> */}
           </RegisterInputSmallGroup>
           @
           <RegisterInputSmallGroup>
@@ -71,13 +71,13 @@ const RegisterPage: NextPage = () => (
         <RegisterInputRow>
           <RegisterInputGroup>
             <RegisterInput type="password" placeholder="비밀번호" autoComplete="new-password" />
-            {/*<RegisterAlert>비밀번호는 최대 15자리이며, 숫자와 영문 조합이어야 합니다.</RegisterAlert>*/}
+            {/* <RegisterAlert>비밀번호는 최대 15자리이며, 숫자와 영문 조합이어야 합니다.</RegisterAlert> */}
           </RegisterInputGroup>
         </RegisterInputRow>
         <RegisterInputRow>
           <RegisterInputGroup>
             <RegisterInput type="password" placeholder="비밀번호 확인" autoComplete="new-password" />
-            {/*<RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert>*/}
+            {/* <RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert> */}
           </RegisterInputGroup>
         </RegisterInputRow>
         <RegisterInputRow>

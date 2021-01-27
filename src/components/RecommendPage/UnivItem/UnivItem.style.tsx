@@ -1,71 +1,56 @@
-import styled from 'styled-components';
-import { mainColor } from '@util/style/color';
+import styled, { css } from 'styled-components';
+import {
+  greyColor, lightGreyColor, mainColor, whiteColor,
+} from '@util/style/color';
+import { defaultFont } from '@util/style/font';
 
 export const UnivItemContainer = styled.div`
-  display: flex;
+  display: inline-flex;
   position: relative;
-  width: calc(100% - 32px);
-  height: 154px;
-  margin-bottom: 74px;
-  padding: 24px 0 24px 32px;
-  border-radius: 25px;
+  width: 490px;
+  height: 280px;
+  margin: 0 20px 20px 0;
+  border-radius: 12px;
   background: white;
   box-shadow: 1px 1px 7px #00000029;
 
-  :last-child {
-    margin: 0;
+  :nth-child(2n + 1) {
+    margin-right: 0;
   }
 `;
 
 export const UnivItemLinkContainer = styled.div`
   display: flex;
-  position: absolute;
-  right: 28px;
-  bottom: 21px;
+  margin-top: 18px;
 `;
 
 export const UnivItemLink = styled.a`
   display: block;
-  width: 164px;
-  height: 39px;
-  margin-right: 38px;
-  border: 1px solid ${mainColor};
-  border-radius: 11px;
-  font: normal normal bold 14px/39px NEXON Lv1 Gothic;
-  color: ${mainColor};
+  padding: 8px 18px;
+  border-radius: 16px;
+  font: normal normal bold 12px/16px ${defaultFont};
+  color: ${whiteColor};
+  background: ${mainColor};
   text-decoration: none;
   text-align: center;
   cursor: pointer;
 `;
 
-export const UnivItemPreferButton = styled.button`
-  display: block;
-  width: 164px;
-  height: 39px;
-  padding: 0;
-  border: 1px solid ${mainColor};
-  border-radius: 11px;
-  font: normal normal bold 14px/39px NEXON Lv1 Gothic;
-  color: ${mainColor};
-  background: transparent;
-  cursor: pointer;
+const ItemImageStyle = css`
+  flex: 0 0 auto;
+  width: 210px;
+  height: 280px;
+  border-radius: 12px 0 0 12px;
 `;
 
 export const UnivItemImage = styled.img`
-  width: 202px;
-  height: 153px;
-  margin-right: 36px;
-  border-radius: 25px;
+  ${ItemImageStyle};
   object-fit: cover;
 `;
 
 export const UnivItemNoImage = styled.div`
-  width: 202px;
-  height: 153px;
-  margin-right: 36px;
-  border-radius: 25px;
+  ${ItemImageStyle};
   background: gray;
-  object-fit: contain;
 `;
 
 export const UnivItemLogo = styled.img`
@@ -79,23 +64,51 @@ export const UnivItemLogo = styled.img`
 `;
 
 export const UnivItemDescriptionContainer = styled.div`
-  width: 350px;
+  width: 100%;
+  padding: 25px 20px 0;
 `;
 
 export const UnivItemTitle = styled.h2`
-  margin: 0 0 23px;
-  font: normal normal bold 20px/23px NEXON Lv1 Gothic;
+  margin: 0;
+  font: normal normal bold 18px/25px ${defaultFont};
 `;
 
-export const UnivItemAddress = styled.div`
+export const UnivItemSubTitle = styled.h3`
+  margin: 5px 0 30px;
+  color: ${greyColor};
+  font: normal normal bold 14px/19px ${defaultFont};
+`;
+
+export const UnivItemInformation = styled.div`
+  padding-top: 5px;
   width: 100%;
-  margin-bottom: 23px;
-  font: normal normal bold 15px/18px NEXON Lv1 Gothic;
+  
+  :before {
+    display: block;
+    border-top: 1px solid ${lightGreyColor};
+    opacity: 0.5;
+    content: "";
+  }
 `;
 
-export const UnivItemDescription = styled.div`
-  display: inline-block;
-  width: 146px;
-  margin-bottom: 23px;
-  font: normal normal bold 15px/18px NEXON Lv1 Gothic;
+export const UnivItemDescriptionIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  margin-right: 7px;
+  
+  > svg {
+    fill: none;
+  }
+`;
+
+interface DescriptionProps {
+  disabled?: boolean
+}
+
+export const UnivItemDescription = styled.div<DescriptionProps>`
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  color: ${(props) => (props.disabled ? lightGreyColor : mainColor)};
+  font: normal normal bold 14px/19px ${defaultFont};
 `;

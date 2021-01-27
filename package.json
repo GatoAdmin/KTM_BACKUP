@@ -7,7 +7,7 @@
   "author": "KATUMM",
   "license": "MIT",
   "scripts": {
-    "start": "next start",
+    "start": "next start -p 8081",
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",

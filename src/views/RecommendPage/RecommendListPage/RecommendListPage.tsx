@@ -124,13 +124,18 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
       : filterInitialValue.category,
     word: query.word ? String(query.word) : '',
   };
-  const responseUnivList = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
-    JSON.stringify(
-      Object.assign(
-        filterParams,
-        { page: 1 },
-      ),
-    )}`);
+  let responseUnivList;
+  try {
+    responseUnivList = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
+      JSON.stringify(
+        Object.assign(
+          filterParams,
+          { page: 1 },
+        ),
+      )}`);
+  } catch {
+    responseUnivList = {};
+  }
   return {
     props: {
       filterParams,

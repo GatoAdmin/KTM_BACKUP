@@ -1,3 +1,4 @@
+import { mainColor } from '@util/style/color';
 import styled, { css } from 'styled-components';
 
 export const Layout = styled.div`
@@ -29,4 +30,11 @@ export const ContentContainer = styled.div<ContentContainerProps>`
     width: ${width}px;
     height: ${height}px;
   `}
+
+  input {
+    outline: none;
+    :focus {
+      border: 1px solid ${mainColor};
+    }
+  }
 `;

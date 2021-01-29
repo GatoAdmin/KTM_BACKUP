@@ -55,6 +55,10 @@ export const LoginInput = styled.input`
   border-radius: 20px;
   font: 11px/13px normal;
   color: ${greyColor};
+  outline: none;
+  :focus {
+    border: 1px solid ${mainColor};
+  }
 `;
 
 export const LoginAlert = styled.div`
@@ -78,6 +82,7 @@ export const LoginButton = styled.button`
   color: ${mainColor};
   text-align: center;
   cursor: pointer;
+  outline: none;
 `;
 
 export const LoginTextContainer = styled.div`
@@ -139,4 +144,51 @@ export const RegisterLink = styled.a`
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+`;
+
+// popup
+export const LoadingPopup = styled.div`
+  /* background-color: green; */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Loading = styled.div`
+  width: 100px;
+  height: 100px;
+  border-right: 3px solid ${mainColor};
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-animation: rotation 1.1s infinite linear;
+  animation: rotation 1.1s infinite linear;
+  @-webkit-keyframes rotation {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes rotation {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
 `;

@@ -30,9 +30,10 @@ const reasonArray = [
   '한국의 대학교에서 공부하는 대학생입니다.',
   '일반인',
 ];
+const topikArray = ['없음', '1급', '2급', '3급', '4급', '5급', '6급'];
 
 const RegisterPage: NextPage = () => (
-  <UserLayout width={630} height={700}>
+  <UserLayout width={630} height={800}>
     <RegisterTitle>회원가입</RegisterTitle>
     <RegisterThirdPartyButtonContainer>
       <RegisterThirdPartyButton>
@@ -59,29 +60,34 @@ const RegisterPage: NextPage = () => (
         </RegisterInputRow>
 
         <RegisterInputRow>
-          <RegisterInputSmallGroup>
-            <RegisterInput placeholder="이메일" />
-            {/* <RegisterAlert>형식이 맞지 않습니다.</RegisterAlert> */}
-          </RegisterInputSmallGroup>
-          @
-          <RegisterInputSmallGroup>
-            <RegisterInput />
-          </RegisterInputSmallGroup>
+          <RegisterInputGroup>
+            <RegisterInput placeholder="닉네임" />
+          </RegisterInputGroup>
         </RegisterInputRow>
+
+        <RegisterInputRow>
+          <RegisterInputGroup>
+            <RegisterInput placeholder="이메일" />
+          </RegisterInputGroup>
+        </RegisterInputRow>
+
         <RegisterInputRow>
           <RegisterInputGroup>
             <RegisterInput type="password" placeholder="비밀번호" autoComplete="new-password" />
-            {/* <RegisterAlert>비밀번호는 최대 15자리이며, 숫자와 영문 조합이어야 합니다.</RegisterAlert> */}
+            {/* <RegisterAlert>비밀번호는 8~15자리이며, 숫자와 영문, 특수문자 조합이어야 합니다.</RegisterAlert> */}
           </RegisterInputGroup>
         </RegisterInputRow>
         <RegisterInputRow>
           <RegisterInputGroup>
             <RegisterInput type="password" placeholder="비밀번호 확인" autoComplete="new-password" />
-            {/* <RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert> */}
+            <RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert>
           </RegisterInputGroup>
         </RegisterInputRow>
         <RegisterInputRow>
-          <Select placeholder="국가 선택" options={countryArray} />
+          <RegisterInputGroup>
+            <Select placeholder="국가 선택" options={countryArray} />
+            <RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert>
+          </RegisterInputGroup>
         </RegisterInputRow>
 
         <RegisterInputRow>
@@ -107,6 +113,15 @@ const RegisterPage: NextPage = () => (
             <Select placeholder="현재 준비 중이신 단계를 입력해주세요." options={reasonArray} />
           </RegisterInputGroup>
         </RegisterInputRow>
+
+        <RegisterInputRow>
+          <RegisterInputTitle>TOPIK</RegisterInputTitle>
+
+          <RegisterInputGroup>
+            <Select placeholder="현재 가지고 있는 TOPIK 등급을 선택해주세요." options={topikArray} />
+          </RegisterInputGroup>
+        </RegisterInputRow>
+
         <RegisterButton type="submit">메일로 인증하기</RegisterButton>
       </RegisterFieldset>
     </RegisterForm>

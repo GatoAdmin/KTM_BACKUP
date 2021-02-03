@@ -141,7 +141,7 @@ export const RegisterThirdPartyButtonContainer = styled.div`
 export const RegisterThirdPartyButton = styled.button`
   display: inline-flex;
   align-items: center;
-  width: 160px;
+  width: 170px;
   height: 30px;
   margin-right: 14px;
   padding-left: 21px;

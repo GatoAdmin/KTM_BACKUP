@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import {
   RegisterTitle,
@@ -21,7 +21,9 @@ import {
 } from '@views/UserPage/RegisterPage/RegisterPage.style';
 import Select from '@components/UserPage/Select/Select';
 import axios from 'axios';
+import useTranslate from '@util/hooks/useTranslate';
 import { Loading, LoadingPopup } from '../LoginPage/LoginPage.style';
+import i18nLoginResource from '../../../assets/i18n/registerPage.json';
 
 const countryArray = [
   '베트남',
@@ -72,7 +74,12 @@ const reasonArray = [
 ];
 const topikArray = ['없음', '1급', '2급', '3급', '4급', '5급', '6급'];
 
-const RegisterPage: NextPage = () => {
+const RegisterPage: NextPage = ({
+  router: {
+    query: { lang: queryLang },
+  },
+}) => {
+  const { t, lang, changeLang } = useTranslate(i18nLoginResource);
   const [formData, setFormData] = React.useState({
     username: null,
     first_name: null,
@@ -156,7 +163,14 @@ const RegisterPage: NextPage = () => {
     } else if (t !== undefined) {
       setFormData((prev) => ({ ...prev, [t]: v }));
     }
+    console.log(formData);
   };
+
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
 
   React.useEffect(() => {
     if (loading) {
@@ -166,6 +180,10 @@ const RegisterPage: NextPage = () => {
     }
   }, [loading]);
 
+  React.useEffect(() => {
+    console.log({ ...formData });
+  }, [formData]);
+
   return (
     <UserLayout width={630} height={800}>
       {loading && (
@@ -173,45 +191,45 @@ const RegisterPage: NextPage = () => {
           <Loading />
         </LoadingPopup>
       )}
-      <RegisterTitle>회원가입</RegisterTitle>
+      <RegisterTitle>{t('register')}</RegisterTitle>
       <RegisterThirdPartyButtonContainer>
         <RegisterThirdPartyButton>
-          <ThirdPartyLogo src="/images/google.png" alt="구글로 로그인" />
-          Google로 계속하기
+          <ThirdPartyLogo src="/images/google.png" alt={t('register-by-google')} />
+          {t('register-by-google')}
         </RegisterThirdPartyButton>
         <RegisterThirdPartyButton>
-          <ThirdPartyLogo src="/images/facebook_logo.png" alt="페이스북으로 로그인" />
-          Facebook으로 계속하기
+          <ThirdPartyLogo src="/images/facebook_logo.png" alt={t('register-by-facebook')} />
+          {t('register-by-facebook')}
         </RegisterThirdPartyButton>
       </RegisterThirdPartyButtonContainer>
       <RegisterForm onSubmit={handleSubmit}>
-        <RegisterLegend>카툼 회원가입</RegisterLegend>
+        <RegisterLegend>{t('register-legend')}</RegisterLegend>
         <RegisterFieldset>
           <RegisterInputRow>
             <RegisterInputSmallGroup>
-              <RegisterInput placeholder="성" name="last_name" onChange={handleFormContent} />
-              {errMsg.ERROR_NOT_EXIST_LAST_NAME && <RegisterAlert>성을 입력해 주세요.</RegisterAlert>}
-              {errMsg.ERROR_LAST_NAME_ONLY_ENGLISH && <RegisterAlert>성을 영어로 입력해 주세요.</RegisterAlert>}
+              <RegisterInput placeholder={t('last-name')} name="last_name" onChange={handleFormContent} />
+              {errMsg.ERROR_NOT_EXIST_LAST_NAME && <RegisterAlert>{t('warn-1')}</RegisterAlert>}
+              {errMsg.ERROR_LAST_NAME_ONLY_ENGLISH && <RegisterAlert>{t('warn-2')}</RegisterAlert>}
             </RegisterInputSmallGroup>
             <RegisterInputSmallGroup>
-              <RegisterInput placeholder="이름" name="first_name" onChange={handleFormContent} />
-              {errMsg.ERROR_NOT_EXIST_FIRST_NAME && <RegisterAlert>이름을 입력해 주세요.</RegisterAlert>}
-              {errMsg.ERROR_FIRST_NAME_ONLY_ENGLISH && <RegisterAlert>이름을 영어로 입력해 주세요.</RegisterAlert>}
+              <RegisterInput placeholder={t('first-name')} name="first_name" onChange={handleFormContent} />
+              {errMsg.ERROR_NOT_EXIST_FIRST_NAME && <RegisterAlert>{t('warn-3')}</RegisterAlert>}
+              {errMsg.ERROR_FIRST_NAME_ONLY_ENGLISH && <RegisterAlert>{t('warn-4')}</RegisterAlert>}
             </RegisterInputSmallGroup>
           </RegisterInputRow>
 
           <RegisterInputRow>
             <RegisterInputGroup>
-              <RegisterInput placeholder="닉네임" name="username" onChange={handleFormContent} />
-              {errMsg.ERROR_NOT_EXIST_USERNAME && <RegisterAlert>닉네임을 입력해 주세요.</RegisterAlert>}
+              <RegisterInput placeholder={t('username')} name="username" onChange={handleFormContent} />
+              {errMsg.ERROR_NOT_EXIST_USERNAME && <RegisterAlert>{t('warn-5')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
 
           <RegisterInputRow>
             <RegisterInputGroup>
-              <RegisterInput placeholder="이메일" name="email" onChange={handleFormContent} />
-              {errMsg.ERROR_NOT_EXIST_EMAIL && <RegisterAlert>이메일을 입력해 주세요.</RegisterAlert>}
-              {errMsg.ERROR_EXIST_EMAIL && <RegisterAlert>이미 존재하는 이메일입니다.</RegisterAlert>}
+              <RegisterInput placeholder={t('email')} name="email" onChange={handleFormContent} />
+              {errMsg.ERROR_NOT_EXIST_EMAIL && <RegisterAlert>{t('warn-6')}</RegisterAlert>}
+              {errMsg.ERROR_EXIST_EMAIL && <RegisterAlert>{t('warn-7')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
 
@@ -219,71 +237,85 @@ const RegisterPage: NextPage = () => {
             <RegisterInputGroup>
               <RegisterInput
                 type="password"
-                placeholder="비밀번호"
+                placeholder={t('password')}
                 autoComplete="new-password"
                 name="password"
                 onChange={handleFormContent}
               />
-              {errMsg.ERROR_NOT_EXIST_PASSWORD && <RegisterAlert>비밀번호를 입력해 주세요.</RegisterAlert>}
-              {errMsg.ERROR_NOT_PROPER_PASSWORD && (
-                <RegisterAlert>비밀번호는 8~15자리이며, 숫자와 영문, 특수문자 조합이어야 합니다.</RegisterAlert>
-              )}
+              {errMsg.ERROR_NOT_EXIST_PASSWORD && <RegisterAlert>{t('warn-8')}</RegisterAlert>}
+              {errMsg.ERROR_NOT_PROPER_PASSWORD && <RegisterAlert>{t('warn-9')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
           <RegisterInputRow>
             <RegisterInputGroup>
               <RegisterInput
                 type="password"
-                placeholder="비밀번호 확인"
+                placeholder={t('confirm')}
                 autoComplete="new-password"
                 name="confirm"
                 onChange={handleFormContent}
               />
-              {errMsg.ERROR_NOT_EXIST_PASSWORD_CONFIRM && <RegisterAlert>비밀번호 확인을 입력해 주세요.</RegisterAlert>}
-              {errMsg.ERROR_PASSWORD_CONFIRM_FAIL && <RegisterAlert>비밀번호가 일치하지 않습니다.</RegisterAlert>}
+              {errMsg.ERROR_NOT_EXIST_PASSWORD_CONFIRM && <RegisterAlert>{t('warn-10')}</RegisterAlert>}
+              {errMsg.ERROR_PASSWORD_CONFIRM_FAIL && <RegisterAlert>{t('warn-11')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
           <RegisterInputRow>
             <RegisterInputGroup>
               <Select
-                placeholder="국가 선택"
+                placeholder={t('choice-nation')}
                 options={countryArray}
                 name="nationality"
                 handleFormContent={handleFormContent}
               />
-              {errMsg.ERROR_NOT_EXIST_NATIONALITY && <RegisterAlert>국가를 선택해 주세요.</RegisterAlert>}
+              {errMsg.ERROR_NOT_EXIST_NATIONALITY && <RegisterAlert>{t('warn-12')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
 
           <RegisterInputRow>
-            <RegisterInputTitle>생년월일</RegisterInputTitle>
+            <RegisterInputTitle>{t('choice-birth-date')}</RegisterInputTitle>
 
             <RegisterInputExtraSmallGroup>
-              <Select placeholder="년도" options={yearArray} name="year" handleFormContent={handleFormContent} />
+              <Select
+                placeholder={t('choice-year')}
+                options={yearArray}
+                name="year"
+                handleFormContent={handleFormContent}
+              />
             </RegisterInputExtraSmallGroup>
 
             <RegisterInputExtraSmallGroup>
-              <Select placeholder="월" options={monthArray} name="month" handleFormContent={handleFormContent} />
+              <Select
+                placeholder={t('choice-month')}
+                options={monthArray}
+                name="month"
+                handleFormContent={handleFormContent}
+              />
             </RegisterInputExtraSmallGroup>
 
             <RegisterInputExtraSmallGroup>
-              <Select placeholder="일" options={dayArray} name="day" handleFormContent={handleFormContent} />
+              <Select
+                placeholder={t('choice-day')}
+                options={dayArray}
+                name="day"
+                handleFormContent={handleFormContent}
+              />
             </RegisterInputExtraSmallGroup>
 
-            {errMsg.ERROR_NOT_EXIST_BIRTH_DATE && <RegisterAlert>생년월일을 선택해 주세요.</RegisterAlert>}
+            {errMsg.ERROR_NOT_EXIST_BIRTH_DATE && <RegisterAlert>{t('warn-13')}</RegisterAlert>}
           </RegisterInputRow>
 
           <RegisterInputRow>
-            <RegisterInputTitle>유학 단계</RegisterInputTitle>
+            <RegisterInputTitle>{t('choice-identity')}</RegisterInputTitle>
 
             <RegisterInputGroup>
               <Select
-                placeholder="현재 준비 중이신 단계를 입력해주세요."
+                lang={lang}
+                placeholder={t('choice-identity-label')}
                 options={reasonArray}
                 name="identity"
                 handleFormContent={handleFormContent}
               />
-              {errMsg.ERROR_NOT_EXIST_IDENTITY && <RegisterAlert>유학 단계를 선택해 주세요.</RegisterAlert>}
+              {errMsg.ERROR_NOT_EXIST_IDENTITY && <RegisterAlert>{t('warn-14')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
 
@@ -292,20 +324,20 @@ const RegisterPage: NextPage = () => {
 
             <RegisterInputGroup>
               <Select
-                placeholder="현재 가지고 있는 TOPIK 등급을 선택해주세요."
+                placeholder={t('choice-topik-level')}
                 options={topikArray}
                 name="topik_level"
                 handleFormContent={handleFormContent}
               />
-              {errMsg.ERROR_NOT_EXIST_TOPIK_LEVEL && <RegisterAlert>TOPIK 등급을 선택해 주세요.</RegisterAlert>}
+              {errMsg.ERROR_NOT_EXIST_TOPIK_LEVEL && <RegisterAlert>{t('warn-15')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
 
-          <RegisterButton type="submit">메일로 인증하기</RegisterButton>
+          <RegisterButton type="submit">{t('register-button')}</RegisterButton>
         </RegisterFieldset>
       </RegisterForm>
     </UserLayout>
   );
 };
 
-export default RegisterPage;
+export default withRouter(RegisterPage);

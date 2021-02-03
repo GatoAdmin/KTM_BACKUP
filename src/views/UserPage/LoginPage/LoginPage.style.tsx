@@ -59,7 +59,7 @@ export const LoginInput = styled.input`
   padding-left: 14px;
   border: 1px solid ${greyColor};
   border-radius: 20px;
-  font: 11px/13px ${defaultFont};
+  font: 14px/13px ${defaultFont};
   color: ${greyColor};
   outline: none;
   :focus {
@@ -70,7 +70,7 @@ export const LoginInput = styled.input`
 export const LoginAlert = styled.div`
   height: 10px;
   padding-left: 14px;
-  font: normal 9px ${defaultFont};
+  font: normal 12px ${defaultFont};
   color: ${mainColor};
   text-align: left;
 `;
@@ -113,7 +113,7 @@ export const RegisterThirdPartyButtonContainer = styled.div`
 export const RegisterThirdPartyButton = styled.button`
   display: inline-flex;
   align-items: center;
-  width: 160px;
+  width: 172px;
   height: 30px;
   margin-right: 10px;
   padding-left: 21px;

@@ -1,0 +1,30 @@
+{
+    "ko":{
+        "email" : "이메일",
+        "password" : "비밀번호",
+        "login" : "로그인",
+        "find-password" : "비밀번호 찾기",
+        "login-by-google" : "Google로 계속하기",
+        "login-by-facebook" : "Facebook으로 계속하기",
+        "register-label" : "아직 계정이 없으신가요?",
+        "register-button" : "회원가입",
+        "warn-email-1" : "이메일을 입력해 주세요.",
+        "warn-email-2" : "등록되지 않은 이메일입니다.",
+        "warn-password-1" : "비밀번호를 입력해 주세요.",
+        "warn-password-2" : "비밀번호가 올바르지 않습니다."
+    },
+    "vn":{
+        "email" : "Email",
+        "password" : "Mật khẩu",
+        "login" : "Đăng nhập",
+        "find-password" : "Tìm kiếm mật khẩu",
+        "login-by-google" : "Tiếp tục bằng Google",
+        "login-by-facebook" : "Tiếp tục bằng Facebook",
+        "register-label" : "Bạn vẫn chưa có tài khoản?",
+        "register-button" : "Đăng kí",
+        "warn-email-1" : "Nhập email của bạn.",
+        "warn-email-2" : "Email này chưa được đăng kí.",
+        "warn-password-1" : "Nhập mật khẩu.",
+        "warn-password-2" : "mật khẩu không đúng."
+    }
+}

@@ -1,18 +1,24 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { mainColor, greyColor, lightGreyColor } from '@util/style/color';
+import { defaultFont } from '@util/style/font';
 import LogoIcon from '../../../assets/logo.svg';
 
+const putCenter = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const LogoContainer = styled.div`
-  width: 150px;
-  margin: 0 auto 31px;
+  width: 100%;
   font: normal normal 900 38px/51px Nunito;
   color: ${mainColor};
+  ${putCenter};
 `;
 
 export const Logo = styled(LogoIcon)`
-  width: 132px;
-  height: 132px;
-  margin: 0 9px -32px;
+  width: 220px;
+  height: 120px;
 
   > path {
     fill: ${mainColor};
@@ -53,7 +59,7 @@ export const LoginInput = styled.input`
   padding-left: 14px;
   border: 1px solid ${greyColor};
   border-radius: 20px;
-  font: 11px/13px normal;
+  font: 11px/13px ${defaultFont};
   color: ${greyColor};
   outline: none;
   :focus {
@@ -64,7 +70,7 @@ export const LoginInput = styled.input`
 export const LoginAlert = styled.div`
   height: 10px;
   padding-left: 14px;
-  font: normal 9px NEXON Lv1 Gothic;
+  font: normal 9px ${defaultFont};
   color: ${mainColor};
   text-align: left;
 `;
@@ -78,7 +84,7 @@ export const LoginButton = styled.button`
   border: 1px solid ${mainColor};
   border-radius: 20px;
   background: transparent;
-  font: normal normal normal 13px/32px NEXON Lv1 Gothic;
+  font: normal normal normal 13px/32px ${defaultFont};
   color: ${mainColor};
   text-align: center;
   cursor: pointer;
@@ -87,7 +93,7 @@ export const LoginButton = styled.button`
 
 export const LoginTextContainer = styled.div`
   margin-bottom: 38px;
-  font: 15px/19px;
+  font: 15px/19px ${defaultFont};
   color: ${greyColor};
   text-align: center;
 `;
@@ -114,7 +120,7 @@ export const RegisterThirdPartyButton = styled.button`
   border: 1px solid ${lightGreyColor};
   border-radius: 25px;
   background: transparent;
-  font: 9px/30px NEXON Lv1 Gothic;
+  font: 9px/30px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 
@@ -134,12 +140,12 @@ export const RegisterLink = styled.a`
   display: block;
   width: 323px;
   height: 34px;
-  margin: 0 auto;
+  margin: 0 auto 40px;
   padding: 0;
   border: 1px solid ${mainColor};
   border-radius: 20px;
   background: transparent;
-  font: normal normal normal 13px/34px NEXON Lv1 Gothic;
+  font: normal normal normal 13px/34px ${defaultFont};
   color: ${mainColor};
   text-align: center;
   text-decoration: none;
@@ -148,9 +154,8 @@ export const RegisterLink = styled.a`
 
 // popup
 export const LoadingPopup = styled.div`
-  /* background-color: green; */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   width: 100%;
   height: 100%;
   position: absolute;
@@ -159,6 +164,7 @@ export const LoadingPopup = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 `;
 
 export const Loading = styled.div`

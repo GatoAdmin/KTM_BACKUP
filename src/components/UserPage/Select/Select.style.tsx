@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { greyColor } from '@util/style/color';
+import { defaultFont } from '@util/style/font';
 
 export const SelectContainer = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ export const SelectContainer = styled.div`
   border: 1px solid ${greyColor};
   border-radius: 20px;
   cursor: pointer;
+  margin-bottom: 10px;
 
   ::after {
     position: absolute;
@@ -30,7 +32,7 @@ export const SelectDisplay = styled.div`
   padding: 0;
   border: 0;
   background: transparent;
-  font: 9px/22px normal NEXON Lv1 Gothic;
+  font: 9px/20px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 `;
@@ -71,7 +73,7 @@ export const Option = styled.div`
   width: 100%;
   height: 9px;
   margin-bottom: 6px;
-  font: 8px/9px NEXON Lv1 Gothic;
+  font: 8px/6px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 `;

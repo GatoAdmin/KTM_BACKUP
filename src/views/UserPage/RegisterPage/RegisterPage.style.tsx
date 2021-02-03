@@ -1,10 +1,11 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
+import { defaultFont } from '@util/style/font';
 import { mainColor, greyColor, lightGreyColor } from '@util/style/color';
 
 export const RegisterTitle = styled.h1`
   width: 150px;
   margin: 0 auto 33px;
-  font: 20px/23px NEXON Lv1 Gothic;
+  font: 20px/23px ${defaultFont};
   color: ${greyColor};
   text-align: center;
 `;
@@ -36,7 +37,7 @@ export const RegisterInputRow = styled.div`
   flex-wrap: wrap;
   width: 323px;
   margin-bottom: 22px;
-  font: normal 300 20px NEXON Lv1 Gothic;
+  font: normal 300 20px ${defaultFont};
   color: ${greyColor};
 `;
 
@@ -59,14 +60,14 @@ export const RegisterInput = styled.input`
   padding-left: 9px;
   border: 1px solid ${greyColor};
   border-radius: 20px;
-  font: 9px/11px normal;
+  font: 9px/23px ${defaultFont};
   color: ${greyColor};
 `;
 
 export const RegisterAlert = styled.div`
   height: 10px;
   padding-left: 9px;
-  font: normal 300 9px NEXON Lv1 Gothic;
+  font: normal 300 9px ${defaultFont};
   color: ${mainColor};
   text-align: left;
 `;
@@ -80,10 +81,11 @@ export const RegisterButton = styled.button`
   border: 1px solid ${mainColor};
   border-radius: 20px;
   background: transparent;
-  font: normal normal normal 13px/32px NEXON Lv1 Gothic;
+  font: normal normal normal 14px/30px ${defaultFont};
   color: ${mainColor};
   text-align: center;
   cursor: pointer;
+  outline: none;
 `;
 
 export const RegisterSelect = styled.div`
@@ -117,7 +119,7 @@ export const RegisterSelectDisplayInput = styled.input.attrs(() => ({
   padding: 0;
   border: 0;
   background: transparent;
-  font: 9px/13px normal NEXON Lv1 Gothic;
+  font: 9px/13px normal ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 `;
@@ -126,7 +128,7 @@ export const RegisterInputTitle = styled.h3`
   display: block;
   width: 323px;
   margin: 0 0 14px;
-  font: normal 11px/13px NEXON Lv1 Gothic;
+  font: normal 11px/13px ${defaultFont};
   color: ${greyColor};
 `;
 
@@ -146,7 +148,7 @@ export const RegisterThirdPartyButton = styled.button`
   border: 1px solid ${lightGreyColor};
   border-radius: 25px;
   background: transparent;
-  font: 9px/30px NEXON Lv1 Gothic;
+  font: 9px/30px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 
@@ -171,7 +173,7 @@ export const RegisterLink = styled.a`
   border: 1px solid ${mainColor};
   border-radius: 20px;
   background: transparent;
-  font: normal normal normal 13px/34px NEXON Lv1 Gothic;
+  font: normal normal normal 13px/34px ${defaultFont};
   color: ${mainColor};
   text-align: center;
   text-decoration: none;

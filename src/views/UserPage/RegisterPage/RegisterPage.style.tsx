@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { defaultFont } from '@util/style/font';
-import { mainColor, greyColor, lightGreyColor } from '@util/style/color';
+import {
+  mainColor, greyColor, lightGreyColor, fontColor,
+} from '@util/style/color';
 
 export const RegisterTitle = styled.h1`
   width: 150px;
@@ -11,7 +13,7 @@ export const RegisterTitle = styled.h1`
 `;
 
 export const RegisterForm = styled.form`
-  width: 323px;
+  width: 380px;
   margin: 0 auto 42px;
 `;
 
@@ -35,7 +37,7 @@ export const RegisterInputRow = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 323px;
+  width: 100%;
   margin-bottom: 22px;
   font: normal 300 20px ${defaultFont};
   color: ${greyColor};
@@ -46,28 +48,31 @@ export const RegisterInputGroup = styled.div`
 `;
 
 export const RegisterInputSmallGroup = styled.div`
-  width: 140px;
+  width: 176px;
 `;
 
 export const RegisterInputExtraSmallGroup = styled.div`
-  width: 100px;
+  width: 117px;
 `;
 
 export const RegisterInput = styled.input`
-  width: calc(100% - 16px);
-  height: 22px;
+  width: calc(100% - 29px);
+  height: 34px;
   margin-bottom: 10px;
-  padding-left: 9px;
+  padding: 0px 13px;
   border: 1px solid ${greyColor};
   border-radius: 20px;
-  font: 9px/23px ${defaultFont};
-  color: ${greyColor};
+  font: 14px/23px ${defaultFont};
+  color: ${fontColor};
+  ::placeholder {
+    color: ${greyColor};
+  }
 `;
 
 export const RegisterAlert = styled.div`
-  height: 10px;
-  padding-left: 9px;
-  font: normal 300 9px ${defaultFont};
+  height: 24px;
+  padding-left: 13px;
+  font: normal 300 12px ${defaultFont};
   color: ${mainColor};
   text-align: left;
 `;
@@ -75,7 +80,7 @@ export const RegisterAlert = styled.div`
 export const RegisterButton = styled.button`
   display: block;
   width: 323px;
-  height: 32px;
+  height: 40px;
   margin: 0 auto;
   padding: 0;
   border: 1px solid ${mainColor};
@@ -133,22 +138,22 @@ export const RegisterInputTitle = styled.h3`
 `;
 
 export const RegisterThirdPartyButtonContainer = styled.div`
+  width: 380px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin: 0 auto 40px;
 `;
 
 export const RegisterThirdPartyButton = styled.button`
   display: inline-flex;
   align-items: center;
-  width: 170px;
-  height: 30px;
-  margin-right: 14px;
+  width: 185px;
+  height: 33px;
   padding-left: 21px;
   border: 1px solid ${lightGreyColor};
   border-radius: 25px;
   background: transparent;
-  font: 9px/30px ${defaultFont};
+  font: 11px/33px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 

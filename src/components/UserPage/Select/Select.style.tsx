@@ -6,7 +6,7 @@ export const SelectContainer = styled.div`
   display: flex;
   position: relative;
   width: calc(100% - 9px);
-  height: 22px;
+  height: 34px;
   padding-left: 7px;
   border: 1px solid ${greyColor};
   border-radius: 20px;
@@ -15,7 +15,7 @@ export const SelectContainer = styled.div`
 
   ::after {
     position: absolute;
-    top: 9px;
+    top: 14px;
     right: 9px;
     display: block;
     width: 8px;
@@ -27,14 +27,17 @@ export const SelectContainer = styled.div`
 `;
 
 export const SelectDisplay = styled.div`
-  width: 100%;
+  width: 92%;
   margin: 0;
-  padding: 0;
+  padding-left: 5px;
   border: 0;
   background: transparent;
-  font: 9px/20px ${defaultFont};
+  font: 14px/34px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 interface showProps {
@@ -43,7 +46,7 @@ interface showProps {
 
 export const OptionContainer = styled.div<showProps>`
   position: absolute;
-  top: 26px;
+  top: 38px;
   left: 0;
   width: calc(100% - 20px);
   height: 80px;
@@ -71,9 +74,9 @@ export const OptionContainer = styled.div<showProps>`
 
 export const Option = styled.div`
   width: 100%;
-  height: 9px;
+  height: 15px;
   margin-bottom: 6px;
-  font: 8px/6px ${defaultFont};
+  font: 12px/8px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 `;

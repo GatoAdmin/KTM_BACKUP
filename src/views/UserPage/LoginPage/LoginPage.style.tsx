@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
-import { mainColor, greyColor, lightGreyColor } from '@util/style/color';
+import {
+  mainColor, greyColor, lightGreyColor, fontColor,
+} from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import LogoIcon from '../../../assets/logo.svg';
 
@@ -60,7 +62,7 @@ export const LoginInput = styled.input`
   border: 1px solid ${greyColor};
   border-radius: 20px;
   font: 14px/13px ${defaultFont};
-  color: ${greyColor};
+  color: ${fontColor};
   outline: none;
   :focus {
     border: 1px solid ${mainColor};
@@ -113,14 +115,14 @@ export const RegisterThirdPartyButtonContainer = styled.div`
 export const RegisterThirdPartyButton = styled.button`
   display: inline-flex;
   align-items: center;
-  width: 172px;
+  width: 190px;
   height: 30px;
   margin-right: 10px;
   padding-left: 21px;
   border: 1px solid ${lightGreyColor};
   border-radius: 25px;
   background: transparent;
-  font: 9px/30px ${defaultFont};
+  font: 12px/30px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 

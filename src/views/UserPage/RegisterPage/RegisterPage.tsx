@@ -25,54 +25,12 @@ import useTranslate from '@util/hooks/useTranslate';
 import { Loading, LoadingPopup } from '../LoginPage/LoginPage.style';
 import i18nLoginResource from '../../../assets/i18n/registerPage.json';
 
-const countryArray = [
-  '베트남',
-  '대한민국',
-  '미국',
-  '일본',
-  '아르헨티나',
-  '호주',
-  '벨기에',
-  '캐나다',
-  '캄보디아',
-  '중국',
-  '체코',
-  '이집트',
-  '프랑스',
-  '독일',
-  '그리스',
-  '홍콩',
-  '헝가리',
-  '인도',
-  '인도네시아',
-  '이란',
-  '이라크',
-  '이탈리아',
-  '네덜란드',
-  '멕시코',
-  '뉴질랜드',
-  '노르웨이',
-  '페루',
-  '필리핀',
-  '포르투갈',
-  '폴란드',
-  '싱가포르',
-  '스페인',
-  '스웨덴',
-  '대만',
-  '터키',
-  '영국',
-];
 const yearArray = Array.apply(null, Array(40)).map((value, index) => index + 1980);
 const monthArray = Array.apply(null, Array(12)).map((value, index) => index + 1);
 const dayArray = Array.apply(null, Array(31)).map((value, index) => index + 1);
-const reasonArray = [
-  '한국유학에 관심이 있거나 준비 중입니다.',
-  '한국어학원에서 공부하며 대학교 입학을 준비 중입니다.',
-  '한국의 대학교에서 공부하는 대학생입니다.',
-  '일반인',
-];
-const topikArray = ['없음', '1급', '2급', '3급', '4급', '5급', '6급'];
+const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
+const reasonArray = (t: (s: string) => string) => Array.apply(null, Array(4)).map((val, index) => t(`reason-${index}`));
+const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
 
 const RegisterPage: NextPage = ({
   router: {
@@ -110,6 +68,7 @@ const RegisterPage: NextPage = ({
     ERROR_NOT_EXIST_IDENTITY: false,
     ERROR_NOT_PROPER_PASSWORD: false,
     ERROR_PASSWORD_CONFIRM_FAIL: false,
+    ERROR_NOT_VALID_EMAIL: false,
   });
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -146,9 +105,12 @@ const RegisterPage: NextPage = ({
         if (status !== 'success') {
           setErrMsg((prev) => ({ ...prev, [status]: true }));
         } else {
-          alert('이메일 인증을 완료해주세요.');
+          alert(t('notify-email-certification'));
           setLoading(false);
-          Router.push('/login');
+          Router.push({
+            pathname: '/login',
+            query: { lang },
+          });
         }
         setLoading(false);
       })
@@ -163,7 +125,6 @@ const RegisterPage: NextPage = ({
     } else if (t !== undefined) {
       setFormData((prev) => ({ ...prev, [t]: v }));
     }
-    console.log(formData);
   };
 
   React.useEffect(() => {
@@ -179,10 +140,6 @@ const RegisterPage: NextPage = ({
       setErrMsg(errObj);
     }
   }, [loading]);
-
-  React.useEffect(() => {
-    console.log({ ...formData });
-  }, [formData]);
 
   return (
     <UserLayout width={630} height={800}>
@@ -230,6 +187,7 @@ const RegisterPage: NextPage = ({
               <RegisterInput placeholder={t('email')} name="email" onChange={handleFormContent} />
               {errMsg.ERROR_NOT_EXIST_EMAIL && <RegisterAlert>{t('warn-6')}</RegisterAlert>}
               {errMsg.ERROR_EXIST_EMAIL && <RegisterAlert>{t('warn-7')}</RegisterAlert>}
+              {errMsg.ERROR_NOT_VALID_EMAIL && <RegisterAlert>{t('warn-16')}</RegisterAlert>}
             </RegisterInputGroup>
           </RegisterInputRow>
 
@@ -263,7 +221,7 @@ const RegisterPage: NextPage = ({
             <RegisterInputGroup>
               <Select
                 placeholder={t('choice-nation')}
-                options={countryArray}
+                options={countryArray(t)}
                 name="nationality"
                 handleFormContent={handleFormContent}
               />
@@ -309,9 +267,8 @@ const RegisterPage: NextPage = ({
 
             <RegisterInputGroup>
               <Select
-                lang={lang}
                 placeholder={t('choice-identity-label')}
-                options={reasonArray}
+                options={reasonArray(t)}
                 name="identity"
                 handleFormContent={handleFormContent}
               />
@@ -325,7 +282,7 @@ const RegisterPage: NextPage = ({
             <RegisterInputGroup>
               <Select
                 placeholder={t('choice-topik-level')}
-                options={topikArray}
+                options={topikArray(t)}
                 name="topik_level"
                 handleFormContent={handleFormContent}
               />

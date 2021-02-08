@@ -34,7 +34,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: 'one-click',
-    link: '/',
+    link: '/soultion',
   },
 ];
 

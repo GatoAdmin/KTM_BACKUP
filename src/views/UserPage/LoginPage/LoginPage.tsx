@@ -62,6 +62,7 @@ const LoginPage: NextPage = ({
     axios({
       method: 'post',
       url: 'http://127.0.0.1:8000/api/login/',
+      // url: `${process.env.API_PATH}api/login/`,
       data: axiosFormData,
     }).then((res) => {
       const { status } = res.data;
@@ -74,6 +75,10 @@ const LoginPage: NextPage = ({
         setLoading(false);
       } else {
         setLoading(false);
+        const {
+          data: { sid },
+        } = res;
+        sessionStorage.setItem('sid', sid);
         Router.push('/');
       }
     });

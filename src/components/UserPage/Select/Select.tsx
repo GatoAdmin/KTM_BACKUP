@@ -82,7 +82,6 @@ const Select: React.VFC<SelectProps> = ({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visible, toggleVisible] = useVisible(containerRef);
   const getTriggerChangeOption = (optionValue: string | number, optionIndex: number) => () => {
-    console.log(optionIndex);
     const changedVal = changeValue(name, optionIndex);
     handleFormContent(undefined, name, changedVal);
     setInputValue(optionValue);

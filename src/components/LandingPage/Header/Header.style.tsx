@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
 import LogoIcon from '../../../assets/logo.svg';
+import MyPageIcon from '../../../assets/svg/mypage.svg';
 
 interface HeaderContainerProps {
   show: boolean;
@@ -29,7 +30,7 @@ export const Logo = styled(LogoIcon)`
   width: 81px;
   height: 81px;
   margin-right: 19px;
-  
+
   > path {
     fill: ${mainColor};
   }
@@ -102,7 +103,22 @@ export const LocalizationButton = styled.button`
 `;
 
 export const LoginLink = styled.a`
-  margin-left: 50px;
   color: ${fontColor};
   text-decoration: none;
+`;
+
+export const LinkButtonContainer = styled.div`
+  margin-left: 50px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const MyPageLink = styled(MyPageIcon)`
+  width: 30px;
+  height: 30px;
+  margin-right: 20px;
+  cursor: pointer;
+  display: block;
 `;

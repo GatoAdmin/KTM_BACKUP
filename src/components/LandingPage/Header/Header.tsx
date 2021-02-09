@@ -12,6 +12,9 @@ import {
   Navigation,
   NavigationContainer,
   NavLink,
+  MyPageLink,
+  LogoutLink,
+  LinkButtonContainer,
 } from './Header.style';
 
 interface headerLink {
@@ -45,8 +48,24 @@ interface HeaderProps {
   changeLang: (s: string) => void;
 }
 
+const showLoginOrLogout = (t: (s: string) => string, isLogged: boolean) => {
+  const term = isLogged ? 'logout' : 'login';
+  return (
+    <Link href={`/${term}`} passHref>
+      <LoginLink>{t(`${term}`)}</LoginLink>
+    </Link>
+  );
+};
+
+const MyPageButton = React.forwardRef(({ onClick, href }, ref) => (
+  <a href={href} onClick={onClick} ref={ref}>
+    <MyPageLink />
+  </a>
+));
+
 const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
+  const [isLogged, setIsLogged] = React.useState<boolean>(false);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
   React.useEffect(() => {
@@ -70,6 +89,12 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
     };
   }, []);
 
+  React.useEffect(() => {
+    if (sessionStorage.getItem('sid') !== null) {
+      setIsLogged(true);
+    }
+  }, []);
+
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>
       <LogoContainer>
@@ -90,9 +115,14 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
           <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 2} />
         </LocalizationButtonContainer>
-        <Link href="/login" passHref>
-          <LoginLink>{t('login')}</LoginLink>
-        </Link>
+        <LinkButtonContainer>
+          {isLogged && (
+            <Link href="/mypage" passHref>
+              <MyPageButton />
+            </Link>
+          )}
+          {showLoginOrLogout(t, isLogged)}
+        </LinkButtonContainer>
       </NavigationContainer>
     </HeaderContainer>
   );

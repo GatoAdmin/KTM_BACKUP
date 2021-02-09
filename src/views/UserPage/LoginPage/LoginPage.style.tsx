@@ -1,18 +1,26 @@
-import styled from 'styled-components';
-import { mainColor, greyColor, lightGreyColor } from '@util/style/color';
+import styled, { css } from 'styled-components';
+import {
+  mainColor, greyColor, lightGreyColor, fontColor,
+} from '@util/style/color';
+import { defaultFont } from '@util/style/font';
 import LogoIcon from '../../../assets/logo.svg';
 
+const putCenter = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const LogoContainer = styled.div`
-  width: 150px;
-  margin: 0 auto 31px;
+  width: 100%;
   font: normal normal 900 38px/51px Nunito;
   color: ${mainColor};
+  ${putCenter};
 `;
 
 export const Logo = styled(LogoIcon)`
-  width: 132px;
-  height: 132px;
-  margin: 0 9px -32px;
+  width: 220px;
+  height: 120px;
 
   > path {
     fill: ${mainColor};
@@ -53,14 +61,18 @@ export const LoginInput = styled.input`
   padding-left: 14px;
   border: 1px solid ${greyColor};
   border-radius: 20px;
-  font: 11px/13px normal;
-  color: ${greyColor};
+  font: 14px/13px ${defaultFont};
+  color: ${fontColor};
+  outline: none;
+  :focus {
+    border: 1px solid ${mainColor};
+  }
 `;
 
 export const LoginAlert = styled.div`
   height: 10px;
   padding-left: 14px;
-  font: normal 9px NEXON Lv1 Gothic;
+  font: normal 12px ${defaultFont};
   color: ${mainColor};
   text-align: left;
 `;
@@ -74,15 +86,16 @@ export const LoginButton = styled.button`
   border: 1px solid ${mainColor};
   border-radius: 20px;
   background: transparent;
-  font: normal normal normal 13px/32px NEXON Lv1 Gothic;
+  font: normal normal normal 13px/32px ${defaultFont};
   color: ${mainColor};
   text-align: center;
   cursor: pointer;
+  outline: none;
 `;
 
 export const LoginTextContainer = styled.div`
   margin-bottom: 38px;
-  font: 15px/19px;
+  font: 15px/19px ${defaultFont};
   color: ${greyColor};
   text-align: center;
 `;
@@ -102,14 +115,14 @@ export const RegisterThirdPartyButtonContainer = styled.div`
 export const RegisterThirdPartyButton = styled.button`
   display: inline-flex;
   align-items: center;
-  width: 160px;
+  width: 190px;
   height: 30px;
   margin-right: 10px;
   padding-left: 21px;
   border: 1px solid ${lightGreyColor};
   border-radius: 25px;
   background: transparent;
-  font: 9px/30px NEXON Lv1 Gothic;
+  font: 12px/30px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 
@@ -129,14 +142,61 @@ export const RegisterLink = styled.a`
   display: block;
   width: 323px;
   height: 34px;
-  margin: 0 auto;
+  margin: 0 auto 40px;
   padding: 0;
   border: 1px solid ${mainColor};
   border-radius: 20px;
   background: transparent;
-  font: normal normal normal 13px/34px NEXON Lv1 Gothic;
+  font: normal normal normal 13px/34px ${defaultFont};
   color: ${mainColor};
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+`;
+
+// popup
+export const LoadingPopup = styled.div`
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const Loading = styled.div`
+  width: 100px;
+  height: 100px;
+  border-right: 3px solid ${mainColor};
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-animation: rotation 1.1s infinite linear;
+  animation: rotation 1.1s infinite linear;
+  @-webkit-keyframes rotation {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes rotation {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
 `;

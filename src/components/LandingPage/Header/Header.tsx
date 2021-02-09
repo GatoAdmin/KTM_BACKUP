@@ -48,10 +48,10 @@ interface HeaderProps {
   changeLang: (s: string) => void;
 }
 
-const showLoginOrLogout = (t: (s: string) => string, isLogged: boolean) => {
+const showLoginOrLogout = (t: (s: string) => string, isLogged: boolean, lang: string) => {
   const term = isLogged ? 'logout' : 'login';
   return (
-    <Link href={`/${term}`} passHref>
+    <Link href={{ pathname: `/${term}`, query: { lang } }} passHref>
       <LoginLink>{t(`${term}`)}</LoginLink>
     </Link>
   );
@@ -121,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
               <MyPageButton />
             </Link>
           )}
-          {showLoginOrLogout(t, isLogged)}
+          {showLoginOrLogout(t, isLogged, lang)}
         </LinkButtonContainer>
       </NavigationContainer>
     </HeaderContainer>

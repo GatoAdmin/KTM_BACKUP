@@ -29,6 +29,11 @@ export const EmptyText = styled.div`
     font-size: 18px;
     line-height: 25px;
     color: #9E9E9E;
+    ${(props)=>(props.style
+      ?css`
+        ${props.style}
+      `:null
+    )}
 `; 
 
 export const SelectContainer = styled.header`

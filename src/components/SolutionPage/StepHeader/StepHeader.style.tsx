@@ -1,8 +1,10 @@
 
 import styled, { css } from 'styled-components';
+import ChangeCircleSVG from '@assets/svg/change_circle.svg';
 import ClickHandSVG from '@assets/svg/click_hand_icon.svg';
 import { fontColor, mainColor } from '@util/style/color';
 import { defaultFont, logoFont } from '@util/style/font';
+import { PropTypes } from 'mobx-react';
 
 interface StepContainerProps {
     step: number;
@@ -14,6 +16,10 @@ interface NavItemProps {
 }
 
 export const ClickIcon = styled(ClickHandSVG)`
+    display: block;
+    margin: 0px auto 19px;
+`;
+export const ChangeCircleIcon = styled(ChangeCircleSVG)`
     display: block;
     margin: 0px auto 19px;
 `;
@@ -100,3 +106,46 @@ export const UnivSelectButton = styled.button`
     }
 `;
 
+interface UnivItemProps{
+  logo: string;
+};
+export const UnivLogo = styled.img`
+  width: 75px;
+  height: 75px;
+  margin: auto 20px auto 0;
+`;
+export const UnivItem = styled.div`
+  display:flex;
+  justify-content: space-between;
+  min-width: 320px;
+  min-heigh: 75px;
+`;
+export const UnivTextContainer = styled.div`
+  display:inline-block;
+  margin:auto 0 auto 0;
+`;
+
+export const UnivNameContainer = styled.div`
+  display:flex;
+  justify-content: left;
+  padding-bottom:7px;
+`;
+export const UnivName = styled.div`
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 30px;
+`;
+export const UnivCategory = styled.div`
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0 auto 12px;
+  color: #DF4D3D;
+`;
+export const UnivDetailText = styled.div`
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 16px;
+
+  color: #9E9E9E;
+`;

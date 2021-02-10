@@ -1,10 +1,7 @@
 import styled from 'styled-components';
 import { fontColor, mainBackgroundColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
-
-export const Test = styled.main`
-  width: 100%;
-`;
+import ClickHandSVG from '@assets/svg/click_hand_icon.svg';
 
 export const UnivListSection = styled.section`
   position: relative;
@@ -122,3 +119,34 @@ export const FilterSection = styled.div`
     border: 0;
   }
 `;
+
+export const ImageContainer = styled.div`
+  width: 1100px;
+  height: auto;
+  opacity: 0.9;
+  padding-top:80px; 
+
+  >div {
+    width: 510px;
+    height: 60px;    
+    position: absolute;
+    left: 900px;
+    top: 1043px;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 30px;
+    color:#FFFFFF;
+  }
+`;
+export const CoverImage = styled.img.attrs({
+  src: '/images/solution_cover.png',
+  alt: 'cover',
+})`
+  width: 1100px;
+  height: auto;   
+
+`;
+
+export const Accent = styled.span`
+    color: #DF4D3D;
+`; 

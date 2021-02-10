@@ -61,7 +61,7 @@ const LoginPage: NextPage = ({
 
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8000/api/login/',
+      url: 'http://15.165.227.164/api/login/',
       // url: `${process.env.API_PATH}api/login/`,
       data: axiosFormData,
     }).then((res) => {

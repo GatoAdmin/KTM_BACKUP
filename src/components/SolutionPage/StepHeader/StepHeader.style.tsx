@@ -101,6 +101,8 @@ export const UnivSelectButton = styled.button`
     box-sizing: border-box;
     border-radius: 9px;
     right: 10px;
+    cursor:pointer;
+    z-index:5;
     > svg {
       fill: none;
     }

@@ -37,7 +37,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: 'one-click',
-    link: '/soultion',
+    link: '/solution',
   },
 ];
 

@@ -125,13 +125,14 @@ export const ImageContainer = styled.div`
   height: auto;
   opacity: 0.9;
   padding-top:80px; 
+  position: relative;
 
   >div {
     width: 510px;
     height: 60px;    
     position: absolute;
-    left: 900px;
-    top: 1043px;
+    left: 490px;
+    top: 182px;
     font-weight: bold;
     font-size: 22px;
     line-height: 30px;

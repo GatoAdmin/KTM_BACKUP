@@ -31,7 +31,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: '원클릭 입학솔루션',
-    link: '/',
+    link: '/solution',
   },
 ];
 

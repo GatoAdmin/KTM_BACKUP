@@ -43,7 +43,7 @@ export const SelectContainer = styled.header`
   justify-content: space-between;
   width: 1000px;
   border-bottom: 0.8px solid rgba(196, 196, 196, 0.8);
-
+  margin: 0 0 25px 0;
 `;
 
 export const Tap = styled.div`
@@ -57,7 +57,7 @@ export const Tap = styled.div`
 export const TapContainer = styled.div`
   display: flex;
   flex: 1 1 0;
-  margin-right: 50px;
+  margin: 0 50px 0 0;
   width: 50%;
 `;
 
@@ -65,6 +65,8 @@ export const TapItem = styled.div<TapItemProps>`
   text-decoration: none;
   font-weight: bold;
   padding: 21px 8px 18px 8px;
+  cursor: pointer;
+  
   ${(props)=>(props.isViewTap
     ?css`
     color: #DF4D3D;
@@ -73,7 +75,6 @@ export const TapItem = styled.div<TapItemProps>`
     :css`
     color: ${(props.color||'#9E9E9E')};
     `
-      
   )}
 `;
 export const ReadyButton = styled.button<ReadyButtonProps>`
@@ -100,3 +101,8 @@ export const ReadyButton = styled.button<ReadyButtonProps>`
         `
     )};
 `;
+export const RadioButtonContainer = styled.div`
+  display: flex;    
+  flex-wrap: wrap;
+  width: 100%;
+  `;

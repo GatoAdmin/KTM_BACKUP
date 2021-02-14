@@ -196,11 +196,103 @@ const useUnivData = (univ_code:string) => {
   );
   return isArray(data)?data[0]:data;
 };
+export const getLoginCheck=()=>{
+  if(typeof window !== "undefined"){
+    const sid = window.sessionStorage.getItem('sid');
+    if(sid === null){
+      return false;
+    }
+    return true;
+  }
+  return false;
+};
+
+const onClickSelectUniv=()=>{
+  if(getLoginCheck()){
+  }else{
+    alert("로그인이 필요합니다.");
+    Router.push('/login');
+  }
+};
+
+export const getSelectUnivInfo=()=>{
+  try{
+    if(getLoginCheck()){
+      // const univ_code = window.sessionStorage.getItem('chooseUniv');
+      const univ_code = "SMU_UNI";
+      if(univ_code===null){
+        return null;
+      }else{
+        const univInfo = useUnivData(univ_code);
+        return univInfo;
+      }
+    }
+    else{
+      return null;
+    }
+  }catch(error){
+    console.log(error);
+  }
+};
+
+interface initialSelectEnter{
+  univ_code?:string;
+  step?:number|null;
+  enter_type?:string|null;
+  major?:string|number;
+  major_type?:string;
+}
+
+export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
+: [initialSelectEnter | null, (event: React.ChangeEvent<HTMLInputElement>) => void] =>{//,updateUrlQuery: UpdateUrlQueryFunction
+  const [selectValue, setSelectValue] = React.useState<initialSelectEnter| null>(() => initialSelectEnter);    
+  const handleSelectEnter = (event: React.ChangeEvent<HTMLInputElement>|undefined) => {
+    let newSelectValue: string | null;
+    if(event !== undefined){
+      console.log(event.target);
+      const { target: { value, name, id } } = event;
+          if (String(selectValue) === value) {
+            newSelectValue = null;
+          } else {
+            newSelectValue = value;
+          }
+          if(name ==="major"){
+            let strIds = id.split('_');
+            setSelectValue({
+              ...selectValue,
+              major_type:strIds[0],
+              major:newSelectValue
+            });
+          }else{
+            setSelectValue({
+              ...selectValue,
+              [name]:newSelectValue
+            });
+          }
+          // updateUrlQuery('enter_type', newSelectValue);
+    }else{
+      setSelectValue({
+        ...selectValue,
+        major_type:"인문",
+        major:undefined
+      });
+    }
+  };
+  if(typeof window !=="undefined"){
+    if(selectValue!==null){
+      sessionStorage.setItem('select_enter_value', JSON.stringify(selectValue));
+    }else{
+      sessionStorage.setItem('select_enter_value',"");
+    }
+  }
+  return [
+    selectValue, handleSelectEnter
+  ];
+}
 
 const StepHeader: React.VFC<StepProps> = ({ step = 1}) => {
-  const univ_code = null;//window.sessionStorage.getItem('chooseUniv');
-  const univInfo = useUnivData(univ_code===null?"SMU_UNI":univ_code);
-  console.log(univInfo)
+  
+  const univInfo = getSelectUnivInfo();
   return (
       <SolutionHeader>
         <StepContainer>
@@ -224,7 +316,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1}) => {
                   {univInfo.university.name}
                 </UnivName>
                 <UnivCategory>
-                  {univInfo.university.category==="UNI"?"대학교":univInfo.university.category==="JM"?"전문대학교":univInfo.university.category==="EH"?"어학원":"학교"}
+                  {univInfo.university.category==="UN"?"대학교":univInfo.university.category==="JM"?"전문대학교":univInfo.university.category==="EH"?"어학원":"학교"}
                 </UnivCategory>
               </UnivNameContainer>
               <UnivDetailText>
@@ -236,15 +328,15 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1}) => {
             </UnivTextContainer>
           </UnivItem>
           :<EmptyText>
-                우측의  버튼을 클릭하여 입학을 준비할 대학교를 선택하세요.
+                우측의 버튼을 클릭하여 입학을 준비할 대학교를 선택하세요.
             </EmptyText>
           }
            {univInfo?
-           <UnivSelectButton>
+           <UnivSelectButton onClick={onClickSelectUniv}>
                 <ChangeCircleIcon/>
                 대학교<br/>변경하기
             </UnivSelectButton>
-            :<UnivSelectButton>
+            :<UnivSelectButton onClick={onClickSelectUniv}>
                 <ClickIcon/>
                 대학교<br/>선택하기
             </UnivSelectButton>

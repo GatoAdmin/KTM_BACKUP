@@ -1,0 +1,1 @@
+export { default } from '@views/SolutionPage/SoultionAgreePage/SolutionAgreePage';

@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
 import { GetServerSideProps, NextPage } from 'next';
+import Router, { withRouter } from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import Header from '@components/Shared/Header/Header';
@@ -9,7 +10,9 @@ import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTut
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
+import DocumentShortItem from '@components/SolutionPage/DocumentShortItem/DocumentShortItem';
 import {
+  ColorBold,
   BlockHeader,
   Block,
   EmptyText,
@@ -18,7 +21,8 @@ import {
   Tap,
   TapItem,
   TapContainer,
-  RadioButtonContainer
+  RadioButtonContainer,
+  DocumentShortContainer
 } from '@components/SolutionPage/Common/Common.style';
 import {
   ImageContainer,
@@ -29,11 +33,6 @@ import {
 import FamilyIcon from '@assets/svg/family_icon.svg';
 import EducationIcon from '@assets/svg/language_education_icon.svg';
 import CertificateIcon from '@assets/svg/education_qualification_icon.svg';
-import WritePictogram from '@assets/svg/write_pictogram.svg';
-import SearchPictogram from '@assets/svg/search_pictogram.svg';
-import StudyPictogram from '@assets/svg/study_pictogram.svg';
-import FamilyPictogram from '@assets/svg/family_pictogram.svg';
-import BalancePictogram from '@assets/svg/balance_pictogram.svg';
 import { isArray } from 'util';
 
 const qualificationIcons = [
@@ -41,16 +40,6 @@ const qualificationIcons = [
   { type: '어학요건', icon: EducationIcon },
   { type: '학력요건', icon: CertificateIcon },
 ] as const;
-
-const documentPictogram = {
-  write: WritePictogram,
-  check: SearchPictogram,
-  study: StudyPictogram,
-  family: FamilyPictogram,
-  balance: BalancePictogram,
-} as const;
-
-type Pictogram = keyof typeof documentPictogram;
 
 interface tap {
   name: string;
@@ -131,7 +120,10 @@ const fetchDocumentInfo = (url: string) => axios.get(url)
     // };
   });
 const useDocumentData = (univ_code:string) => {
-  const sid = window.sessionStorage.getItem('sid');
+  let sid = 0; 
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+  }
   const getKey = () => `http://15.165.227.164/api/?action=oneclick_univ&params=${JSON.stringify({ univ_code: univ_code })}&sid=${sid}`;
   const { data } = useSWRInfinite(
     getKey,
@@ -155,7 +147,8 @@ export const getSolutionInfo=()=>{
   }
 };
 
-const getChoseUnivCode =()=>{
+
+const getChosseUnivCode =()=>{
   let data = null;
   if(typeof window !=="undefined"){
     data = "SMU_UNI";//window.sessionStorage.getItem('chooseUniv');
@@ -165,7 +158,7 @@ const getChoseUnivCode =()=>{
 const getSesstionData =()=>{
   let data = null;
   if(typeof window !=="undefined"){
-    const univ_code = getChoseUnivCode();
+    const univ_code = getChosseUnivCode();
     let sessionData = sessionStorage.getItem('select_enter_value');
     if(sessionData&&sessionData!==""){
       sessionData=JSON.parse(sessionData);
@@ -179,87 +172,122 @@ const getSesstionData =()=>{
   return data;
 }
 
-const SolutionSelectPage: NextPage = () => {
-  const univInfo = getSelectUnivInfo();
-  let sessionData = getSesstionData();
-  const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChoseUnivCode(),enter_type:null});
-  const [viewTap,setViewTaps] = React.useState({type:selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문"}); 
-  console.log(selectValue);
-  const changeViewTap =(type:string)=>{
-    setViewTaps({type:type});
-    handleSelectEnter();
+const onClickNextStep=(isFinial:boolean)=>{
+  if(isFinial){
+    Router.push('/solution/2');
+  }else{
+    window.alert("학교와 학과를 먼저 선택해주세요.");
   }
-  const univInfo2 = getSolutionInfo();
-  return (
-    <DefaultLayout>
-      <Header background="light" position="relative" />
-      <StepHeader step={1}/>
-      <Block>
-        <BlockHeader>입학 계열 선택</BlockHeader>
-        {univInfo
-          ?<RadioButtonContainer>
-            <RadioButton id="new_enter" group="enter_type" value="new_enter" checked={selectValue?.enter_type==="new_enter"} onChange={handleSelectEnter}>신입학</RadioButton>
-            <RadioButton id="transfer_enter" group="enter_type" value="transfer_enter" checked={selectValue?.enter_type==="transfer_enter"} onChange={handleSelectEnter}>편입학</RadioButton>
-          </RadioButtonContainer>
-          :<EmptyText>
-            먼저 대학 선택 버튼을 눌러 입학을 준비할 대학교를 선택해주세요
-          </EmptyText>
+}
+
+const SolutionSelectPage: NextPage = () => {
+  if(typeof window !== "undefined"){
+    const univInfo = getSelectUnivInfo();
+    let sessionData = getSesstionData();
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
+    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
+
+    const [viewTap,setViewTaps] = React.useState({type:viewType}); 
+    console.log(selectValue);
+    const changeViewTap =(type:string)=>{
+      setViewTaps({type:type});
+      handleSelectEnter();
+    }
+    const univInfo2 = getSolutionInfo();
+    const isFinial = () =>{
+      if(univInfo){
+        if(selectValue!==null&&typeof selectValue.major==="string"){
+          return true;
         }
-        
-      </Block>
-      <Block>
-        <BlockHeader>학과 선택</BlockHeader>
-        <SelectContainer>
-        <TapContainer>
-          <Tap>
-              {taps.map(({ name, type, index }) => (
-                  <TapItem key={index} isViewTap={viewTap.type===type} onClick={()=>changeViewTap(type)}>
-                      {name}
-                  </TapItem>
-              ))}
-          </Tap>
-        </TapContainer>
-        </SelectContainer>
-        {univInfo
-          ?selectValue!==null&&typeof selectValue.enter_type==="string"
+      }
+      return false;
+    }
+    return (
+      <DefaultLayout>
+        <Header background="light" position="relative" />
+        <StepHeader step={1} major={ selectValue?typeof selectValue.major==="string"?selectValue.major:null:null}/>
+        <Block>
+          <BlockHeader>입학 계열 선택</BlockHeader>
+          {univInfo
             ?<RadioButtonContainer>
-                {univInfo.tuition.map(({ name, type },index) => (
-                  viewTap.type===type
-                  ?<RadioButton id={`${type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major===name} onChange={handleSelectEnter}>
-                        {name}
-                    </RadioButton>
-                    :null
-                ))}
+              <RadioButton id="new_enter" group="enter_type" value="new_enter" checked={selectValue?.enter_type==="new_enter"} onChange={handleSelectEnter}>신입학</RadioButton>
+              <RadioButton id="transfer_enter" group="enter_type" value="transfer_enter" checked={selectValue?.enter_type==="transfer_enter"} onChange={handleSelectEnter}>편입학</RadioButton>
             </RadioButtonContainer>
             :<EmptyText>
-                먼저 대학교와 입학 계열을 선택해주세요.
+              먼저 대학 선택 버튼을 눌러 입학을 준비할 대학교를 선택해주세요
+            </EmptyText>
+          }
+          
+        </Block>
+        <Block>
+          <BlockHeader>학과 선택</BlockHeader>
+          <SelectContainer>
+          <TapContainer>
+            <Tap>
+                {taps.map(({ name, type, index }) => (
+                    <TapItem key={index} isViewTap={viewTap.type===type} onClick={()=>changeViewTap(type)}>
+                        {name}
+                    </TapItem>
+                ))}
+            </Tap>
+          </TapContainer>
+          </SelectContainer>
+          {univInfo
+            ?selectValue!==null&&typeof selectValue.enter_type==="string"
+              ?<RadioButtonContainer>
+                  {univInfo.tuition.map(({ name, type },index) => (
+                    viewTap.type===type
+                    ?<RadioButton id={`${type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major===name} onChange={handleSelectEnter}>
+                          {name}
+                      </RadioButton>
+                      :null
+                  ))}
+              </RadioButtonContainer>
+              :<EmptyText>
+                  먼저 대학교와 입학 계열을 선택해주세요.
+                </EmptyText>
+            :<EmptyText>
+              먼저 대학교와 입학 계열을 선택해주세요.
+            </EmptyText>
+          }
+          
+        </Block>
+        <Block>
+          <BlockHeader>제출서류 안내</BlockHeader>
+          {univInfo
+            ?selectValue!==null&&typeof selectValue.major==="string"
+              ?<div>
+                <ColorBold>필수 제출서류</ColorBold>
+                <DocumentShortContainer>
+                {univInfo.document.map(({name, pictogram})=>(
+                  <DocumentShortItem pictogram={pictogram}>
+                    {name}
+                  </DocumentShortItem>
+                  ))
+                }
+                </DocumentShortContainer>
+                </div>
+              :<EmptyText>
+                먼저 입학할 학과를 선택해 주세요.
               </EmptyText>
-          :<EmptyText>
-            먼저 대학교와 입학 계열을 선택해주세요.
-          </EmptyText>
-        }
-        
-      </Block>
-      <Block>
-        <BlockHeader>제출서류 안내</BlockHeader>
-        {selectValue!==null&&typeof selectValue.major==="string"
-        ?<div></div>
-        :<EmptyText>
-          먼저 입학할 학과를 선택해 주세요.
-        </EmptyText>
-        }
-      </Block>
-      <Block>
-        <ReadyButton isReady={false}>다음단계</ReadyButton>
-      </Block>
-      <ImageContainer>
-        <CoverImage/>
-        <div><Accent>katumm</Accent>의 유학 전문가와 함께<br/>
-            성공적인 유학생활을 시작하세요.
-        </div>
-      </ImageContainer>
-    </DefaultLayout>
-  );
+            :<EmptyText>
+              먼저 입학할 학과를 선택해 주세요.
+            </EmptyText>
+          }
+        </Block>
+        <Block>
+          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>다음단계</ReadyButton>
+        </Block>
+        <ImageContainer>
+          <CoverImage/>
+          <div><Accent>katumm</Accent>의 유학 전문가와 함께<br/>
+              성공적인 유학생활을 시작하세요.
+          </div>
+        </ImageContainer>
+      </DefaultLayout>
+    );  
+  }
+  return <DefaultLayout></DefaultLayout>
 };
 
 export default SolutionSelectPage;

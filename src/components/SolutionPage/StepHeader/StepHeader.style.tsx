@@ -2,7 +2,10 @@
 import styled, { css } from 'styled-components';
 import ChangeCircleSVG from '@assets/svg/change_circle.svg';
 import ClickHandSVG from '@assets/svg/click_hand_icon.svg';
-import { fontColor, mainColor } from '@util/style/color';
+import { 
+  fontColor, 
+  mainColor,
+  mainColor600 } from '@util/style/color';
 import { defaultFont, logoFont } from '@util/style/font';
 import { PropTypes } from 'mobx-react';
 
@@ -150,4 +153,16 @@ export const UnivDetailText = styled.div`
   line-height: 16px;
 
   color: #9E9E9E;
+`;
+
+export const UnivSelectMajor = styled.div`
+  align-items: center;
+  padding: 5.5px 14px;
+  min-width: 40px;
+  height: 19px;
+  border-radius: 9px;
+  margin: 0 8px;
+  color: #FFFFFF;
+  font-weight: bold;
+  background: ${mainColor600};
 `;

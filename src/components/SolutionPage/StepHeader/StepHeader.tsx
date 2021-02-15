@@ -22,7 +22,8 @@ import {
     UnivNameContainer,
     UnivName,
     UnivCategory,
-    UnivDetailText
+    UnivDetailText,
+    UnivSelectMajor
 } from './StepHeader.style';
 import {
     EmptyText,
@@ -83,6 +84,8 @@ const steps: Array<step> = [
 
 interface StepProps {
     step: number;
+    major?: string;
+    plan?: string;
 }
 
 type ConditionType = typeof qualificationIcons[number]['type'];
@@ -196,6 +199,7 @@ const useUnivData = (univ_code:string) => {
   );
   return isArray(data)?data[0]:data;
 };
+
 export const getLoginCheck=()=>{
   if(typeof window !== "undefined"){
     const sid = window.sessionStorage.getItem('sid');
@@ -241,6 +245,7 @@ interface initialSelectEnter{
   enter_type?:string|null;
   major?:string|number;
   major_type?:string;
+  plan?: string;
 }
 
 export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
@@ -290,9 +295,9 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
   ];
 }
 
-const StepHeader: React.VFC<StepProps> = ({ step = 1}) => {
-  
+const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {  
   const univInfo = getSelectUnivInfo();
+
   return (
       <SolutionHeader>
         <StepContainer>
@@ -318,6 +323,13 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1}) => {
                 <UnivCategory>
                   {univInfo.university.category==="UN"?"대학교":univInfo.university.category==="JM"?"전문대학교":univInfo.university.category==="EH"?"어학원":"학교"}
                 </UnivCategory>
+                {major
+                ?<UnivSelectMajor>
+                        {major}
+                  </UnivSelectMajor>
+                  :null
+                }
+                  
               </UnivNameContainer>
               <UnivDetailText>
                   {univInfo.university.nameEng}

@@ -106,3 +106,22 @@ export const RadioButtonContainer = styled.div`
   flex-wrap: wrap;
   width: 100%;
   `;
+export const DocumentContainer = styled.div`
+  display: iniline-block;    
+  flex-wrap: wrap;
+  width: 100%;
+  `;
+export const DocumentShortContainer = styled.div`
+  display: flex;    
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 95%;
+  `;
+export const ColorBold = styled.div`
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 25px;
+  color: #DF4D3D;
+
+  margin : 0 0 15px 17px;
+`;

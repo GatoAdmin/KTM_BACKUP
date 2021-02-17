@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontColor, mainBackgroundColor, whiteColor } from '@util/style/color';
+import { fontColor, mainBackgroundColor, whiteColor, mainColor600 } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import ClickHandSVG from '@assets/svg/click_hand_icon.svg';
 
@@ -149,5 +149,5 @@ export const CoverImage = styled.img.attrs({
 `;
 
 export const Accent = styled.span`
-    color: #DF4D3D;
+    color: ${mainColor600};
 `; 

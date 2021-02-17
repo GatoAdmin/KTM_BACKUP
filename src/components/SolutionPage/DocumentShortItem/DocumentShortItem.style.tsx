@@ -21,8 +21,8 @@ import DocumentSVG from '@assets/svg/document_icon.svg';
 // })`
 //   display: none; 
 //   :checked + ${TapLabel} {
-//     color: #DF4D3D;
-//     border-bottom: 3px solid #DF4D3D;
+//     color: ${mainColor600};
+//     border-bottom: 3px solid ${mainColor600};
 //   }
 // `;
 export const DocumentIconContainer = styled.div`

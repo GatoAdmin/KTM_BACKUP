@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { fontColor } from '@util/style/color';
+import { fontColor,mainColor600 } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 export const RadioLabel = styled.label`  
@@ -26,7 +26,7 @@ export const RadioInput = styled.input.attrs({
   display: none; 
   :checked + ${RadioLabel} {
     background: rgba(255, 114, 99, 0.08);
-    border: 2px solid #DF4D3D;
-    color: #DF4D3D;
+    border: 2px solid ${mainColor600};
+    color: ${mainColor600};
   }
 `;

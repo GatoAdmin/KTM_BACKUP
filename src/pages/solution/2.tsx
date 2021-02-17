@@ -1,1 +1,1 @@
-export { default } from '@views/SolutionPage/SoultionAgreePage/SolutionAgreePage';
+export { default } from '@views/SolutionPage/SolutionAgreePage/SolutionAgreePage';

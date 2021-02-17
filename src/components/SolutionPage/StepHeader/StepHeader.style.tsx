@@ -84,8 +84,8 @@ export const NavItem = styled.div<NavItemProps>`
   padding: 21px 8px 18px 8px;
   ${(props)=>(props.isStep
     ?css`
-    color: #DF4D3D;
-    border-bottom: 3px solid #DF4D3D;
+    color: ${mainColor600};
+    border-bottom: 3px solid ${mainColor600};
     `
     :css`
     color: ${(props.color||'inherit')};
@@ -98,7 +98,7 @@ export const UnivSelectButton = styled.button`
     width: 110px;
     height: 118px;
     background: #FFFFFF;
-    color: #DF4D3D;
+    color: ${mainColor600};
     font-weight: bold;
     border: 0.8px solid #C4C4C4;
     box-sizing: border-box;
@@ -145,7 +145,7 @@ export const UnivCategory = styled.div`
   font-size: 12px;
   line-height: 16px;
   margin: auto 0 auto 12px;
-  color: #DF4D3D;
+  color: ${mainColor600};
 `;
 export const UnivDetailText = styled.div`
   font-weight: bold;

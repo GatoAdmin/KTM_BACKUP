@@ -7,12 +7,16 @@ interface ColumnProps{
     textAlign?: string;
 }
 
+interface RowProps{
+  accent?:boolean;
+  readonly?:boolean;
+}
 export const Table = styled.div`
   display: block;
   margin: 18px auto;
 `;
 
-export const Row = styled.div`
+export const Row = styled.div<RowProps>`
   display: flex;
   width: 990px;
   height: 62px;
@@ -24,6 +28,28 @@ export const Row = styled.div`
     border-top : 1px solid #C4C4C4;
   };
   border-bottom : 1px solid #C4C4C4;
+
+  ${(props)=>(props.accent
+    ?css`
+      border-top : 2px solid #C4C4C4;
+      background: rgba(255, 114, 99, 0.08);      
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 25px;
+      color: ${mainColor600};
+    `
+    :null
+    )};  
+
+  ${(props)=>(props.readonly
+    ?css`
+      background: #F7F7F7;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 22px; 
+    `
+    :null
+    )};  
 `;
 
 export const Column = styled.div<ColumnProps>`

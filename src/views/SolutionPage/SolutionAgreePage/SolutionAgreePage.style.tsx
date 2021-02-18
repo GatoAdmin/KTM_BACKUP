@@ -92,7 +92,7 @@ export const PriceInfoFooterRow = styled.div`
   border-radius: 14px;
   width: 1010px;
   margin: 0px auto;
-  padding: 27px 0 22px 0;
+  padding: 15px 0 22px 0;
 `;
 
 

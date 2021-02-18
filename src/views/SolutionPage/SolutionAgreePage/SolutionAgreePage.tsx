@@ -9,7 +9,9 @@ import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTut
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import Checkbox from '@components/Shared/Checkbox/Checkbox';
+import Agreement from '@components/SolutionPage/Agreement/Agreement';
 import PriceInfoHeader from '@components/SolutionPage/PriceInfoHeader/PriceInfoHeader';
+import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
 import {
   Block,
   FooterBlock,
@@ -40,6 +42,34 @@ import {
   HeaderRow,
   HeaderColumn
 } from '@components/SolutionPage/Table/Table.style';
+
+interface service {
+  name: string;
+  type: string;
+  price : number;
+  strPrice: string;
+}
+
+let services: Array<service> = [
+  {
+    name: '번역 공증 서비스',
+    type: "trans",
+    price : 20000,
+    strPrice:'',
+  },
+  {
+    name: '입학지원 서비스',
+    type: "support",
+    price : 25000,
+    strPrice:'',
+  },
+  {
+    name: '입학지원 PRO',
+    type: "pro",
+    price : 30000,
+    strPrice:'',
+  }
+];
 
 const onClickNextStep=(isFinial:boolean)=>{
   if(isFinial){
@@ -73,140 +103,195 @@ const getSesstionData =()=>{
     }
     return data;
   }
-  
-const SolutionAgreePage: NextPage = () => {
-  let sessionData = getSesstionData();
-  const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
-  const [isAgree, setIsAgree]= useState(false);
 
-  const isFinial = () =>{
-    if(selectValue!==null&&typeof selectValue.plan==="string"){
-        return true;
-    }
-    return false;
-  }
+const usePriceData = ()=>{
+  // getChosseUnivCode();
+  let modifyServices = services.map(service=>{
+    let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    service.strPrice = price;
+    return service;
+  });
+  return {services: modifyServices, application: 30000, unit:"KRW"};
+}
 
+const convertPrice=(price:number)=>{
+  return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+const getPriceList = (selectValue:object, priceData:object)=>{
+  const plan = services.find(service=>(service.type === selectValue.plan));
+  const univName = typeof window !== "undefined"?window.sessionStorage.getItem("choose_univ_name"):"선문대학교";
+  let resultPrice = plan?.price+(plan.type !== "trans"?priceData.application:0);
+  resultPrice = convertPrice(resultPrice);
   return (
-    <DefaultLayout>
-      <Header background="light" position="relative" />
-      <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null}/>
-      <PriceInfoContainer>
-        <PriceInfoHeaderRow>
-          <PriceInfoHeaderColumn><Bold22>결제등급을<br/>선택해주세요</Bold22></PriceInfoHeaderColumn>
-          <PriceInfoHeaderColumn>
-            <PriceInfoHeader backgroundColor="#FF988C">
-              번역 공증<br/>서비스
-            </PriceInfoHeader>
-          </PriceInfoHeaderColumn>
-          <PriceInfoHeaderColumn>
-            <PriceInfoHeader backgroundColor="#2EC5CE">
-              입학지원<br/>서비스
-            </PriceInfoHeader>
-          </PriceInfoHeaderColumn>
-          <PriceInfoHeaderColumn>
-            <PriceInfoHeader backgroundColor="#8C30F5">
-              입학지원<br/>PRO
-            </PriceInfoHeader>
-          </PriceInfoHeaderColumn>
-        </PriceInfoHeaderRow>
-        <PriceInfoTableHeaderRow>
-          <PriceInfoTableHeaderColumn>
-            <Bold22>PRICING<br/>TABLE</Bold22>
-          </PriceInfoTableHeaderColumn>
-          <PriceInfoTableHeaderColumn>
-          <Bold22>10,000<br/><GreyText>KRW</GreyText></Bold22>
-          </PriceInfoTableHeaderColumn>
-          <PriceInfoTableHeaderColumn>
-          <Bold22>15,000<br/><GreyText>KRW</GreyText></Bold22>
-          </PriceInfoTableHeaderColumn>
-          <PriceInfoTableHeaderColumn>
-          <Bold22>20,000<br/><GreyText>KRW</GreyText></Bold22>
-          </PriceInfoTableHeaderColumn>
-        </PriceInfoTableHeaderRow>
-        <PriceInfoTableRow>
-          <PriceInfoTableColumn>
-            <Bold18>1 대 1 담당 유학 컨설팅</Bold18>
-          </PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-        </PriceInfoTableRow>
-        <PriceInfoTableRow>
-          <PriceInfoTableColumn>
-            <Bold18>서류 번역 및 공증</Bold18>
-          </PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-        </PriceInfoTableRow>
-        <PriceInfoTableRow>
-          <PriceInfoTableColumn>
-            <Bold18>자기소개서 첨삭</Bold18>
-          </PriceInfoTableColumn>
-          <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-        </PriceInfoTableRow>
-        <PriceInfoTableRow>
-          <PriceInfoTableColumn>
-            <Bold18>서류 준비 및 원서접수</Bold18>
-          </PriceInfoTableColumn>
-          <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-        </PriceInfoTableRow>
-        <PriceInfoTableRow>
-          <PriceInfoTableColumn>
-            <Bold18>서류제출 대행</Bold18>
-          </PriceInfoTableColumn>
-          <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-        </PriceInfoTableRow>
-        <PriceInfoTableRow>
-          <PriceInfoTableColumn>
-            <Bold18>영사확인 대행</Bold18>
-          </PriceInfoTableColumn>
-          <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
-          <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-        </PriceInfoTableRow>
-        <PriceInfoFooterRow>
-          <PriceInfoFooterColumn></PriceInfoFooterColumn>
-          <PriceInfoFooterColumn>
-            <ReadyButton isReady={true}>선택</ReadyButton>
-          </PriceInfoFooterColumn>
-          <PriceInfoFooterColumn>
-            <ReadyButton isReady={true}>선택</ReadyButton>
-          </PriceInfoFooterColumn>
-          <PriceInfoFooterColumn>
-            <ReadyButton isReady={true}>선택</ReadyButton>
-          </PriceInfoFooterColumn>
-        </PriceInfoFooterRow>
-      </PriceInfoContainer>
-      <Block>
-        <Bold22>서비스 결제 내역</Bold22>
-        <Table>
-          <HeaderRow>
-            <Column width={14}>
-              결제 내용
-            </Column>
-            <Column width={2}>
-              결제 비용
-            </Column>
-          </HeaderRow>
-          <Row>
-            <Column width={14}>-</Column>
-            <Column width={2} textAlign="right">0 KRW</Column>
+    <>
+      <Row>
+        <Column width={14}>{plan?.name}-{univName}</Column>
+        <Column width={2} textAlign="right">{plan.strPrice} {priceData.unit}</Column>
+      </Row>
+      {plan.type !== "trans"
+        ?<Row>
+            <Column width={14}>원서접수비-{univName}</Column>
+            <Column width={2} textAlign="right">{convertPrice(priceData.application)} {priceData.unit}</Column>
           </Row>
-        </Table>
-        <Checkbox id="is_agree" checked={isAgree} onChange={(e)=>setIsAgree(e.target.checked)}>입학솔루션 이용약관에 동의합니다.</Checkbox>
-      </Block>
-      <FooterBlock>
-        <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>결제수단 선택</ReadyButton>
-      </FooterBlock>
-    </DefaultLayout>
-  );
+        :null}
+      <Row accent={true}>
+        <Column width={14}>결제 금액 (VAT 포함)</Column>
+        <Column width={2} textAlign="right">{resultPrice} {priceData.unit}</Column>
+      </Row>
+    </>
+  ); 
+}
+
+const SolutionAgreePage: NextPage = () => {
+  if(typeof window !== "undefined"){
+    let sessionData = getSesstionData();
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
+    const [isAgree, setIsAgree]= useState(false);
+    const [isOpenAgree, setIsOpenAgree]= useState(true);
+    const priceData = usePriceData();
+    const isFinial = () =>{
+      if(selectValue!==null&&typeof selectValue.plan==="string"&&isAgree){
+          return true;
+      }
+      return false;
+    }
+
+    return (
+      <DefaultLayout>
+        {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
+        <Header background="light" position="relative" />
+        <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+        <PriceInfoContainer>
+          <PriceInfoHeaderRow>
+            <PriceInfoHeaderColumn><Bold22>결제등급을<br/>선택해주세요</Bold22></PriceInfoHeaderColumn>
+            <PriceInfoHeaderColumn>
+              <PriceInfoHeader backgroundColor="#FF988C">
+                번역 공증<br/>서비스
+              </PriceInfoHeader>
+            </PriceInfoHeaderColumn>
+            <PriceInfoHeaderColumn>
+              <PriceInfoHeader backgroundColor="#2EC5CE">
+                입학지원<br/>서비스
+              </PriceInfoHeader>
+            </PriceInfoHeaderColumn>
+            <PriceInfoHeaderColumn>
+              <PriceInfoHeader backgroundColor="#8C30F5">
+                입학지원<br/>PRO
+              </PriceInfoHeader>
+            </PriceInfoHeaderColumn>
+          </PriceInfoHeaderRow>
+          <PriceInfoTableHeaderRow>
+            <PriceInfoTableHeaderColumn>
+              <Bold22>PRICING<br/>TABLE</Bold22>
+            </PriceInfoTableHeaderColumn>
+              {priceData
+                ?priceData.services.map((service)=>(
+                  <PriceInfoTableHeaderColumn>
+                    <Bold22>{service.strPrice}<br/><GreyText>{priceData.unit}</GreyText></Bold22>
+                  </PriceInfoTableHeaderColumn>
+                )):
+                (<>
+                <PriceInfoTableHeaderColumn>
+                  <Bold22>10,000<br/><GreyText>KRW</GreyText></Bold22>
+                </PriceInfoTableHeaderColumn>
+                <PriceInfoTableHeaderColumn>
+                  <Bold22>15,000<br/><GreyText>KRW</GreyText></Bold22>
+                </PriceInfoTableHeaderColumn>
+                <PriceInfoTableHeaderColumn>
+                  <Bold22>20,000<br/><GreyText>KRW</GreyText></Bold22>
+                </PriceInfoTableHeaderColumn>
+                </>)}
+          </PriceInfoTableHeaderRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>1 대 1 담당 유학 컨설팅</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>서류 번역 및 공증</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>자기소개서 첨삭</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>서류 준비 및 원서접수</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>서류제출 대행</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>영사확인 대행</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoFooterRow>
+            <PriceInfoFooterColumn></PriceInfoFooterColumn>
+            <PriceInfoFooterColumn>
+              <ReadyRadioButton id="is_select_trans" value="trans" group="plan" checked={selectValue?.plan==="trans"} onChange={handleSelectEnter}>선택</ReadyRadioButton>
+            </PriceInfoFooterColumn>
+            <PriceInfoFooterColumn>
+              <ReadyRadioButton id="is_select_support" value="support" group="plan" checked={selectValue?.plan==="support"} onChange={handleSelectEnter}>선택</ReadyRadioButton>
+            </PriceInfoFooterColumn>
+            <PriceInfoFooterColumn>
+              <ReadyRadioButton id="is_select_pro" value="pro" group="plan" checked={selectValue?.plan==="pro"} onChange={handleSelectEnter}>선택</ReadyRadioButton>
+            </PriceInfoFooterColumn>
+          </PriceInfoFooterRow>
+        </PriceInfoContainer>
+        <Block>
+          <Bold22>서비스 결제 내역</Bold22>
+          <Table>
+            <HeaderRow>
+              <Column width={14}>
+                결제 내용
+              </Column>
+              <Column width={2}>
+                결제 비용
+              </Column>
+            </HeaderRow>
+            {selectValue?.plan
+            ?getPriceList(selectValue, priceData)
+            :<Row>
+              <Column width={14}>-</Column>
+              <Column width={2} textAlign="right">0 {priceData.unit}</Column>
+            </Row>
+            }
+          </Table>
+          <Checkbox id="is_agree" checked={isAgree} onChange={(e)=>setIsAgree(e.target.checked)}>입학솔루션 이용약관에 동의합니다.</Checkbox>
+        </Block>
+        <FooterBlock>
+          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>결제수단 선택</ReadyButton>
+        </FooterBlock>
+      </DefaultLayout>
+    );
+  }
+  return <DefaultLayout></DefaultLayout>
 };
 
 export default SolutionAgreePage;

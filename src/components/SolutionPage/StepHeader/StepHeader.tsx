@@ -6,6 +6,7 @@ import { useSWRInfinite, responseInterface } from 'swr';
 import Router, { withRouter } from 'next/router';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import UnivScholarshipTable, { ScholarshipType } from '@components/RecommendPage/UnivScholarshipTable/UnivTuitionTable';
+import PlanItem from '@components/SolutionPage/PlanItem/PlanItem';
 import {
     UnivLogo,
     UnivItem,
@@ -241,6 +242,7 @@ export const getSelectUnivInfo=()=>{
 
 interface initialSelectEnter{
   univ_code?:string;
+  univ_name?:string;
   step?:number|null;
   enter_type?:string|null;
   major?:string|number;
@@ -254,7 +256,6 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
   const handleSelectEnter = (event: React.ChangeEvent<HTMLInputElement>|undefined) => {
     let newSelectValue: string | null;
     if(event !== undefined){
-      console.log(event.target);
       const { target: { value, name, id } } = event;
           if (String(selectValue) === value) {
             newSelectValue = null;
@@ -296,8 +297,8 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
 }
 
 const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {  
+  if(typeof window !== "undefined"){
   const univInfo = getSelectUnivInfo();
-
   return (
       <SolutionHeader>
         <StepContainer>
@@ -324,12 +325,15 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {
                   {univInfo.university.category==="UN"?"대학교":univInfo.university.category==="JM"?"전문대학교":univInfo.university.category==="EH"?"어학원":"학교"}
                 </UnivCategory>
                 {major
-                ?<UnivSelectMajor>
+                  ?<UnivSelectMajor>
                         {major}
                   </UnivSelectMajor>
                   :null
                 }
-                  
+                {plan
+                  ?<PlanItem type={plan}/>
+                  :null
+                }
               </UnivNameContainer>
               <UnivDetailText>
                   {univInfo.university.nameEng}
@@ -356,6 +360,8 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {
         </UnivContainer>
       </SolutionHeader>
   );
+  }
+  return <SolutionHeader></SolutionHeader>
 };
 
 export default StepHeader;

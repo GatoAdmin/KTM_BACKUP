@@ -90,7 +90,7 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
           <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 2} />
         </LocalizationButtonContainer>
-        <Link href="/login" passHref>
+        <Link href={{ pathname: '/login', query: { lang } }} passHref>
           <LoginLink>{t('login')}</LoginLink>
         </Link>
       </NavigationContainer>

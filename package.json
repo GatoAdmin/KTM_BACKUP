@@ -7,7 +7,7 @@
   "author": "KATUMM",
   "license": "MIT",
   "scripts": {
-    "start": "next start -p 8081",
+    "start": "next start -p $PORT",
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",
@@ -16,10 +16,10 @@
   "dependencies": {
     "@svgr/webpack": "^5.5.0",
     "axios": "^0.21.1",
-    "dotenv": "^8.2.0",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
     "next": "^10.0.5",
+    "next-i18next": "8.0.0-beta.3",
     "next-routes": "^1.4.2",
     "next-seo": "^4.17.0",
     "normalize.css": "^8.0.1",

@@ -28,8 +28,7 @@ import i18nLoginResource from '../../../assets/i18n/registerPage.json';
 const yearArray = Array.apply(null, Array(40)).map((value, index) => index + 1980);
 const monthArray = Array.apply(null, Array(12)).map((value, index) => index + 1);
 const dayArray = Array.apply(null, Array(31)).map((value, index) => index + 1);
-const countryArray = (t: (s: string) => string) =>
-  Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
+const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
 const reasonArray = (t: (s: string) => string) => Array.apply(null, Array(4)).map((val, index) => t(`reason-${index}`));
 const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
 
@@ -94,8 +93,7 @@ const RegisterPage: NextPage = ({
 
     axios({
       method: 'post',
-      url: 'http://15.165.227.164/api/signup/',
-      // url: `${process.env.API_PATH}api/login/`,
+      url: '/api/signup/',
       data: axiosFormData,
     })
       .then((res) => {

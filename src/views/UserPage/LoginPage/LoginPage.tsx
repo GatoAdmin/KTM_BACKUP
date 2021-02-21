@@ -59,29 +59,28 @@ const LoginPage: NextPage = ({
     const axiosFormData = new FormData();
     Object.keys(prevFormData).forEach((key: string) => axiosFormData.append(key, prevFormData[key]));
 
-    axios({
-      method: 'post',
-      url: 'http://15.165.227.164/api/login/',
-      // url: `${process.env.API_PATH}api/login/`,
-      data: axiosFormData,
-    }).then((res) => {
-      const { status } = res.data;
-      if (status !== 'success') {
-        if (status === 'ERROR_NOT_YET_EMAIL_CONFIRM') {
-          alert('이메일 인증을 완료해 주세요.');
+    axios
+      .post('/api/login/', axiosFormData, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        const { status } = res.data;
+        if (status !== 'success') {
+          if (status === 'ERROR_NOT_YET_EMAIL_CONFIRM') {
+            alert('이메일 인증을 완료해 주세요.');
+          } else {
+            setErrMsg((prev) => ({ ...prev, [status]: true }));
+          }
+          setLoading(false);
         } else {
-          setErrMsg((prev) => ({ ...prev, [status]: true }));
+          setLoading(false);
+          const {
+            data: { sid },
+          } = res;
+          sessionStorage.setItem('sid', sid);
+          Router.push('/');
         }
-        setLoading(false);
-      } else {
-        setLoading(false);
-        const {
-          data: { sid },
-        } = res;
-        sessionStorage.setItem('sid', sid);
-        Router.push('/');
-      }
-    });
+      });
   };
 
   React.useEffect(() => {

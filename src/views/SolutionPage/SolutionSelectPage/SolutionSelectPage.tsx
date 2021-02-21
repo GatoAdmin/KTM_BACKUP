@@ -50,17 +50,17 @@ interface tap {
 const taps: Array<tap> = [
   {
     name: '인문계열',
-    type: '인문',
+    type: 'liberal',
     index: 1,
   },
   {
     name: '자연계열',
-    type: '자연',
+    type: 'nature',
     index: 2,
   },
   {
     name: '예체능계열',
-    type: '예체능',
+    type: 'arts',
     index: 3,
   }
 ];
@@ -185,7 +185,7 @@ const SolutionSelectPage: NextPage = () => {
     const univInfo = getSelectUnivInfo();
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
-    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
+    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"liberal":"liberal";
 
     const [viewTap,setViewTaps] = React.useState({type:viewType}); 
     console.log(selectValue);
@@ -235,12 +235,10 @@ const SolutionSelectPage: NextPage = () => {
           {univInfo
             ?selectValue!==null&&typeof selectValue.enter_type==="string"
               ?<RadioButtonContainer>
-                  {univInfo.tuition.map(({ name, type },index) => (
-                    viewTap.type===type
-                    ?<RadioButton id={`${type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major===name} onChange={handleSelectEnter}>
+                  {univInfo.major[viewTap.type].map((name:string,index:number) => (
+                    <RadioButton id={`${viewTap.type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major===name} onChange={handleSelectEnter}>
                           {name}
                       </RadioButton>
-                      :null
                   ))}
               </RadioButtonContainer>
               :<EmptyText>
@@ -259,7 +257,17 @@ const SolutionSelectPage: NextPage = () => {
               ?<div>
                 <ColorBold>필수 제출서류</ColorBold>
                 <DocumentShortContainer>
-                {univInfo.document.map(({name, pictogram})=>(
+                {univInfo.document.essential.map(({name, pictogram})=>(
+                  <DocumentShortItem pictogram={pictogram}>
+                    {name}
+                  </DocumentShortItem>
+                  ))
+                }
+                </DocumentShortContainer>
+                
+                <ColorBold>선택 제출서류</ColorBold>
+                <DocumentShortContainer>
+                {univInfo.document.noessential.map(({name, pictogram})=>(
                   <DocumentShortItem pictogram={pictogram}>
                     {name}
                   </DocumentShortItem>

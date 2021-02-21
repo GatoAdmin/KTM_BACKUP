@@ -18,7 +18,6 @@ const RadioButton: React.FC<RadioButtonProps> = ({
   value,
   checked,
   group,
-  data,
   onChange,
   children,
 }) => (

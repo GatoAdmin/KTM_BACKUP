@@ -8,7 +8,7 @@ import Header from '@components/Shared/Header/Header';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
-import Checkbox from '@components/Shared/Checkbox/Checkbox';
+import LabelClickCheckbox from '@components/SolutionPage/LabelClickCheckbox/LabelClickCheckbox';
 import Agreement from '@components/SolutionPage/Agreement/Agreement';
 import PriceInfoHeader from '@components/SolutionPage/PriceInfoHeader/PriceInfoHeader';
 import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
@@ -148,7 +148,7 @@ const SolutionAgreePage: NextPage = () => {
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     const [isAgree, setIsAgree]= useState(false);
-    const [isOpenAgree, setIsOpenAgree]= useState(true);
+    const [isOpenAgree, setIsOpenAgree]= useState(false);
     const priceData = usePriceData();
     const isFinial = () =>{
       if(selectValue!==null&&typeof selectValue.plan==="string"&&isAgree){
@@ -283,7 +283,7 @@ const SolutionAgreePage: NextPage = () => {
             </Row>
             }
           </Table>
-          <Checkbox id="is_agree" checked={isAgree} onChange={(e)=>setIsAgree(e.target.checked)}>입학솔루션 이용약관에 동의합니다.</Checkbox>
+          <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}>입학솔루션 이용약관에 동의합니다.</LabelClickCheckbox>
         </Block>
         <FooterBlock>
           <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>결제수단 선택</ReadyButton>

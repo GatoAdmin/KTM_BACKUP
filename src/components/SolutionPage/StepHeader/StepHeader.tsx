@@ -7,6 +7,7 @@ import Router, { withRouter } from 'next/router';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import UnivScholarshipTable, { ScholarshipType } from '@components/RecommendPage/UnivScholarshipTable/UnivTuitionTable';
 import PlanItem from '@components/SolutionPage/PlanItem/PlanItem';
+import DummyData from '@components/SolutionPage/dummy.json';
 import {
     UnivLogo,
     UnivItem,
@@ -192,12 +193,51 @@ const fetchUnivDetailInfo = (url: string) => axios.get(url)
     };
   });
 
+const fetchUnivInfo= () =>{
+  const {
+    univ_info,
+    major,
+    document
+  }: {
+      univ_info:{
+        kor_name: string;
+        eng_name: string;
+        category: string;
+        address: string;
+        logo:string;
+      },
+      major: {
+        liberal: Array<string>;
+        nature: Array<string>;
+        arts: Array<string>;
+      },
+      document:{
+        essential: Array<string>;
+        // Array<{
+        //   name : string;
+        //   pictogram :string;
+        // }>;
+        noessential: Array<string>;
+        // Array<{
+        //   name : string;
+        //   pictogram :string;
+        // }>;
+      }
+    } = DummyData;
+    window.sessionStorage.setItem('chooseUnivName',univ_info.kor_name);
+    return {univ_info, major, document};
+};
 const useUnivData = (univ_code:string) => {
-  const getKey = () => `http://15.165.227.164/api/?action=detail_univ&params=${JSON.stringify({ univ_code: univ_code })}`;
-  const { data } = useSWRInfinite(
-    getKey,
-    (url) => fetchUnivDetailInfo(url)
-  );
+  window.sessionStorage.setItem('chooseUniv',univ_code);
+  // const getKey = () => `http://15.165.227.164/api/?action=detail_univ&params=${JSON.stringify({ univ_code: univ_code })}`;
+  // const { data } = useSWRInfinite(
+  //   getKey,
+  //   (url) => fetchUnivDetailInfo(url)
+  // );
+
+  const data = fetchUnivInfo();
+
+  console.log(data);
   return isArray(data)?data[0]:data;
 };
 
@@ -222,7 +262,7 @@ const onClickSelectUniv=()=>{
 
 export const getSelectUnivInfo=()=>{
   try{
-    if(getLoginCheck()){
+    if(true){//getLoginCheck()
       // const univ_code = window.sessionStorage.getItem('chooseUniv');
       const univ_code = "SMU_UNI";
       if(univ_code===null){
@@ -298,7 +338,7 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
 
 const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {  
   if(typeof window !== "undefined"){
-  const univInfo = getSelectUnivInfo();
+  const univInfo = getSelectUnivInfo()?.univ_info;
   return (
       <SolutionHeader>
         <StepContainer>
@@ -319,10 +359,10 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {
             <UnivTextContainer>
               <UnivNameContainer>
                 <UnivName>
-                  {univInfo.university.name}
+                  {univInfo.kor_name}
                 </UnivName>
                 <UnivCategory>
-                  {univInfo.university.category==="UN"?"대학교":univInfo.university.category==="JM"?"전문대학교":univInfo.university.category==="EH"?"어학원":"학교"}
+                  {univInfo.category==="UN"?"대학교":univInfo.category==="JM"?"전문대학교":univInfo.category==="EH"?"어학원":"학교"}
                 </UnivCategory>
                 {major
                   ?<UnivSelectMajor>
@@ -336,10 +376,10 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {
                 }
               </UnivNameContainer>
               <UnivDetailText>
-                  {univInfo.university.nameEng}
+                  {univInfo.eng_name}
               </UnivDetailText>
               <UnivDetailText>
-                  {univInfo.university.address}
+                  {univInfo.address}
               </UnivDetailText>
             </UnivTextContainer>
           </UnivItem>

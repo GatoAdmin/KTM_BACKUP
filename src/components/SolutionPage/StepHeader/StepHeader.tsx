@@ -95,7 +95,7 @@ type Pictogram = keyof typeof documentPictogram;
 
 const formatKRW = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
 
-const fetchUnivDetailInfo = (url: string) => axios.get(url)
+const fetchUnivDetailInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {
     const {
       univbadge,
@@ -229,13 +229,13 @@ const fetchUnivInfo= () =>{
 };
 const useUnivData = (univ_code:string) => {
   window.sessionStorage.setItem('chooseUniv',univ_code);
-  // const getKey = () => `http://15.165.227.164/api/?action=detail_univ&params=${JSON.stringify({ univ_code: univ_code })}`;
-  // const { data } = useSWRInfinite(
-  //   getKey,
-  //   (url) => fetchUnivDetailInfo(url)
-  // );
+  const getKey = () => `http://15.165.227.164/api/?action=detail_univ&params=${JSON.stringify({ univ_code: univ_code })}`;
+  const { data } = useSWRInfinite(
+    getKey,
+    (url) => fetchUnivDetailInfo(url)
+  );
 
-  const data = fetchUnivInfo();
+  // const data = fetchUnivInfo();
 
   console.log(data);
   return isArray(data)?data[0]:data;

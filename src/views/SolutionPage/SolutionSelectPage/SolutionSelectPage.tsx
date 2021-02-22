@@ -64,7 +64,13 @@ const taps: Array<tap> = [
     index: 3,
   }
 ];
-const fetchDocumentInfo = (url: string) => axios.get(url)
+const fetchDocumentInfo = (url: string) =>{
+  let sid = 0; 
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+  }
+  
+  axios.get(`http://15.165.227.164/api/?action=oneclick_univ&params=${JSON.stringify({ univ_code: "SMU_UNI" })}&sid=${sid}`,{withCredentials : true})
   .then((res) => {
     console.log(res.data);
     // const {
@@ -119,6 +125,7 @@ const fetchDocumentInfo = (url: string) => axios.get(url)
     //   }))
     // };
   });
+};
 const useDocumentData = (univ_code:string) => {
   let sid = 0; 
   if(typeof window !== "undefined"){

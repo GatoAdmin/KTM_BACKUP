@@ -125,7 +125,6 @@ const fetchUnivDetailInfo = (url: string) => axios.get(url,{withCredentials : tr
       }
     }  = res.data;
 
-    console.log(res.data)
     window.sessionStorage.setItem('chooseUnivName',univ_info.kor_name);
     return {univ_info, major, document};
   });
@@ -142,7 +141,6 @@ const useUnivData = (univ_code:string) => {
     (url) => fetchUnivDetailInfo(url)
   );
 
-  console.log(data);
   return isArray(data)?data[0]:data;
 };
 
@@ -167,7 +165,7 @@ const onClickSelectUniv=()=>{
 
 export const getSelectUnivInfo=()=>{
   try{
-    if(true){//getLoginCheck()
+    if(getLoginCheck()){//
       // const univ_code = window.sessionStorage.getItem('chooseUniv');
       const univ_code = "SMU_UNI";
       if(univ_code===null){
@@ -193,6 +191,7 @@ interface initialSelectEnter{
   major?:string|number;
   major_type?:string;
   plan?: string;
+  pay_method?: string;
 }
 
 export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
@@ -225,7 +224,8 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
         ...selectValue,
         enter_type:"new_enter",
         major_type:"인문",
-        major:undefined
+        major:undefined,
+        pay_method:undefined,
       });
     }
   };

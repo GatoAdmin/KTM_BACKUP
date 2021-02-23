@@ -6,13 +6,16 @@ import {
 
 import WritePictogram from '@assets/svg/write_pictogram.svg';
 import SearchPictogram from '@assets/svg/search_pictogram.svg';
+import CheckPictogram from '@assets/svg/check_pictogram.svg';
 import StudyPictogram from '@assets/svg/study_pictogram.svg';
 import FamilyPictogram from '@assets/svg/family_pictogram.svg';
 import BalancePictogram from '@assets/svg/balance_pictogram.svg';
+import MoneyPictogram from '@assets/svg/money_pictogram.svg';
 
 const documentPictogram = {
   write: WritePictogram,
-  check: SearchPictogram,
+  check: CheckPictogram,
+  money:MoneyPictogram,
   study: StudyPictogram,
   family: FamilyPictogram,
   balance: BalancePictogram,

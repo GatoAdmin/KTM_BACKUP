@@ -2,12 +2,14 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
 import { GetServerSideProps, NextPage } from 'next';
+import Router from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import Header from '@components/Shared/Header/Header';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
+import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import LabelClickCheckbox from '@components/SolutionPage/LabelClickCheckbox/LabelClickCheckbox';
 import Agreement from '@components/SolutionPage/Agreement/Agreement';
 import PriceInfoHeader from '@components/SolutionPage/PriceInfoHeader/PriceInfoHeader';
@@ -21,6 +23,7 @@ import {
   Bold18,
   Bold16,
   UncheckedRadioIcon,
+  RadioButtonContainer,
   CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
 import {
@@ -48,6 +51,7 @@ interface service {
   type: string;
   price : number;
   strPrice: string;
+  index: number;
 }
 
 let services: Array<service> = [
@@ -56,24 +60,71 @@ let services: Array<service> = [
     type: "trans",
     price : 20000,
     strPrice:'',
+    index: 1
   },
   {
     name: '입학지원 서비스',
     type: "support",
     price : 25000,
     strPrice:'',
+    index: 2
   },
   {
     name: '입학지원 PRO',
     type: "pro",
     price : 30000,
     strPrice:'',
+    index: 3
   }
 ];
 
-const onClickNextStep=(isFinial:boolean)=>{
-  if(isFinial){
+const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
+  .then((res) => {const {
+    userstatus
+  }: {
+    userstatus:{    
+        id: number;
+        user_id: number;
+        univ_code: string;
+        info_type: string;
+        subjecttitle: string;
+        subjectname: string;
+        pay_rank: string;
+        service_fee:string;
+        apply_fee:string;
+        pay_cost: string;
+        doc_cost:number;
+        pay_complete:boolean;
+      }
+    }  = res.data;
 
+    window.sessionStorage.setItem("user_status",JSON.stringify({userstatus}));
+    window.sessionStorage.setItem("user_status_id",String(userstatus.id));
+    return {userstatus};
+  });
+  
+const sendPlayerInfo = (plan:string) => {
+  let sid = ""; 
+  let statusId = "";
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+    statusId = window.sessionStorage.getItem("user_status_id");
+  }
+  const rank = services.find(service=>service.type===plan)?.index;
+  const parms = {
+    status_id: statusId,
+    rank: rank
+  };
+  const getKey = () => `/api/?action=set_player_payrank&params=${JSON.stringify(parms)}&sid=${sid}`;
+
+  const data = fetchSendPlayerInfo(getKey());
+  return true;
+};
+
+const onClickNextStep=(isFinial:boolean, selectValue)=>{
+  if(isFinial){
+    sendPlayerInfo(selectValue.plan);
+    Router.push('/solution/2/payment');
   }else{
     window.alert("결제등급과 약관 동의를 클릭해주세요.");
   }
@@ -104,7 +155,7 @@ const getSesstionData =()=>{
     return data;
   }
 
-  const fetchUnivDetailInfo = (url: string) => axios.get(url,{withCredentials : true})
+const fetchPlayerPayrankInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {const {
     userstatus,
     pay_rank_dict,
@@ -123,7 +174,7 @@ const getSesstionData =()=>{
         pay_cost: string;
         doc_cost:number;
         pay_complete:boolean;
-      }
+      },
       pay_rank_dict:{
         "1":number;
         "2":number;
@@ -149,17 +200,20 @@ const usePriceData = ()=>{
     status_id = sessionData;
   }
   const getKey = () => `/api/?action=get_player_payrank&params=${JSON.stringify({ status_id: status_id })}&sid=${sid}`;
-  const { data } = useSWRInfinite(
+  let { data } = useSWRInfinite(
     getKey,
-    (url) => fetchUnivDetailInfo(url)
+    (url) => fetchPlayerPayrankInfo(url)
   );
   let modifyServices = services.map(service=>{
     let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     service.strPrice = price;
     return service;
   });
+  if(Array.isArray(data)){
+    data = data[0]
+  }
   let application = data?data.apply_fee?data.apply_fee:0:0;
-  console.log(application);
+
   return {services: modifyServices, application:application, unit:"KRW"};
 }
 
@@ -205,7 +259,7 @@ const SolutionAgreePage: NextPage = () => {
       }
       return false;
     }
-    console.log(priceData);
+
     return (
       <DefaultLayout>
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
@@ -335,7 +389,7 @@ const SolutionAgreePage: NextPage = () => {
           <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}>입학솔루션 이용약관에 동의합니다.</LabelClickCheckbox>
         </Block>
         <FooterBlock>
-          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>결제수단 선택</ReadyButton>
+          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue)}>결제수단 선택</ReadyButton>
         </FooterBlock>
       </DefaultLayout>
     );

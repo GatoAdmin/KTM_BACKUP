@@ -117,7 +117,6 @@ const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : tr
         }>;
       }
     }  = res.data;
-
     console.log(res.data)
     window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
     window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));

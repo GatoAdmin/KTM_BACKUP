@@ -104,14 +104,63 @@ const getSesstionData =()=>{
     return data;
   }
 
+  const fetchUnivDetailInfo = (url: string) => axios.get(url,{withCredentials : true})
+  .then((res) => {const {
+    userstatus,
+    pay_rank_dict,
+    apply_fee
+  }: {
+    userstatus:{
+        id: number;
+        user_id: number;
+        univ_code: string;
+        info_type: string;
+        subjecttitle: string;
+        subjectname: string;
+        pay_rank: string;
+        service_fee:string;
+        apply_fee:string;
+        pay_cost: string;
+        doc_cost:number;
+        pay_complete:boolean;
+      }
+      pay_rank_dict:{
+        "1":number;
+        "2":number;
+        "3":number;
+      },
+      apply_fee: number
+    }  = res.data;
+
+    services[0].price = pay_rank_dict[1];
+    services[1].price = pay_rank_dict[2];
+    services[2].price = pay_rank_dict[3];
+
+    return {userstatus: userstatus, pay_rank_dict: pay_rank_dict, apply_fee: apply_fee};
+  });
+  
 const usePriceData = ()=>{
   // getChosseUnivCode();
+  let sid = ""; 
+  let status_id = "";
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+    const sessionData = window.sessionStorage.getItem('user_status_id');
+    status_id = sessionData;
+  }
+  const getKey = () => `/api/?action=get_player_payrank&params=${JSON.stringify({ status_id: status_id })}&sid=${sid}`;
+  const { data } = useSWRInfinite(
+    getKey,
+    (url) => fetchUnivDetailInfo(url)
+  );
   let modifyServices = services.map(service=>{
     let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     service.strPrice = price;
     return service;
   });
-  return {services: modifyServices, application: 30000, unit:"KRW"};
+  let application = data?data.apply_fee?data.apply_fee:0:0;
+  console.log(application);
+  return {services: modifyServices, application:application, unit:"KRW"};
 }
 
 const convertPrice=(price:number)=>{
@@ -120,7 +169,7 @@ const convertPrice=(price:number)=>{
 
 const getPriceList = (selectValue:object, priceData:object)=>{
   const plan = services.find(service=>(service.type === selectValue.plan));
-  const univName = typeof window !== "undefined"?window.sessionStorage.getItem("choose_univ_name"):"선문대학교";
+  const univName = typeof window !== "undefined"?window.sessionStorage.getItem("chooseUnivName"):"선문대학교";
   let resultPrice = plan?.price+(plan.type !== "trans"?priceData.application:0);
   resultPrice = convertPrice(resultPrice);
   return (
@@ -156,7 +205,7 @@ const SolutionAgreePage: NextPage = () => {
       }
       return false;
     }
-
+    console.log(priceData);
     return (
       <DefaultLayout>
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}

@@ -50,110 +50,20 @@ interface tap {
 const taps: Array<tap> = [
   {
     name: '인문계열',
-    type: 'liberal',
+    type: '인문',
     index: 1,
   },
   {
     name: '자연계열',
-    type: 'nature',
+    type: '자연',
     index: 2,
   },
   {
     name: '예체능계열',
-    type: 'arts',
+    type: '예체능',
     index: 3,
   }
 ];
-const fetchDocumentInfo = (url: string) =>{
-  let sid = 0; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-  
-  axios.get(`http://15.165.227.164/api/?action=oneclick_univ&params=${JSON.stringify({ univ_code: "SMU_UNI" })}&sid=${sid}`,{withCredentials : true})
-  .then((res) => {
-    console.log(res.data);
-    // const {
-    //   major,
-    //   document,
-    // }:
-    
-    //{
-    //     major: {
-    //       liberal : Array<{
-    //         subjecttitle: SubjectType;
-    //         subjectname: string;
-    //         tuition: number;
-    //       }>,
-    //       nature : Array<{
-    //         subjecttitle: SubjectType;
-    //         subjectname: string;
-    //         tuition: number;
-    //       }>,
-    //       arts : Array<{
-    //         subjecttitle: SubjectType;
-    //         subjectname: string;
-    //         tuition: number;
-    //       }>,
-    //     },
-    //     document: {
-    //       essential : Array<{
-    //         document: string;
-    //         documenttype: string;
-    //         pictogram: Pictogram;
-    //         additionalinfo: string | null;
-    //       }>;
-    //       noessential : Array<{
-    //           document: string;
-    //           documenttype: string;
-    //           pictogram: Pictogram;
-    //           additionalinfo: string | null;
-    //         }>;
-    //     }
-    //   } = res.data;
-    // return {
-    //   tuition: tuition.map((tuitionInfo) => ({
-    //     name: tuitionInfo.subjectname,
-    //     type: tuitionInfo.subjecttitle,
-    //     tuition: formatKRW.format(tuitionInfo.tuition),
-    //   })),
-    //   document: supportdocument.map((documentInfo) => ({
-    //     name: documentInfo.document,
-    //     type: documentInfo.documenttype,
-    //     pictogram: documentInfo.pictogram,
-    //     info: documentInfo.additionalinfo,
-    //   }))
-    // };
-  });
-};
-const useDocumentData = (univ_code:string) => {
-  let sid = 0; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-  const getKey = () => `http://15.165.227.164/api/?action=oneclick_univ&params=${JSON.stringify({ univ_code: univ_code })}&sid=${sid}`;
-  const { data } = useSWRInfinite(
-    getKey,
-    (url) => fetchDocumentInfo(url)
-  );
-  return isArray(data)?data[0]:data;
-};
-
-export const getSolutionInfo=()=>{
-  try{
-      const univ_code = "SMU_UNI";
-      if(univ_code===null){
-        return null;
-      }else{
-        const univInfo = useDocumentData(univ_code);
-        console.log(univInfo)
-        return univInfo;
-      }
-  }catch(error){
-    console.log(error);
-  }
-};
-
 
 const getChosseUnivCode =()=>{
   let data = null;
@@ -179,9 +89,65 @@ const getSesstionData =()=>{
   return data;
 }
 
-const onClickNextStep=(isFinial:boolean)=>{
+const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
+  .then((res) => {const {
+    update_userstatus,
+    userdocument
+  }: {
+    update_userstatus:{
+        id: number;
+        user_id: number;
+        univ_code: string;
+        info_type: string;
+        subjecttitle: string;
+        subjectname: string;
+        pay_rank: string;
+        pay_cost: string;
+        doc_cost:number;
+        pay_complete:boolean;
+      },
+      userdocument:{
+        essential: Array<{
+          name : string;
+          pictogram :string;
+        }>;
+        noessential: Array<{
+          name : string;
+          pictogram :string;
+        }>;
+      }
+    }  = res.data;
+
+    console.log(res.data)
+    window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
+    window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));
+    return {update_userstatus, userdocument};
+  });
+  
+const sendPlayerInfo = (selectValue, univInfo) => {
+  let sid = 0; 
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+  }
+  const parms = {
+    univ_code : selectValue.univ_code,
+    info_type : univInfo.category,
+    subjecttitle:selectValue.major_type,
+    subjectname:selectValue.major,
+  };
+  const getKey = () => `/api/?action=set_player_status&params=${JSON.stringify(parms)}&sid=${sid}`;
+  // const { data } = useSWRInfinite(
+  //   getKey,
+  //   (url) => fetchSendPlayerInfo(url)
+  // );
+  const data = fetchSendPlayerInfo(getKey());
+  return true;
+};
+
+const onClickNextStep=(isFinial:boolean, selectValue, univInfo)=>{
   if(isFinial){
-    Router.push('/solution/2');
+      sendPlayerInfo(selectValue, univInfo);
+      Router.push('/solution/2');
   }else{
     window.alert("학교와 학과를 먼저 선택해주세요.");
   }
@@ -191,8 +157,8 @@ const SolutionSelectPage: NextPage = () => {
   if(typeof window !== "undefined"){
     const univInfo = getSelectUnivInfo();
     let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
-    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"liberal":"liberal";
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
+    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
 
     const [viewTap,setViewTaps] = React.useState({type:viewType}); 
     console.log(selectValue);
@@ -200,7 +166,7 @@ const SolutionSelectPage: NextPage = () => {
       setViewTaps({type:type});
       handleSelectEnter();
     }
-    const univInfo2 = getSolutionInfo();
+
     const isFinial = () =>{
       if(univInfo){
         if(selectValue!==null&&typeof selectValue.major==="string"){
@@ -218,7 +184,7 @@ const SolutionSelectPage: NextPage = () => {
           {univInfo
             ?<RadioButtonContainer>
               <RadioButton id="new_enter" group="enter_type" value="new_enter" checked={selectValue?.enter_type==="new_enter"} onChange={handleSelectEnter}>신입학</RadioButton>
-              <RadioButton id="transfer_enter" group="enter_type" value="transfer_enter" checked={selectValue?.enter_type==="transfer_enter"} onChange={handleSelectEnter}>편입학</RadioButton>
+              {/* <RadioButton id="transfer_enter" group="enter_type" value="transfer_enter" checked={selectValue?.enter_type==="transfer_enter"} onChange={handleSelectEnter}>편입학</RadioButton> */}
             </RadioButtonContainer>
             :<EmptyText>
               먼저 대학 선택 버튼을 눌러 입학을 준비할 대학교를 선택해주세요
@@ -291,7 +257,7 @@ const SolutionSelectPage: NextPage = () => {
           }
         </Block>
         <Block>
-          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>다음단계</ReadyButton>
+          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue, univInfo?.univ_info)}>다음단계</ReadyButton>
         </Block>
         <ImageContainer>
           <CoverImage/>

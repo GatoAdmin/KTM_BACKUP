@@ -32,6 +32,9 @@ export const DocumentIconContainer = styled.div`
 `;
 
 export const DocumentTypeIconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   bottom: 0;
   right: 0;
   width: 40px;

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   DocumentItem,
-  DocumentIconContainer,
   DocumentTypeIconContainer
 } from './DocumentShortItem.style';
 
@@ -22,15 +21,14 @@ const documentPictogram = {
 type Pictogram = keyof typeof documentPictogram;
 
 interface DocumentShortItemProps {
-  id?: string | number;
   pictogram?: Pictogram;
 }
 const DocumentShortItem: React.FC<DocumentShortItemProps> = ({
-  id,
   pictogram,
   children,
 }) => {
-  const Pictogram = documentPictogram[pictogram];
+  let Pictogram = documentPictogram[pictogram];
+  if(Pictogram===undefined){Pictogram=documentPictogram["write"];}
   return(
     <DocumentItem>
         <DocumentTypeIconContainer>

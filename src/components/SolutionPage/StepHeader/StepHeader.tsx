@@ -96,105 +96,7 @@ type Pictogram = keyof typeof documentPictogram;
 const formatKRW = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
 
 const fetchUnivDetailInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {
-    const {
-      univbadge,
-      university,
-      tuition,
-      scholarship,
-      supportcondition,
-      supportdocument,
-      additionalinfo,
-      calendar,
-      photo,
-    }: {
-        univbadge: Array<{
-          pictogram: string;
-          name: string;
-        }>,
-        university: Array<{
-          kor_name: string;
-          eng_name: string;
-          category: string;
-          kor_full_address: string;
-          homepage_link: string;
-        }>,
-        tuition: Array<{
-          subjecttitle: SubjectType;
-          subjectname: string;
-          tuition: number;
-        }>,
-        scholarship: Array<{
-          scholarshiptype: ScholarshipType;
-          target: string;
-          statement: string;
-        }>,
-        supportcondition: Array<{
-          qualification: ConditionType;
-          qualificationname: string;
-        }>,
-        supportdocument: Array<{
-          document: string;
-          documenttype: string;
-          pictogram: Pictogram;
-          additionalinfo: string | null;
-        }>,
-        additionalinfo: Array<{
-
-        }>,
-        calendar: Array<{
-          calendartype: string;
-          calendarname: string;
-          starttime: string;
-          endtime?: string;
-        }>,
-        photo: Array<{
-          photo_category: string;
-          file: string;
-        }>
-      } = res.data;
-
-    const mainPhoto = photo.find((photo) => photo.photo_category === 'main_photo');
-    const normalPhotos = photo.filter((photo) => photo.photo_category === 'normal_photo');
-    const logoPhoto = photo.find((photo) => photo.photo_category === 'logo');
-
-    return {
-      images: [
-        mainPhoto ? mainPhoto.file : '',
-        ...normalPhotos.map((value) => value.file)],
-      logo: logoPhoto?.file,
-      university: {
-        name: university[0].kor_name,
-        nameEng: university[0].eng_name,
-        category: university[0].category,
-        address: university[0].kor_full_address,
-        homepage: university[0].homepage_link,
-      },
-      tuition: tuition.map((tuitionInfo) => ({
-        name: tuitionInfo.subjectname,
-        type: tuitionInfo.subjecttitle,
-        tuition: formatKRW.format(tuitionInfo.tuition),
-      })),
-      condition: supportcondition,
-      document: supportdocument.map((documentInfo) => ({
-        name: documentInfo.document,
-        type: documentInfo.documenttype,
-        pictogram: documentInfo.pictogram,
-        info: documentInfo.additionalinfo,
-      })),
-      scholarship,
-      badge: univbadge,
-      calendar: calendar.map((dateInfo) => ({
-        type: dateInfo.calendartype,
-        name: dateInfo.calendarname,
-        start: dateInfo.starttime,
-        end: dateInfo?.endtime,
-      })).sort((a, b) => ((new Date(a.start)).getTime() - (new Date(b.start)).getTime())),
-    };
-  });
-
-const fetchUnivInfo= () =>{
-  const {
+  .then((res) => {const {
     univ_info,
     major,
     document
@@ -207,35 +109,38 @@ const fetchUnivInfo= () =>{
         logo:string;
       },
       major: {
-        liberal: Array<string>;
-        nature: Array<string>;
-        arts: Array<string>;
+        "인문": Array<string>;
+        "자연": Array<string>;
+        "예체능": Array<string>;
       },
       document:{
-        essential: Array<string>;
-        // Array<{
-        //   name : string;
-        //   pictogram :string;
-        // }>;
-        noessential: Array<string>;
-        // Array<{
-        //   name : string;
-        //   pictogram :string;
-        // }>;
+        essential: Array<{
+          name : string;
+          pictogram :string;
+        }>;
+        noessential: Array<{
+          name : string;
+          pictogram :string;
+        }>;
       }
-    } = DummyData;
+    }  = res.data;
+
+    console.log(res.data)
     window.sessionStorage.setItem('chooseUnivName',univ_info.kor_name);
     return {univ_info, major, document};
-};
+  });
+  
 const useUnivData = (univ_code:string) => {
-  window.sessionStorage.setItem('chooseUniv',univ_code);
-  const getKey = () => `http://15.165.227.164/api/?action=detail_univ&params=${JSON.stringify({ univ_code: univ_code })}`;
+  let sid = 0; 
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+    window.sessionStorage.setItem('chooseUniv',univ_code);
+  }
+  const getKey = () => `/api/?action=oneclick_univ&params=${JSON.stringify({ univ_code: univ_code })}&sid=${sid}`;
   const { data } = useSWRInfinite(
     getKey,
     (url) => fetchUnivDetailInfo(url)
   );
-
-  // const data = fetchUnivInfo();
 
   console.log(data);
   return isArray(data)?data[0]:data;
@@ -315,10 +220,10 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
               [name]:newSelectValue
             });
           }
-          // updateUrlQuery('enter_type', newSelectValue);
     }else{
       setSelectValue({
         ...selectValue,
+        enter_type:"new_enter",
         major_type:"인문",
         major:undefined
       });
@@ -362,7 +267,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {
                   {univInfo.kor_name}
                 </UnivName>
                 <UnivCategory>
-                  {univInfo.category==="UN"?"대학교":univInfo.category==="JM"?"전문대학교":univInfo.category==="EH"?"어학원":"학교"}
+                  {univInfo.category}
                 </UnivCategory>
                 {major
                   ?<UnivSelectMajor>

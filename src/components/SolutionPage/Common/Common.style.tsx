@@ -132,7 +132,7 @@ export const ColorBold = styled.div`
   line-height: 25px;
   color: ${mainColor600};
 
-  margin : 0 0 15px 17px;
+  margin : 30px 0 15px 17px;
 `;
 export const GreyText = styled.span`
   color: rgba(35, 35, 35, 0.3);

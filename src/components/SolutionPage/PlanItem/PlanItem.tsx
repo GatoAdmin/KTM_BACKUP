@@ -35,7 +35,6 @@ const PlanItem: React.FC<PlanItemProps> = ({
   children
 }) =>{
   const plan = serviceColorCodes.find(service=>service.type===type);
-  console.log(plan)
   return (<UnivSelectPlan backgroundColor={plan?.color}>
     {plan?.name}
   </UnivSelectPlan>);

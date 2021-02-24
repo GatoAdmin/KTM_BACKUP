@@ -115,6 +115,13 @@ export const RadioButtonContainer = styled.div`
   flex-wrap: wrap;
   width: 100%;
   `;
+export const RadioButtonPaymentContainer = styled.div`
+  display: flex;    
+  flex-wrap: wrap;
+  width: 100%;
+  align-item : center;
+  padding: 35px 0px 36px 0px;
+  `;
 export const DocumentContainer = styled.div`
   display: iniline-block;    
   flex-wrap: wrap;

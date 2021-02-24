@@ -22,8 +22,9 @@ import {
   UncheckedRadioIcon,
   CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
-// import {
-// } from '@views/SolutionPage/SolutionPaymentPage/SolutionPaymentPage.style';
+import {
+  MessengerIcon
+} from '@views/SolutionPage/SolutionPaymentWaitingPage/SolutionPaymentWaitingPage.style';
 
 import {
   Table,
@@ -33,7 +34,6 @@ import {
   HeaderColumn,
   TopBottomNonPaddingColumn
 } from '@components/SolutionPage/Table/Table.style';
-import { Router } from 'next/router';
 
 interface service {
   name: string;
@@ -110,11 +110,10 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinial:boolean, selectValue,accountTransferName:string)=>{
+const onClickNextStep=(isFinial:boolean, selectValue)=>{
   if(isFinial){
     if(selectValue.pay_method ==="account_transfer"){
-      window.sessionStorage.setItem("pay_payer_name",accountTransferName);
-      Router.push('/solution/2/paymentWaiting');
+
     }else if(selectValue.pay_method ==="card_paypal"){
       sendPlayerInfo(selectValue.plan);
     }
@@ -193,22 +192,14 @@ const SolutionPaymentPage: NextPage = () => {
   if(typeof window !== "undefined"){
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
-    const [accountTransferName, setAccountTransferName]= useState("");
+    const accountTransferName = window.sessionStorage.getItem("pay_payer_name");
     
     let playerData = usePlayerData();
-    const isFinial = () =>{
-      if(selectValue!==null&&typeof selectValue.pay_method==="string"){
-        if(selectValue.pay_method==="card_paypal"){
-          return true;
-        }else if(selectValue.pay_method==="account_transfer"&&accountTransferName!==""){
-          return true;
-        }
-      }
-      return false;
-    }
+    
     const selectUnivName = window.sessionStorage.getItem("chooseUnivName"); 
     const plan = services.find(service=>service.type===selectValue.plan).name;
     const priceUnit = "KRW"; 
+
     if(playerData !== undefined){
       const statusId = sessionStorage.getItem("user_status_id");
       playerData = playerData.userstatus.find(status=>status.id === Number.parseInt(statusId));
@@ -250,14 +241,41 @@ const SolutionPaymentPage: NextPage = () => {
               {selectValue.pay_method==="account_transfer"?
                 <Row>
                   <HeaderColumn>입금자명</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input placeholder="입금자명을 입력해주세요." value={accountTransferName} onChange={(e)=>setAccountTransferName(e.target.value)}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input readonly={true} value={accountTransferName} onChange={(e)=>setAccountTransferName(e.target.value)}/></TopBottomNonPaddingColumn>
                 </Row>
               :null}
             </Table>
           </Block>
-          <FooterBlock>
-            <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue,accountTransferName)}>결제하기</ReadyButton>
-          </FooterBlock>
+          
+          <Block>
+            <Bold22>계좌이체 안내</Bold22>
+            <Table>
+              <Row>
+                <HeaderColumn>입금 은행</HeaderColumn>
+                <Column width={12}>국민은행 (KOOKMIN BANK)</Column>
+              </Row>
+              <Row>
+                <HeaderColumn>은행 코드</HeaderColumn>
+                <Column width={12} >CZNBKRSE (해외에서 송금 시, 사용하는 코드)</Column>
+              </Row>
+              <Row>
+                <HeaderColumn>계좌번호</HeaderColumn>
+                <Column width={12}>479401-04-381337</Column>
+              </Row>
+                <Row>
+                  <HeaderColumn>예금주</HeaderColumn>
+                  <Column width={12} >이기성 (카툼)</Column>
+                </Row>
+            </Table>
+          </Block>
+          <Block>
+            <Bold22>
+            입금 내역을 확인하고 있습니다.<br/>
+            입금이 확인되어야 입학솔루션 진행이 가능합니다.<br/>
+            입금 후,<MessengerIcon />으로 입금 내역을 알려주시면 빠른 처리가 가능합니다. <br/>
+            이용해 주셔서 감사합니다.<br/>
+            </Bold22>
+          </Block>
         </DefaultLayout>
       );
     }

@@ -84,3 +84,17 @@ export const HeaderColumn = styled.div`
     min-width: 213px;
     padding: 17px;
 `;
+
+export const TopBottomNonPaddingColumn = styled.div<ColumnProps>`
+    min-width: 150px;
+    padding: 0px 17px 0px 17px;
+    ${(props)=>(props.width
+        ?css`width:${props.width*61}px`
+        :null
+        )};
+
+    ${(props)=>(props.textAlign
+        ?css`text-align:${props.textAlign}`
+        :null
+        )};  
+`;

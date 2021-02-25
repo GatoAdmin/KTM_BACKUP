@@ -159,3 +159,22 @@ export const Bold16 = styled.div`
   font-size: 16px;
   line-height: 22px;
 `;
+
+export const SmallNotice = styled.div`
+  text-align : right;
+  font-size: 12px;
+  line-height: 16x;
+  color: ${mainColor600};
+`;
+
+export const Form = styled.form`
+
+`;
+
+export const FormAlert = styled.div`
+  height: 24px;
+  padding-left: 13px;
+  font: normal 300 12px ${defaultFont};
+  color: ${mainColor600};
+  text-align: left;
+`;

@@ -4,7 +4,6 @@ import useTranslate from '@util/hooks/useTranslate';
 import { GetServerSideProps, NextPage } from 'next';
 import Router from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
-import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import Header from '@components/Shared/Header/Header';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';

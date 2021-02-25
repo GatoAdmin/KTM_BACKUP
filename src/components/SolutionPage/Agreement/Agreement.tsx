@@ -2,7 +2,7 @@
 import React from 'react';
 import {BlurScreen, PanelContainer,Title,AgreementContainer,CloseButton,FirstStep, TwoStep,ThreeStep} from './Agreement.style';
 import useTranslate from '@util/hooks/useTranslate';
-import i18nResource from '../../../assets/i18n/solutionAgreement.json';
+import i18nResource from '../../../assets/i18n/SolutionPage/solutionAgreement.json';
 
 interface PanelProps {
   onClose: (event: React.MouseEvent) => void;

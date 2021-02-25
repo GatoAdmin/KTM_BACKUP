@@ -66,6 +66,20 @@ export const Column = styled.div<ColumnProps>`
         )};  
 `;
 
+export const FlexColumn = styled.div<ColumnProps>`
+    display: flex;
+    min-width: 150px;
+    padding: 17px;
+    ${(props)=>(props.width
+        ?css`width:${props.width*61}px`
+        :null
+        )};
+
+    ${(props)=>(props.textAlign
+        ?css`text-align:${props.textAlign}`
+        :null
+        )};  
+`;
 export const HeaderRow = styled.div`
   display: flex;
   width: 990px;
@@ -85,6 +99,15 @@ export const HeaderColumn = styled.div`
     padding: 17px;
 `;
 
+export const HeaderFlexColumn = styled.div`
+    display:flex;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    min-width: 213px;
+    padding: 17px;
+`; 
+
 export const TopBottomNonPaddingColumn = styled.div<ColumnProps>`
     min-width: 150px;
     padding: 0px 17px 0px 17px;
@@ -97,4 +120,9 @@ export const TopBottomNonPaddingColumn = styled.div<ColumnProps>`
         ?css`text-align:${props.textAlign}`
         :null
         )};  
+`;
+
+export const RequireIcon = styled.div`
+      color: ${mainColor600};
+      margin-left: 5px;
 `;

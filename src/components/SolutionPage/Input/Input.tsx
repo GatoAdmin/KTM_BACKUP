@@ -7,6 +7,7 @@ import Checkbox from '@components/Shared/Checkbox/Checkbox';
 interface InputProps {
   id?: string;
   value?: string;
+  name?:string;
   type?: string|"text";
   placeholder?:string;
   readonly?:boolean;
@@ -17,13 +18,14 @@ const Input: React.FC<InputProps> = ({
   id,
   type,
   value,
+  name,
   placeholder,
   readonly = false,
   onChange,
   children,
 }) => (
   <InputArea>
-    <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder} readOnly={readonly}></input>
+    <input id={id} type={type} name={name} value={value} onChange={onChange} placeholder={placeholder} readOnly={readonly}></input>
   </InputArea>
 );
 

@@ -27,7 +27,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: '입학 상담',
-    link: '/',
+    link: '/consult',
   },
   {
     name: '원클릭 입학솔루션',

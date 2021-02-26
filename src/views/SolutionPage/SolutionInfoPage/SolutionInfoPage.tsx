@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useReducer} from 'react';
 import axios from 'axios';
+import Dummy from '@components/SolutionPage/dummy.json';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/SolutionPage/solutionInfoPage.json';
 import i18nArrayResource from '@assets/i18n/registerPage.json';
@@ -22,12 +23,13 @@ import {
   Bold16,
   Bold22,
   SmallNotice,
-  RadioButtonPaymentContainer,
+  FooterNoticeContainer,
   UncheckedRadioIcon,
   CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
-// import {
-// } from '@views/SolutionPage/SolutionInfoPage/SolutionInfoPage.style';
+import {
+  CauseReturnContainer
+} from '@views/SolutionPage/SolutionInfoPage/SolutionInfoPage.style';
 
 import {
   Table,
@@ -36,7 +38,8 @@ import {
   FlexColumn,
   HeaderRow,
   HeaderColumn,
-  TopBottomNonPaddingColumn
+  TopBottomNonPaddingColumn,
+  WarningColumn
 } from '@components/SolutionPage/Table/Table.style';
 import RequireHeaderColumn from '@components/SolutionPage/Table/RequireHeaderColumn';
 import { Router,withRouter} from 'next/router';
@@ -160,27 +163,53 @@ const getSesstionData =()=>{
 
 const fetchPlayerStatusInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {const {
-    userstatus
+    userinfo
   }: {
-    userstatus:{
-        id: number;
-        user_id: number;
-        univ_code: string;
-        info_type: string;
-        subjecttitle: string;
-        subjectname: string;
-        pay_rank: string;
-        service_fee:string;
-        apply_fee:string;
-        pay_cost: string;
-        doc_cost:number;
-        pay_complete:boolean;
+    userinfo:{
+      kor_first_name: string;
+      kor_last_name: string;
+      eng_first_name: string;
+      eng_last_name: string;
+      sex: string;
+      email: string;
+      passport_no: string;
+      home_address: string;
+      phone_no:string;
+      nationality: string;
+      birth_date: string;
+      is_visited_korea: string;
+      have_residence_license: string;
+      language_skill: string;
+      residence_no: string;
+      father_name:string;
+      father_nationality:string;
+      father_phone_no:string;
+      father_job:string;
+      mother_name:string;
+      mother_nationality:string;
+      mother_phone_no:string;
+      mother_job:string;
+      high_school_name:string;
+      high_school_address:string;
       }
-    }  = res.data;
+    }  = Dummy;// res.data;
 
-    return {userstatus: userstatus};
+    return {userinfo: userinfo};
   });
-  
+const usePrevPlayerData = ()=>{
+  let sid = ""; 
+  if(typeof window !== "undefined"){
+    sid = window.sessionStorage.getItem('sid');
+  }
+
+  const getKey = () => `/api/?action=get_prev_user_info&params=${JSON.stringify({})}&sid=${sid}`;
+  let { data } = useSWRInfinite(
+    getKey,
+    (url) => fetchPlayerStatusInfo(url)
+  );
+
+  return Array.isArray(data)?data[0]:data;
+}
 const usePlayerData = ()=>{
   let sid = ""; 
   if(typeof window !== "undefined"){
@@ -211,6 +240,48 @@ const requireData: Array<string> = [
   "high_school_name"
 ];
 
+type Gender = 'FEMAIL'|'MALE';
+type FormData = {
+  kor_first_name: string;
+  kor_last_name: string;
+  eng_first_name: string;
+  eng_last_name: string;
+  sex: Gender;
+  email: string;
+  passport_no: string;
+  home_address: string;
+  phone_no:string;
+  nationality: string;
+  birth_date: string;
+  is_visited_korea: string;
+  have_residence_license: string;
+  language_skill: string;
+  residence_no: string;
+  father_name:string;
+  father_nationality:string;
+  father_phone_no:string;
+  father_job:string;
+  mother_name:string;
+  mother_nationality:string;
+  mother_phone_no:string;
+  mother_job:string;
+  high_school_name:string;
+  high_school_address:string;
+}
+type Action = {type:'SET_DATA'; target:string; data:string;}
+const reducer=(formData:FormData,action:Action):FormData=> {
+  if(action.type === 'SET_DATA'){
+    return {
+      ...formData,
+      [action.target]: action.data
+    };
+  }else{
+    console.log("없는 액션입니다.");
+  }
+
+  return formData;
+}
+
 const SolutionInfoPage: NextPage = ({
   router: {
     query: { lang: queryLang },
@@ -219,7 +290,9 @@ const SolutionInfoPage: NextPage = ({
   if(typeof window !== "undefined"){
     const ArrayT = useTranslate(i18nArrayResource);
     const { t, lang, changeLang } = useTranslate(i18nResource);
-    const [formData, setFormData] = React.useState({
+    
+    const playerData = usePrevPlayerData();
+    const [formData, setFormData] = useState({
       kor_first_name: null,
       kor_last_name: null,
       eng_first_name: null,
@@ -265,7 +338,7 @@ const SolutionInfoPage: NextPage = ({
       ERROR_NOT_VALID_EMAIL: false,
     });
     const [loading, setLoading] = React.useState<boolean>(false);
-  
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
   
@@ -283,7 +356,6 @@ const SolutionInfoPage: NextPage = ({
           const {
             data: { status },
           } = res;
-          console.log(status);
           if (status !== 'success') {
             setErrMsg((prev) => ({ ...prev, [status]: true }));
           } else {
@@ -385,7 +457,7 @@ const SolutionInfoPage: NextPage = ({
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('nationality')}</RequireHeaderColumn>
-                  <Column width={12}>
+                  <Column width={6}>
                       <Select
                         placeholder={t('choice-nation')}
                         options={countryArray(ArrayT.t)}
@@ -396,7 +468,7 @@ const SolutionInfoPage: NextPage = ({
                 </Row>    
                 <Row>
                   <RequireHeaderColumn>{t('language-grade')}</RequireHeaderColumn>
-                  <Column width={12}>
+                  <Column width={6}>
                     <Select
                       placeholder={t('choice-topik-level')}
                       options={topikArray(ArrayT.t)}
@@ -475,9 +547,32 @@ const SolutionInfoPage: NextPage = ({
             </Form>
           </Block>
           <FooterBlock>
+          {true?//playerData?
+            <FooterNoticeContainer>
+                입력하신 인적 정보를 확인하고 있습니다.<br/>
+                확인이 끝난 후, 다음 단계 작성이 가능합니다.<br/>
+            </FooterNoticeContainer>
+          :<>
             <ReadyButton isReady={true} onClick={(e)=>onSave(t)}>{t('save')}</ReadyButton>
             <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue, t)}>{t('next-step')}</ReadyButton>
+          </>}
           </FooterBlock>
+          {false?
+          <Block>
+            <Table>
+              <Row>
+                <HeaderColumn>{t('cause-return')}</HeaderColumn>
+                <WarningColumn width={12}>
+                  <CauseReturnContainer>
+                    정확한 고등학교 이름을 입력해 주세요. 현재 입력하신 고등학교 이름은 유효하지 않습니다.<br/>
+                     입력하신 외국인 등록 번호를 확인해주세요.<br/>
+                    거주하고 계신 집주소를 자세하게 다시 입력해주세요.<br/>
+                    </CauseReturnContainer>
+                </WarningColumn>
+              </Row>
+            </Table>
+          </Block>
+          :null}
         </DefaultLayout>
       );
     }

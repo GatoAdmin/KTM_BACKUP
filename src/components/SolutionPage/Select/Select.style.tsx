@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { greyColor, mainColor600 } from '@util/style/color';
+import { greyColor, mainColor600, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 export const SelectContainer = styled.div`
@@ -7,40 +7,47 @@ export const SelectContainer = styled.div`
   position: relative;
   width: 100%;
   height: 32px;
-  padding-left: 7px;
   cursor: pointer;
-  margin-bottom: 10px;
-
-  ::after {
-    position: absolute;
-    top: 14px;
-    right: 9px;
-    display: block;
-    width: 8px;
-    height: 8px;
-    background: ${greyColor};
-    content: '';
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
-  }
-`;
-
-export const SelectDisplay = styled.div`
-  width: 92%;
-  margin: 0;
-  padding-left: 5px;
-  border: 0;
-  background: transparent;
-  font: 14px/34px ${defaultFont};
-  color: ${greyColor};
-  cursor: pointer;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
 `;
 
 interface showProps {
   show: boolean;
 }
+
+export const SelectDisplay = styled.div<showProps>`
+  width: 92%;
+  margin: auto 0;
+  border: 0;
+  background: transparent;
+  font: 16px/22px ${defaultFont};
+  color: ${greyColor};
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  ::after {
+    position: absolute;
+    right: 9px;
+    display: block;
+    width: 8px;
+    height: 8px;
+    content: '';
+    
+    ${(props) => (props.show
+      ? css`
+            top: 10px;
+            border-top: 1px solid #232323;
+            border-right: 1px solid #232323;
+            transform: rotate(315deg);
+          `
+      : css`
+            top: 6px;
+            border-top: 1px solid #232323;
+            border-right: 1px solid #232323;
+            transform: rotate(135deg);
+          `)}
+  }
+`;
 
 export const OptionContainer = styled.div<showProps>`
   position: absolute;
@@ -64,15 +71,23 @@ export const OptionContainer = styled.div<showProps>`
         `)}
 
   ::-webkit-scrollbar {
-    width: 5;
+    width: 11px;
+    background: rgba(255, 114, 99, 0.08);
   }
+  ::-webkit-scrollbar-thumb {
+    width: 5px;
+    border-radius: 5px;
+    background: ${greyColor};
+    background-clip: padding-box;
+    border: 3px solid transparent;    
+}
 `;
 
 export const Option = styled.div`
   width: 100%;
-  height: 20px;
+  height: 25px;
   margin-bottom: 6px;
-  font: 12px/8px ${defaultFont};
+  font: 16px/22px ${defaultFont};
   color: ${greyColor};
   cursor: pointer;
 

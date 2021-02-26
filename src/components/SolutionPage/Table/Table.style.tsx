@@ -19,7 +19,7 @@ export const Table = styled.div`
 export const Row = styled.div<RowProps>`
   display: flex;
   width: 990px;
-  height: 62px;
+  min-height: 62px;
   font-weight: 500;
   font-size: 16px;
   line-height: 22px;
@@ -55,6 +55,21 @@ export const Row = styled.div<RowProps>`
 export const Column = styled.div<ColumnProps>`
     min-width: 150px;
     padding: 17px;
+    ${(props)=>(props.width
+        ?css`width:${props.width*61}px`
+        :null
+        )};
+
+    ${(props)=>(props.textAlign
+        ?css`text-align:${props.textAlign}`
+        :null
+        )};  
+`;
+
+export const WarningColumn = styled.div<ColumnProps>`
+    min-width: 150px;
+    padding: 12px 0px 12px 17px;
+    height: auto;
     ${(props)=>(props.width
         ?css`width:${props.width*61}px`
         :null

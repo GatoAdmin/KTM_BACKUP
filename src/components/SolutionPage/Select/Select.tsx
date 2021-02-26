@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Option, OptionContainer, SelectContainer, SelectDisplay,
-} from '@components/UserPage/Select/Select.style';
+} from '@components/SolutionPage/Select/Select.style';
 import useVisible from '@util/hooks/useVisible';
 
 interface option {
@@ -94,7 +94,7 @@ const Select: React.VFC<SelectProps> = ({
 
   return (
     <SelectContainer ref={containerRef}>
-      <SelectDisplay onClick={toggleVisible}>{inputValue}</SelectDisplay>
+      <SelectDisplay show={visible} onClick={toggleVisible}>{inputValue}</SelectDisplay>
       <OptionContainer show={visible}>
         {options.map((value, index) => (
           <Option key={value} onClick={getTriggerChangeOption(value, index)}>

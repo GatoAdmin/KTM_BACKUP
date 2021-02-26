@@ -108,6 +108,9 @@ export const ReadyButton = styled.button<ReadyButtonProps>`
             color: ${mainColor600};
         `
     )};
+    &+&{
+      margin-left: 14px;
+    }
 `;
 
 export const RadioButtonContainer = styled.div`
@@ -177,4 +180,10 @@ export const FormAlert = styled.div`
   font: normal 300 12px ${defaultFont};
   color: ${mainColor600};
   text-align: left;
+`;
+
+export const FooterNoticeContainer = styled.div`
+  font-size: 22px;
+  line-height: 30px;
+  text-align: center;
 `;

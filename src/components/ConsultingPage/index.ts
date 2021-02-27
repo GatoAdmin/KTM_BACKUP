@@ -4,6 +4,7 @@ import SubTitle from './SubTitle/Subtitle';
 import Tab from './Tab/Tab';
 import TitleBar from './TitleBar/TitleBar';
 import Accordion from './Accordion/Accordion';
+import ConsultingBoard from './ConsultingBoard/ConsultingBoard';
 
 export {
   IntroductionSection,
@@ -12,4 +13,5 @@ export {
   Tab,
   TitleBar,
   Accordion,
+  ConsultingBoard,
 };

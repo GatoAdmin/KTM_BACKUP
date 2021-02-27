@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '@components/Shared/Header/Header';
 import { NextPage } from 'next';
 import useTranslate from '@util/hooks/useTranslate';
-import { IntroductionSection, QnA } from '@components/ConsultingPage';
+import { IntroductionSection, QnA, ConsultingBoard } from '@components/ConsultingPage';
 import i18nResource from '../../assets/i18n/landingPage.json';
 import {
   FontProvider, Introduction,
@@ -21,6 +21,7 @@ const LandingPage: NextPage = () => {
         <IntroductionSection t={t} />
       </Introduction>
       <QnA t={t} lang={lang} changeLang={changeLang} />
+      <ConsultingBoard t={t} lang={lang} changeLang={changeLang} />
     </FontProvider>
   );
 };

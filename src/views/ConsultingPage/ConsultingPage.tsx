@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '@components/Shared/Header/Header';
+import Footer from '@components/Shared/Footer/Footer';
 import { NextPage } from 'next';
 import useTranslate from '@util/hooks/useTranslate';
 import { IntroductionSection, QnA, ConsultingBoard } from '@components/ConsultingPage';
@@ -22,6 +23,7 @@ const LandingPage: NextPage = () => {
       </Introduction>
       <QnA t={t} lang={lang} changeLang={changeLang} />
       <ConsultingBoard t={t} lang={lang} changeLang={changeLang} />
+      <Footer />
     </FontProvider>
   );
 };

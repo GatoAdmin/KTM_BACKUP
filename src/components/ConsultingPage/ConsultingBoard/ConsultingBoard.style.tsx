@@ -5,7 +5,7 @@ interface BoardThProps {
   width: string;
 }
 
-export const ConsultingBoardContainer = styled.article`
+export const ConsultingBoardContainer = styled.section`
   display: flex;
   justify-content: flex-start;
   flex-direction: column;

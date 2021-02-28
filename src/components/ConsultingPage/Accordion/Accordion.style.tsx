@@ -17,6 +17,7 @@ export const AccordionContainer = styled.div<AccordionProps>`
   transition: background ease 0.3s, height ease 2s;
   user-select: none;
   margin-bottom: 10px;
+  cursor: pointer;
 `;
 
 export const AccordionHeader = styled.div`

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 
+import { randomInt } from 'crypto';
 import React, { useState } from 'react';
 
 import {
@@ -27,7 +28,7 @@ const Accordion: React.FC<AccordionProps> = ({ data }) => {
   };
 
   const createAnswer = data.question_content.split(' \\n ').map((text) => (
-    <Answer>
+    <Answer key={text}>
       {text}
     </Answer>
   ));

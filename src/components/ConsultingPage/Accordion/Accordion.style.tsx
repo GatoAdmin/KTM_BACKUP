@@ -3,13 +3,13 @@ import { mainColor } from '@util/style/color';
 import DownArrowSVG from '@assets/svg/arrow_down_icon.svg';
 
 interface AccordionProps {
-  bOpen: boolean;
+  bopen: number;
 }
 
 export const AccordionContainer = styled.div<AccordionProps>`
   display: flex;
   flex-direction: column;
-  background: ${(props) => (props.bOpen ? '#FF7263' : '#FFFFFF')};
+  background: ${(props) => (props.bopen ? '#FF7263' : '#FFFFFF')};
   border: 0.8px solid #C4C4C4;
   box-sizing: border-box;
   border-radius: 12px;
@@ -28,18 +28,18 @@ export const AccordionHeader = styled.div`
 export const DownArrow = styled(DownArrowSVG)<AccordionProps>`
   height: 12px;
   path {
-    stroke: ${(props) => (props.bOpen ? 'white' : '#232323')};
+    stroke: ${(props) => (props.bopen ? 'white' : '#232323')};
     stroke-width: 3px;
   }
   transition: transform ease 0.3s;
-  transform: ${(props) => (props.bOpen ? 'rotate(-180deg)' : null)};
+  transform: ${(props) => (props.bopen ? 'rotate(-180deg)' : null)};
 `;
 
 export const Question = styled.p<AccordionProps>`
   font-weight: bold;
   font-size: 16px;
   line-height: 22px;
-  color: ${(props) => (props.bOpen ? 'white' : 'black')};
+  color: ${(props) => (props.bopen ? 'white' : 'black')};
 `;
 
 export const AnswerWrap = styled.div`

@@ -20,10 +20,10 @@ interface AccordionProps {
 }
 
 const Accordion: React.FC<AccordionProps> = ({ data }) => {
-  const [bOpen, setOpen] = useState(false);
+  const [bopen, setOpen] = useState(false);
 
   const handlingClick = () => {
-    setOpen(!bOpen);
+    setOpen(!bopen);
   };
 
   const createAnswer = data.question_content.split(' \\n ').map((text) => (
@@ -33,14 +33,14 @@ const Accordion: React.FC<AccordionProps> = ({ data }) => {
   ));
 
   return (
-    <AccordionContainer bOpen={bOpen} onClick={handlingClick}>
+    <AccordionContainer bopen={bopen ? 1 : 0} onClick={handlingClick}>
       <AccordionHeader>
-        <Question bOpen={bOpen}>
+        <Question bopen={bopen ? 1 : 0}>
           {data.question_title}
         </Question>
-        <DownArrow bOpen={bOpen} />
+        <DownArrow bopen={bopen ? 1 : 0} />
       </AccordionHeader>
-      {bOpen ? (
+      {bopen ? (
         <AnswerWrap>
           {createAnswer}
         </AnswerWrap>

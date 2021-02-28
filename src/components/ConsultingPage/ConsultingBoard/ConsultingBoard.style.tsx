@@ -125,3 +125,7 @@ export const RightArrow = styled(RightArrowSVG)<ArrowProps>`
   }
   ${(props) => (props.disable ? null : 'cursor: pointer')};
 `;
+
+export const BoardTHead = styled.thead``;
+export const BoardTBody = styled.tbody``;
+export const BoardTHeadTr = styled.tr``;

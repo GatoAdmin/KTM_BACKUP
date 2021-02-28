@@ -20,6 +20,9 @@ import {
   PaginationContainer,
   LeftArrow,
   RightArrow,
+  BoardTHead,
+  BoardTHeadTr,
+  BoardTBody,
 } from './ConsultingBoard.style';
 
 interface ConsultingBoardProps {
@@ -70,7 +73,7 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
   const userConsultTable = mockData.user_qna.map(({
     id, title, is_answer, uploaded_at,
   }) => (
-    <BoardTr>
+    <BoardTr key={id}>
       <BoardTd>
         { convertId(id) }
       </BoardTd>
@@ -93,15 +96,21 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
         <WriteButton> 글쓰기 </WriteButton>
       </SubTitleWrap>
       <BoardTable>
-        <BoardTh width="10%"> 번호 </BoardTh>
-        <BoardTh width="78%"> 제목 </BoardTh>
-        <BoardTh width="12%"> 등록일 </BoardTh>
-        {bEmptyData
-          ? (
-            <BoardEmptyTr>
-              <BoardEmptyMessage colSpan="3"> 나의 1:1 상담 내역이 없습니다. </BoardEmptyMessage>
-            </BoardEmptyTr>
-          ) : userConsultTable}
+        <BoardTHead>
+          <BoardTHeadTr>
+            <BoardTh width="10%"> 번호 </BoardTh>
+            <BoardTh width="78%"> 제목 </BoardTh>
+            <BoardTh width="12%"> 등록일 </BoardTh>
+          </BoardTHeadTr>
+        </BoardTHead>
+        <BoardTBody>
+          {bEmptyData
+            ? (
+              <BoardEmptyTr>
+                <BoardEmptyMessage colSpan="3"> 나의 1:1 상담 내역이 없습니다. </BoardEmptyMessage>
+              </BoardEmptyTr>
+            ) : userConsultTable}
+        </BoardTBody>
       </BoardTable>
       {bEmptyData ? (
         null

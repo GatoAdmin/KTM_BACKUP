@@ -8,7 +8,7 @@ interface BoardThProps {
 }
 
 interface ArrowProps {
-  disable: boolean;
+  disable: number;
 }
 
 export const ConsultingBoardContainer = styled.section`

@@ -119,8 +119,8 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
           <PageText>
             {`${offset} / ${mockData.pages.max_page}`}
           </PageText>
-          <LeftArrow disable={bDisableLeftArrow} onClick={handlingLeftArrowClick} />
-          <RightArrow disable={bDisableRightArrow} onClick={handlingRightArrowClick} />
+          <LeftArrow disable={bDisableLeftArrow ? 1 : 0} onClick={handlingLeftArrowClick} />
+          <RightArrow disable={bDisableRightArrow ? 1 : 0} onClick={handlingRightArrowClick} />
         </PaginationContainer>
       )}
     </ConsultingBoardContainer>

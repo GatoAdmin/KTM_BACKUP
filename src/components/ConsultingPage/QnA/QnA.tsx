@@ -17,9 +17,9 @@ const QnA: React.FC<QnAProps> = ({ t, lang, changeLang }) => {
   const [index, setIndex] = useState(0);
 
   const questions = [
-    i18nResource.consult.map((question) => <Accordion data={question} />),
-    i18nResource.solution.map((question) => <Accordion data={question} />),
-    i18nResource.payment.map((question) => <Accordion data={question} />),
+    i18nResource.consult.map((question) => <Accordion key={question.id} data={question} />),
+    i18nResource.solution.map((question) => <Accordion key={question.id} data={question} />),
+    i18nResource.payment.map((question) => <Accordion key={question.id} data={question} />),
   ];
 
   return (

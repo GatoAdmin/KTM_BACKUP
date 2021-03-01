@@ -1,11 +1,13 @@
+/* eslint-disable camelcase */
 import React, { useState } from 'react';
 import {
   SubTitle, Tab, TitleBar, Accordion,
 } from '@components/ConsultingPage';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import {
   QnAContainer,
 } from './QnA.style';
-import i18nResource from '../../../assets/i18n/consultQnA.json';
 
 interface QnAProps {
   t: (s: string) => string;
@@ -13,13 +15,35 @@ interface QnAProps {
   changeLang: (s: string) => void;
 }
 
+interface QuestionType {
+  id: number;
+  category: string;
+  question_title: string;
+  vn_question_title: string | null;
+  question_content: string;
+  vn_question_content: string | null;
+}
+
 const QnA: React.FC<QnAProps> = ({ t, lang, changeLang }) => {
   const [index, setIndex] = useState(0);
 
+  const getQnAs = async () => {
+    const QnAs = API.getQnAList();
+    return QnAs;
+  };
+
+  const [loading, resolved, error] = usePromise(getQnAs, []);
+
+  if (loading) return <> </>; // 나중에 스피너나 빈프레임 넣으면 좋을 것 같습니다 ㅎㅎ
+  if (error) window.location.href = '/';
+  if (!resolved) return null;
+
+  const { consult, solution, payment } = resolved;
+
   const questions = [
-    i18nResource.consult.map((question) => <Accordion key={question.id} data={question} />),
-    i18nResource.solution.map((question) => <Accordion key={question.id} data={question} />),
-    i18nResource.payment.map((question) => <Accordion key={question.id} data={question} />),
+    consult.map((question: QuestionType) => <Accordion key={question.id} data={question} />),
+    solution.map((question: QuestionType) => <Accordion key={question.id} data={question} />),
+    payment.map((question: QuestionType) => <Accordion key={question.id} data={question} />),
   ];
 
   return (

@@ -2,7 +2,8 @@
 
 import axios from 'axios';
 
-axios.defaults.baseURL = `${process.env.API_PATH}/api`;
+axios.defaults.baseURL = `${process.env.CLIENT_HOST}/api`;
+axios.defaults.withCredentials = true;
 
 export default {
   getQnAList: async () => {

@@ -1,1 +1,1 @@
-export { default } from '@views/ConsultingPage/ConsultingPage';
+export { default } from '@views/ConsultingPage/MainPage/ConsultingPage';

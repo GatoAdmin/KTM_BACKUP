@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SubTitle,
 } from '@components/ConsultingPage';
-import mockData from '@assets/i18n/myConsultData.json';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import {
   ConsultingBoardContainer,
   SubTitleWrap,
@@ -56,9 +57,21 @@ interface boardTableDatatype {
 const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }) => {
   const [offset, setOffset] = useState(1);
   const convertId = (id: number) => String(id).padStart(5, '0');
-  const bEmptyData = mockData.user_qna.length === 0;
+
+  const getMyQnA = async () => {
+    const QnAs = API.getMyQnA(offset);
+    return QnAs;
+  };
+
+  const [loading, resolved, error] = usePromise(getMyQnA, []);
+
+  if (loading) return <> </>; // 나중에 스피너나 빈프레임 넣으면 좋을 것 같습니다 ㅎㅎ
+  if (error) window.location.href = '/';
+  if (!resolved) return null;
+
+  const bEmptyData = resolved.user_qna.length === 0;
   const bDisableLeftArrow = offset <= 1;
-  const bDisableRightArrow = offset >= mockData.pages.max_page;
+  const bDisableRightArrow = offset >= resolved.pages.max_page;
 
   const handlingLeftArrowClick = () => {
     if (bDisableLeftArrow) return;
@@ -70,9 +83,9 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
     setOffset(offset + 1);
   };
 
-  const userConsultTable = mockData.user_qna.map(({
+  const userConsultTable = resolved.user_qna.map(({
     id, title, is_answer, uploaded_at,
-  }) => (
+  }: userConsultDataType) => (
     <BoardTr key={id}>
       <BoardTd>
         { convertId(id) }
@@ -117,7 +130,7 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
       ) : (
         <PaginationContainer>
           <PageText>
-            {`${offset} / ${mockData.pages.max_page}`}
+            {`${offset} / ${resolved.pages.max_page}`}
           </PageText>
           <LeftArrow disable={bDisableLeftArrow ? 1 : 0} onClick={handlingLeftArrowClick} />
           <RightArrow disable={bDisableRightArrow ? 1 : 0} onClick={handlingRightArrowClick} />

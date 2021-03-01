@@ -10,4 +10,10 @@ export default {
     const response = await axios.get('/?action=get_faq_list&params={}');
     return response.data;
   },
+  getMyQnA: async (page: number) => {
+    const sid = sessionStorage.getItem('sid');
+    if (sid === null) return {};
+    const response = await axios.get(`/?action=get_my_qna&params={"page":${page}}&sid=${sid}`);
+    return response.data;
+  },
 };

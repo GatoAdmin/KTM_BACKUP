@@ -6,10 +6,11 @@ import {
 } from '@components/ConsultingPage';
 import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
+import Button from '@components/Shared/Button/Button';
+import { useRouter } from 'next/router';
 import {
   ConsultingBoardContainer,
   SubTitleWrap,
-  WriteButton,
   BoardTable,
   BoardTh,
   BoardTr,
@@ -57,6 +58,7 @@ interface boardTableDatatype {
 
 const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }) => {
   const [offset, setOffset] = useState(1);
+  const router = useRouter();
   const convertId = (id: number) => String(id).padStart(5, '0');
   let bEmptyData = true;
   let maxPage = 1;
@@ -115,7 +117,7 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
     <ConsultingBoardContainer>
       <SubTitleWrap>
         <SubTitle> 1:1 상담 내역 </SubTitle>
-        <WriteButton> 글쓰기 </WriteButton>
+        <Button onClick={() => { router.replace('/consult/write'); }}> 글작성 </Button>
       </SubTitleWrap>
       <BoardTable>
         <BoardTHead>

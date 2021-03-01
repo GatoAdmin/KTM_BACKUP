@@ -27,21 +27,6 @@ export const SubTitleWrap = styled.div`
   align-items: center;
 `;
 
-export const WriteButton = styled.button`
-  width: 86px;
-  height: 39px;
-  background: ${mainColor};
-  border: 1px solid ${mainColor};
-  box-sizing: border-box;
-  border-radius: 100px;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 19px;
-  outline: none;
-  cursor: pointer;
-`;
-
 export const BoardTable = styled.table`
   table-layout: fixed;
   width: 100%;

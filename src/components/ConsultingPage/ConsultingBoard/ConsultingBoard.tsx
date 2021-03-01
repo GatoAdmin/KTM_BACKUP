@@ -1,5 +1,6 @@
+/* eslint-disable react/no-unused-prop-types */
 /* eslint-disable camelcase */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SubTitle,
 } from '@components/ConsultingPage';
@@ -57,6 +58,9 @@ interface boardTableDatatype {
 const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }) => {
   const [offset, setOffset] = useState(1);
   const convertId = (id: number) => String(id).padStart(5, '0');
+  let bEmptyData = true;
+  let maxPage = 1;
+  let user_qna = [];
 
   const getMyQnA = async () => {
     const QnAs = API.getMyQnA(offset);
@@ -69,9 +73,14 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
   if (error) window.location.href = '/';
   if (!resolved) return null;
 
-  const bEmptyData = resolved.user_qna.length === 0;
+  if (resolved.user_qna !== undefined) {
+    bEmptyData = resolved.user_qna.length === 0;
+    maxPage = resolved.pages.max_page;
+    user_qna = resolved.user_qna;
+  }
+
   const bDisableLeftArrow = offset <= 1;
-  const bDisableRightArrow = offset >= resolved.pages.max_page;
+  const bDisableRightArrow = offset >= maxPage;
 
   const handlingLeftArrowClick = () => {
     if (bDisableLeftArrow) return;
@@ -83,7 +92,7 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
     setOffset(offset + 1);
   };
 
-  const userConsultTable = resolved.user_qna.map(({
+  const userConsultTable = user_qna.map(({
     id, title, is_answer, uploaded_at,
   }: userConsultDataType) => (
     <BoardTr key={id}>

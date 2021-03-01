@@ -26,7 +26,7 @@ const Accordion: React.FC<AccordionProps> = ({ data }) => {
     setOpen(!bopen);
   };
 
-  const createAnswer = data.question_content.split(' \\n ').map((text) => (
+  const createAnswer = data.question_content.split('<br>').map((text) => (
     <Answer key={text}>
       {text}
     </Answer>

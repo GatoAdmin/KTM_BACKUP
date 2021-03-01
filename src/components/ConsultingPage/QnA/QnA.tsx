@@ -28,7 +28,7 @@ const QnA: React.FC<QnAProps> = ({ t, lang, changeLang }) => {
   const [index, setIndex] = useState(0);
 
   const getQnAs = async () => {
-    const QnAs = API.getQnAList();
+    const QnAs = await API.getQnAList();
     return QnAs;
   };
 

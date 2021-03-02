@@ -43,6 +43,7 @@ import {
 } from '@components/SolutionPage/Table/Table.style';
 import RequireHeaderColumn from '@components/SolutionPage/Table/RequireHeaderColumn';
 import { Router,withRouter} from 'next/router';
+import { values } from 'mobx';
 
 const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
 const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
@@ -122,8 +123,8 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinial:boolean, selectValue, t)=>{
-  if(isFinial){
+const onClickNextStep=(isFinal:boolean, selectValue, t)=>{
+  if(isFinal){
     if(window.confirm(t('completed-information-entry'))){
       console.log("OK");
     }
@@ -165,7 +166,8 @@ const fetchPlayerStatusInfo = (url: string) => axios.get(url,{withCredentials : 
   .then((res) => {const {
     userinfo
   }: {
-    userinfo:{
+    userinfo: Array<{
+      id: number;
       kor_first_name: string;
       kor_last_name: string;
       eng_first_name: string;
@@ -191,11 +193,28 @@ const fetchPlayerStatusInfo = (url: string) => axios.get(url,{withCredentials : 
       mother_job:string;
       high_school_name:string;
       high_school_address:string;
-      }
-    }  = Dummy;// res.data;
-
-    return {userinfo: userinfo};
+      }>
+    }  = res.data;
+    return {userinfo: userinfo[0]};
   });
+  
+const fetchPlayerPrevStatusInfo = (url: string) => axios.get(url,{withCredentials : true})
+.then((res) => {const {
+  userinfo
+}: {
+  userinfo:{
+    eng_first_name: string;
+    eng_last_name: string;
+    sex: string;
+    email: string;
+    nationality: string;
+    language_skill: string;
+    }
+  }  = res.data;
+
+  return {userinfo: userinfo};
+});
+
 const usePrevPlayerData = ()=>{
   let sid = ""; 
   if(typeof window !== "undefined"){
@@ -205,27 +224,25 @@ const usePrevPlayerData = ()=>{
   const getKey = () => `/api/?action=get_prev_user_info&params=${JSON.stringify({})}&sid=${sid}`;
   let { data } = useSWRInfinite(
     getKey,
-    (url) => fetchPlayerStatusInfo(url)
+    (url) => fetchPlayerPrevStatusInfo(url)
   );
+  // const data = fetchPlayerStatusInfo(getKey());
 
   return Array.isArray(data)?data[0]:data;
 }
+
 const usePlayerData = ()=>{
   let sid = ""; 
   if(typeof window !== "undefined"){
     sid = window.sessionStorage.getItem('sid');
   }
-
-  const getKey = () => `/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`;
+  const getKey = () => `/api/?action=get_user_info&params=${JSON.stringify({})}&sid=${sid}`;
   let { data } = useSWRInfinite(
     getKey,
     (url) => fetchPlayerStatusInfo(url)
   );
+  console.log(data)
   return Array.isArray(data)?data[0]:data;
-}
-
-const convertPrice=(price:number)=>{
-  return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
 const requireData: Array<string> = [
@@ -237,6 +254,7 @@ const requireData: Array<string> = [
   "nationality",
   "language_skill",
   "is_visited_korea",
+  "have_residence_license",
   "high_school_name"
 ];
 
@@ -268,19 +286,6 @@ type FormData = {
   high_school_name:string;
   high_school_address:string;
 }
-type Action = {type:'SET_DATA'; target:string; data:string;}
-const reducer=(formData:FormData,action:Action):FormData=> {
-  if(action.type === 'SET_DATA'){
-    return {
-      ...formData,
-      [action.target]: action.data
-    };
-  }else{
-    console.log("없는 액션입니다.");
-  }
-
-  return formData;
-}
 
 const SolutionInfoPage: NextPage = ({
   router: {
@@ -290,35 +295,44 @@ const SolutionInfoPage: NextPage = ({
   if(typeof window !== "undefined"){
     const ArrayT = useTranslate(i18nArrayResource);
     const { t, lang, changeLang } = useTranslate(i18nResource);
-    
-    const playerData = usePrevPlayerData();
+    // const playerPrevData = usePrevPlayerData();
+    const playerData = usePlayerData();
     const [formData, setFormData] = useState({
-      kor_first_name: null,
-      kor_last_name: null,
-      eng_first_name: null,
-      eng_last_name: null,
-      sex: null,
-      email: null,
-      passport_no: null,
-      home_address: null,
-      phone_no:null,
-      nationality: null,
-      birth_date: null,
-      is_visited_korea: null,
-      have_residence_license: null,
-      language_skill: null,
-      residence_no: null,
-      father_name:null,
-      father_nationality:null,
-      father_phone_no:null,
-      father_job:null,
-      mother_name:null,
-      mother_nationality:null,
-      mother_phone_no:null,
-      mother_job:null,
-      high_school_name:null,
-      high_school_address:null
+      kor_first_name: undefined,
+      kor_last_name: undefined,
+      eng_first_name: undefined,
+      eng_last_name: undefined,
+      sex: undefined,
+      email: undefined,
+      passport_no: undefined,
+      home_address: undefined,
+      phone_no:undefined,
+      nationality: undefined,
+      birth_date: undefined,
+      is_visited_korea: undefined,
+      have_residence_license: undefined,
+      language_skill: undefined,
+      residence_no: undefined,
+      father_name:undefined,
+      father_nationality:undefined,
+      father_phone_no:undefined,
+      father_job:undefined,
+      mother_name:undefined,
+      mother_nationality:undefined,
+      mother_phone_no:undefined,
+      mother_job:undefined,
+      high_school_name:undefined,
+      high_school_address:undefined
     });
+
+    React.useEffect(() => {
+      setLoading(true);
+      if (typeof playerData === 'undefined') return;   
+      const tempData = Object.assign(formData, playerData.userinfo);
+      setFormData(tempData);
+      setLoading(false);
+    }, [playerData]);
+    
     const [errMsg, setErrMsg] = React.useState({
       ERROR_NOT_EXIST_USERNAME: false,
       ERROR_NOT_EXIST_LAST_NAME: false,
@@ -399,14 +413,19 @@ const SolutionInfoPage: NextPage = ({
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     
-    // let playerData = usePlayerData();
-    const isFinial = () =>{
-      requireData.map(dataName =>{
 
+    // let playerData = usePlayerData();
+    const isFinal = () =>{
+      const isRequire = requireData.map(dataName =>{
+        if(formData[dataName] === undefined||formData[dataName] === ""){
+          return false;
+        }
+        return true;
       })
-      if(selectValue!==null&&typeof selectValue.pay_method==="string"){
+      if(isRequire.findIndex(value=>value===false)>-1){
+        return false;
       }
-      return false;
+      return true;
     }
 
     const priceUnit = "KRW"; 
@@ -414,6 +433,7 @@ const SolutionInfoPage: NextPage = ({
     //   const statusId = sessionStorage.getItem("user_status_id");
     //   playerData = playerData.userstatus.find(status=>status.id === Number.parseInt(statusId));
 
+    console.log(formData);
       return (
         <DefaultLayout>
           {loading && (
@@ -430,30 +450,30 @@ const SolutionInfoPage: NextPage = ({
               <Table>
                 <Row>
                   <HeaderColumn>{t('name-korean')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="kor_first_name" onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="kor_first_name" onChange={handleFormContent} value={formData.kor_first_name}/></TopBottomNonPaddingColumn>
                   <HeaderColumn>{t('last-name-korean')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="kor_last_name" onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="kor_last_name" onChange={handleFormContent} value={formData.kor_last_name}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('name-english')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="eng_first_name" onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="eng_first_name" onChange={handleFormContent} value={formData.eng_first_name}/></TopBottomNonPaddingColumn>
                   <RequireHeaderColumn>{t('last-name-english')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="eng_last_name" onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="eng_last_name" onChange={handleFormContent} value={formData.eng_last_name}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('sex')}</RequireHeaderColumn>
                   <FlexColumn width={12} >
-                    <RadioCheckbox id="sex_women" group="sex" value="FEMAIL" onChange={handleFormContent}>{t('women')}</RadioCheckbox>
-                    <RadioCheckbox id="sex_men" group="sex" value="MAIL" onChange={handleFormContent}>{t('men')}</RadioCheckbox>
+                    <RadioCheckbox id="sex_women" group="sex" value="FEMAIL" onChange={handleFormContent} checked={formData.sex==="FEMAIL"}>{t('women')}</RadioCheckbox>
+                    <RadioCheckbox id="sex_men" group="sex" value="MAIL" onChange={handleFormContent} checked={formData.sex==="MAIL"}>{t('men')}</RadioCheckbox>
                   </FlexColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('date-birth')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="birth_date" type="number" placeholder={`${t('enter-date-birth')} (ex.20001010)`}  onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="birth_date" type="number" placeholder={`${t('enter-date-birth')} (ex.20001010)`}  onChange={handleFormContent} value={formData.birth_date}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('passport-number')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="passport_no" placeholder={t('enter-passpor-number')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="passport_no" placeholder={t('enter-passpor-number')} onChange={handleFormContent} value={formData.passport_no}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('nationality')}</RequireHeaderColumn>
@@ -462,6 +482,7 @@ const SolutionInfoPage: NextPage = ({
                         placeholder={t('choice-nation')}
                         options={countryArray(ArrayT.t)}
                         name="nationality"
+                        defaultValue={formData.nationality}
                         handleFormContent={handleFormContent}
                       />
                   </Column>
@@ -473,6 +494,7 @@ const SolutionInfoPage: NextPage = ({
                       placeholder={t('choice-topik-level')}
                       options={topikArray(ArrayT.t)}
                       name="topik_level"
+                      defaultValue={formData.language_skill}
                       handleFormContent={handleFormContent}
                     />
                   </Column>
@@ -480,32 +502,32 @@ const SolutionInfoPage: NextPage = ({
                 <Row>
                   <RequireHeaderColumn>{t('staying-in-korea')}</RequireHeaderColumn>
                   <FlexColumn width={12} >
-                    <RadioCheckbox id="stay_yes" group="is_visited_korea" value="true" onChange={handleFormContent}>{t('yes')}</RadioCheckbox>
-                    <RadioCheckbox id="stay_no" group="is_visited_korea" value="false" onChange={handleFormContent}>{t('no')}</RadioCheckbox>
+                    <RadioCheckbox id="stay_yes" group="is_visited_korea" value="true" onChange={handleFormContent} checked={formData.is_visited_korea===true||formData.is_visited_korea==="true"}>{t('yes')}</RadioCheckbox>
+                    <RadioCheckbox id="stay_no" group="is_visited_korea" value="false" onChange={handleFormContent} checked={formData.is_visited_korea===false||formData.is_visited_korea==="false"}>{t('no')}</RadioCheckbox>
                   </FlexColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('certificate-residence-card-issued')}</RequireHeaderColumn>
                   <FlexColumn width={12} >
-                    <RadioCheckbox id="issue_yes" group="have_residence_license" value="true" onChange={handleFormContent}>{t('yes')}</RadioCheckbox>
-                    <RadioCheckbox id="issue_no" group="have_residence_license" value="false" onChange={handleFormContent}>{t('no')}</RadioCheckbox>
+                    <RadioCheckbox id="issue_yes" group="have_residence_license" value="true" onChange={handleFormContent} checked={formData.have_residence_license===true||formData.have_residence_license==="true"}>{t('yes')}</RadioCheckbox>
+                    <RadioCheckbox id="issue_no" group="have_residence_license" value="false" onChange={handleFormContent} checked={formData.have_residence_license===false||formData.have_residence_license==="false"}>{t('no')}</RadioCheckbox>
                   </FlexColumn>
                 </Row>  
                 <Row>
                   <HeaderColumn>{t('residence-card-number')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="residence_no" placeholder={t('enter-residence-card-number')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="residence_no" placeholder={t('enter-residence-card-number')} onChange={handleFormContent} value={formData.residence_no}/></TopBottomNonPaddingColumn>
                 </Row>   
                 <Row>
                   <HeaderColumn>{t('email')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="email" placeholder={t('enter-contactable-email')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="email" placeholder={t('enter-contactable-email')} onChange={handleFormContent} value={formData.email}/></TopBottomNonPaddingColumn>
                 </Row>  
                 <Row>
                   <HeaderColumn>{t('home-address')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="home_address" placeholder={t('enter-home-address')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="home_address" placeholder={t('enter-home-address')} onChange={handleFormContent} value={formData.home_address}/></TopBottomNonPaddingColumn>
                 </Row>  
                 <Row>
                   <HeaderColumn>{t('contact-phone-number')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="phone_no" placeholder={t('enter-contact-phone-number')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="phone_no" placeholder={t('enter-contact-phone-number')} onChange={handleFormContent} value={formData.phone_no}/></TopBottomNonPaddingColumn>
                 </Row>     
                 <Row readonly={true}>
                   <HeaderColumn>{t('family-relations')}</HeaderColumn>
@@ -514,47 +536,47 @@ const SolutionInfoPage: NextPage = ({
                 </Row> 
                 <Row>
                   <HeaderColumn>{t('full-name')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_name" placeholder={t('enter-full-name')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_name" placeholder={t('enter-full-name')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_name" placeholder={t('enter-full-name')} onChange={handleFormContent} value={formData.father_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_name" placeholder={t('enter-full-name')} onChange={handleFormContent} value={formData.mother_name}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <HeaderColumn>{t('nationality')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent} value={formData.father_nationality}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent} value={formData.mother_nationality}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <HeaderColumn>{t('cell-phone')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent} value={formData.father_phone_no}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent} value={formData.mother_phone_no}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <HeaderColumn>{t('job')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_job"  placeholder={t('enter-job')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_job"  placeholder={t('enter-job')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_job"  placeholder={t('enter-job')} onChange={handleFormContent} value={formData.father_job}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_job"  placeholder={t('enter-job')} onChange={handleFormContent} value={formData.mother_job}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row readonly={true}>
                   <HeaderColumn>{t('final-educational-background')}</HeaderColumn>
                 </Row> 
                 <Row>
                   <RequireHeaderColumn>{t('high-school-name')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_name" placeholder={t('enter-high-school-name')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_name" placeholder={t('enter-high-school-name')} onChange={handleFormContent} value={formData.high_school_name}/></TopBottomNonPaddingColumn>
                 </Row>   
                 <Row>
                   <HeaderColumn>{t('high-school-address')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_address" placeholder={t('enter-high-school-address')} onChange={handleFormContent}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_address" placeholder={t('enter-high-school-address')} onChange={handleFormContent} value={formData.high_school_address}/></TopBottomNonPaddingColumn>
                 </Row>   
               </Table>
             </Form>
           </Block>
           <FooterBlock>
-          {true?//playerData?
+          {false?//playerData?
             <FooterNoticeContainer>
                 입력하신 인적 정보를 확인하고 있습니다.<br/>
                 확인이 끝난 후, 다음 단계 작성이 가능합니다.<br/>
             </FooterNoticeContainer>
           :<>
             <ReadyButton isReady={true} onClick={(e)=>onSave(t)}>{t('save')}</ReadyButton>
-            <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue, t)}>{t('next-step')}</ReadyButton>
+            <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, t)}>{t('next-step')}</ReadyButton>
           </>}
           </FooterBlock>
           {false?

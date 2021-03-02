@@ -18,12 +18,14 @@ import {
   GreyText,
   Bold22,
   Bold18,
+  FooterNoticeContainer,
   RadioButtonPaymentContainer,
   UncheckedRadioIcon,
   CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
 import {
-  MessengerIcon
+  MessengerIcon,
+  IconContainer
 } from '@views/SolutionPage/SolutionPaymentWaitingPage/SolutionPaymentWaitingPage.style';
 
 import {
@@ -110,8 +112,8 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinial:boolean, selectValue)=>{
-  if(isFinial){
+const onClickNextStep=(isFinal:boolean, selectValue)=>{
+  if(isFinal){
     if(selectValue.pay_method ==="account_transfer"){
 
     }else if(selectValue.pay_method ==="card_paypal"){
@@ -269,12 +271,12 @@ const SolutionPaymentPage: NextPage = () => {
             </Table>
           </Block>
           <Block>
-            <Bold22>
+            <FooterNoticeContainer>
             입금 내역을 확인하고 있습니다.<br/>
             입금이 확인되어야 입학솔루션 진행이 가능합니다.<br/>
-            입금 후,<MessengerIcon />으로 입금 내역을 알려주시면 빠른 처리가 가능합니다. <br/>
-            이용해 주셔서 감사합니다.<br/>
-            </Bold22>
+            입금 후,<IconContainer><MessengerIcon /></IconContainer>으로 입금 내역을 알려주시면 빠른 처리가 가능합니다. <br/>
+            <Bold22>이용해 주셔서 감사합니다.</Bold22>
+            </FooterNoticeContainer>
           </Block>
         </DefaultLayout>
       );

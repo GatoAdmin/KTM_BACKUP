@@ -40,7 +40,6 @@ import SearchPictogram from '@assets/svg/search_pictogram.svg';
 import StudyPictogram from '@assets/svg/study_pictogram.svg';
 import FamilyPictogram from '@assets/svg/family_pictogram.svg';
 import BalancePictogram from '@assets/svg/balance_pictogram.svg';
-import { isArray } from 'util';
 
 const qualificationIcons = [
   { type: '국적요건', icon: FamilyIcon },
@@ -79,7 +78,7 @@ const steps: Array<step> = [
     index: 4,
   },
   {
-    name: '5. 진행 완료',
+    name: '5. 최종 동의',
     index: 5,
   },
 ];
@@ -141,7 +140,7 @@ const useUnivData = (univ_code:string) => {
     (url) => fetchUnivDetailInfo(url)
   );
 
-  return isArray(data)?data[0]:data;
+  return Array.isArray(data)?data[0]:data;
 };
 
 export const getLoginCheck=()=>{
@@ -249,10 +248,10 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {
         <StepContainer>
             <NavigationContainer>
             <Navigation>
-                {steps.map(({ name, index }) => (
-                    <NavItem key={index} isStep={step === index}>
-                        {name}
-                    </NavItem>
+                {steps.map(({ name, index }) =>  (
+                  <NavItem key={index} isStep={step === index}>
+                      {name}
+                  </NavItem>
                 ))}
             </Navigation>
             </NavigationContainer>

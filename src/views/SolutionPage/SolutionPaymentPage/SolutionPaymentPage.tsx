@@ -33,7 +33,7 @@ import {
   HeaderColumn,
   TopBottomNonPaddingColumn
 } from '@components/SolutionPage/Table/Table.style';
-import { Router } from 'next/router';
+import Router from 'next/router';
 
 interface service {
   name: string;
@@ -110,8 +110,8 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinial:boolean, selectValue,accountTransferName:string)=>{
-  if(isFinial){
+const onClickNextStep=(isFinal:boolean, selectValue,accountTransferName:string)=>{
+  if(isFinal){
     if(selectValue.pay_method ==="account_transfer"){
       window.sessionStorage.setItem("pay_payer_name",accountTransferName);
       Router.push('/solution/2/paymentWaiting');
@@ -196,7 +196,7 @@ const SolutionPaymentPage: NextPage = () => {
     const [accountTransferName, setAccountTransferName]= useState("");
     
     let playerData = usePlayerData();
-    const isFinial = () =>{
+    const isFinal = () =>{
       if(selectValue!==null&&typeof selectValue.pay_method==="string"){
         if(selectValue.pay_method==="card_paypal"){
           return true;
@@ -256,7 +256,7 @@ const SolutionPaymentPage: NextPage = () => {
             </Table>
           </Block>
           <FooterBlock>
-            <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue,accountTransferName)}>결제하기</ReadyButton>
+            <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue,accountTransferName)}>결제하기</ReadyButton>
           </FooterBlock>
         </DefaultLayout>
       );

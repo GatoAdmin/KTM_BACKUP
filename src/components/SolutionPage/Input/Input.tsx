@@ -6,7 +6,7 @@ import Checkbox from '@components/Shared/Checkbox/Checkbox';
 
 interface InputProps {
   id?: string;
-  value?: string;
+  value?: string|boolean;
   name?:string;
   type?: string|"text";
   placeholder?:string;

@@ -1,10 +1,19 @@
 import styled from 'styled-components';
 import { fontColor, mainBackgroundColor, whiteColor,mainColor600 } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
-import MessengerImage from 'public/images/messenger_icon';
+import MessengerSVG from '@assets/svg/messenger_icon.svg';
 
 
-export const MessengerIcon = styled(MessengerImage)`
+export const MessengerIcon = styled(MessengerSVG)`
+  position: absolute;
+  top: 5px;
+  left: 0px;
+  width: 25px;
+  height: 25px;
+`;
+export const IconContainer = styled.div`
+  position: relative;
+  display: inline-block;
   width: 25px;
   height: 25px;
 `;

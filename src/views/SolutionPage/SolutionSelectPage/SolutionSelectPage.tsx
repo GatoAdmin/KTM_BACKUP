@@ -143,8 +143,8 @@ const sendPlayerInfo = (selectValue, univInfo) => {
   return true;
 };
 
-const onClickNextStep=(isFinial:boolean, selectValue, univInfo)=>{
-  if(isFinial){
+const onClickNextStep=(isFinal:boolean, selectValue, univInfo)=>{
+  if(isFinal){
       sendPlayerInfo(selectValue, univInfo);
       Router.push('/solution/2');
   }else{
@@ -166,7 +166,7 @@ const SolutionSelectPage: NextPage = () => {
       handleSelectEnter();
     }
 
-    const isFinial = () =>{
+    const isFinal = () =>{
       if(univInfo){
         if(selectValue!==null&&typeof selectValue.major==="string"){
           return true;
@@ -256,7 +256,7 @@ const SolutionSelectPage: NextPage = () => {
           }
         </Block>
         <Block>
-          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue, univInfo?.univ_info)}>다음단계</ReadyButton>
+          <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, univInfo?.univ_info)}>다음단계</ReadyButton>
         </Block>
         <ImageContainer>
           <CoverImage/>

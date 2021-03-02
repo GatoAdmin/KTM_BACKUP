@@ -13,6 +13,7 @@ interface SelectProps {
   placeholder: string;
   options: Array<string | number>;
   name: string;
+  defaultValue?: string;
   handleFormContent: (
     e?: React.ChangeEvent<HTMLInputElement> | undefined,
     t?: string | undefined,
@@ -76,7 +77,7 @@ const changeValue = (name: string, optionIndex: string | number) => {
 };
 
 const Select: React.VFC<SelectProps> = ({
-  options, placeholder, name, handleFormContent,
+  options, placeholder, defaultValue, name, handleFormContent,
 }) => {
   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -88,9 +89,26 @@ const Select: React.VFC<SelectProps> = ({
     toggleVisible();
   };
 
+  const getDefaultOptionConvert = (optionValue: string | number) => {
+    let changeIndex = 0;
+    if(typeof optionValue === "string"){
+      if(isNaN(optionValue)){
+        changeIndex = arrayKeeper[name].findIndex(value=>value===optionValue);
+      }else{
+        changeIndex = Number(optionValue);
+      }
+    }
+    const changedVal = options[changeIndex];
+    setInputValue(changedVal);
+  };
+
   React.useEffect(() => {
-    setInputValue(placeholder);
-  }, [placeholder]);
+    if(typeof defaultValue === "string"){ 
+      getDefaultOptionConvert(defaultValue); 
+    }else{
+      setInputValue(placeholder);
+    }
+  }, [placeholder,defaultValue]);
 
   return (
     <SelectContainer ref={containerRef}>

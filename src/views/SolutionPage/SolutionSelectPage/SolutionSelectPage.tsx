@@ -11,6 +11,7 @@ import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/Solut
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import DocumentShortItem from '@components/SolutionPage/DocumentShortItem/DocumentShortItem';
+import {STEP_STRING} from '@components/SolutionPage/StepString';
 import {
   ColorBold,
   BlockHeader,
@@ -152,15 +153,89 @@ const onClickNextStep=(isFinal:boolean, selectValue, univInfo)=>{
   }
 }
 
-const SolutionSelectPage: NextPage = () => {
+const SolutionSelectPage: NextPage = ({
+  router: {
+    query: { lang: queryLang },
+  },
+}) => {
   if(typeof window !== "undefined"){
+    const [errMsg, setErrMsg] = React.useState({
+      ERROR_NOT_EXIST_USERNAME: false,
+      ERROR_NOT_EXIST_LAST_NAME: false,
+      ERROR_LAST_NAME_ONLY_ENGLISH: false,
+      ERROR_NOT_EXIST_FIRST_NAME: false,
+      ERROR_FIRST_NAME_ONLY_ENGLISH: false,
+      ERROR_NOT_EXIST_EMAIL: false,
+      ERROR_EXIST_EMAIL: false,
+      ERROR_NOT_EXIST_PASSWORD: false,
+      ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
+      ERROR_NOT_EXIST_NATIONALITY: false,
+      ERROR_NOT_EXIST_BIRTH_DATE: false,
+      ERROR_NOT_EXIST_TOPIK_LEVEL: false,
+      ERROR_NOT_EXIST_IDENTITY: false,
+      ERROR_NOT_PROPER_PASSWORD: false,
+      ERROR_PASSWORD_CONFIRM_FAIL: false,
+      ERROR_NOT_VALID_EMAIL: false,
+    });
+    const [loading, setLoading] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+      if (queryLang !== undefined) {
+        // changeLang(queryLang);
+      }
+    }, [queryLang]);
+  
+    React.useEffect(() => {
+      if (loading) {
+        const errObj = { ...errMsg };
+        Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
+        setErrMsg(errObj);
+      }
+    }, [loading]);
+
     const univInfo = getSelectUnivInfo();
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
     let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
 
     const [viewTap,setViewTaps] = React.useState({type:viewType}); 
-    console.log(selectValue);
+    
+    React.useEffect(() => {
+      let sid = ""; 
+      if(typeof window !== "undefined"){
+        sid = window.sessionStorage.getItem('sid');
+      }
+      const univcode = getChosseUnivCode();
+      axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
+      .then((res) => {
+        const {
+          data: { status, userstatus },
+        } = res;
+        if (status !== 'success') {
+          setErrMsg((prev) => ({ ...prev, [status]: true }));
+        } else { 
+            // const user = userstatus.find(status=>status.id);univcode
+            const user = userstatus.find(status=>status.univ_code === univcode);
+            console.log(user);
+            if(typeof window !== "undefined"){
+              window.sessionStorage.setItem('chooseUnivName',user.univ_name);
+              window.sessionStorage.setItem('chooseSubjectname',user.subjectname);
+              window.sessionStorage.setItem('choosePayRank',user.pay_rank);
+            }
+            if(user.step === STEP_STRING.STEP_TWO){
+              Router.push("/solution/2")
+            }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+              Router.push("/solution/3")
+            }else if(user.step === STEP_STRING.STEP_FOUR){
+              Router.push("/solution/4")
+            }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }, []);
+
     const changeViewTap =(type:string)=>{
       setViewTaps({type:type});
       handleSelectEnter();
@@ -270,4 +345,4 @@ const SolutionSelectPage: NextPage = () => {
   return <DefaultLayout></DefaultLayout>
 };
 
-export default SolutionSelectPage;
+export default withRouter(SolutionSelectPage);

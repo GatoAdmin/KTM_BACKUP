@@ -138,6 +138,10 @@ const getSesstionData =()=>{
       let sessionData = sessionStorage.getItem('select_enter_value');
       if(sessionData&&sessionData!==""){
         sessionData=JSON.parse(sessionData);
+        sessionData.univ_code = sessionStorage.getItem('chooseUniv');
+        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
+        sessionData.major = sessionStorage.getItem('chooseSubjectname');
+        sessionData.plan = sessionStorage.getItem('choosePayRank');
       }else{
         sessionData = null;
       }

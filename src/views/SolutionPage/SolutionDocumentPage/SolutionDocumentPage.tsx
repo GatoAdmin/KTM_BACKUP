@@ -26,9 +26,9 @@ import {
   UncheckedRadioIcon,
   CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
-import {
-  CauseReturnContainer
-} from '@views/SolutionPage/SolutionInfoPage/SolutionInfoPage.style';
+// import {
+//   CauseReturnContainer
+// } from '@views/SolutionPage/SolutionDocumentPage/SolutionDocumentPage.style';
 import {STEP_STRING} from '@components/SolutionPage/StepString';
 
 import {
@@ -288,7 +288,7 @@ type FormData = {
   high_school_address:string;
 }
 
-const SolutionInfoPage: NextPage = ({
+const SolutionDocumentPage: NextPage = ({
   router: {
     query: { lang: queryLang },
   },
@@ -501,7 +501,7 @@ const SolutionInfoPage: NextPage = ({
             </LoadingPopup>
           )}          
           <Header background="light" position="relative" />
-          <StepHeader step={3} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+          <StepHeader step={4} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
           <Block>
             <Bold22>{t('create-person-information')}</Bold22>
             <SmallNotice>*{t('display-items-must-be-entered')}</SmallNotice>
@@ -661,4 +661,4 @@ const SolutionInfoPage: NextPage = ({
   return <DefaultLayout></DefaultLayout>
 };
 
-export default withRouter(SolutionInfoPage);
+export default withRouter(SolutionDocumentPage);

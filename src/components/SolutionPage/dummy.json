@@ -1,11 +1,57 @@
 {
     "status": "success",
-    "userinfo": {
-        "eng_first_name": "i'm",
-        "eng_last_name": "tester",
-        "email": "tester@test.com",
-        "nationality": "KR",
-        "language_skill": "1"
-    },
-    "action": "get_prev_user_info"
+    "userdocument": [
+        {
+            "id": 336,
+            "user_id": 19,
+            "univ_code": "SMU_UNI",
+            "info_type": "4년제",
+            "subjecttitle": "인문",
+            "status": "READY",
+            "refund_type": 1,
+            "document_type": "우편서류",
+            "document_id": "117",
+            "document": "최종학력확인서",
+            "url": "",
+            "help_file": "",
+            "reason": "",
+            "status_id": 39,
+            "alarm": null
+        },
+        {
+            "id": 337,
+            "user_id": 19,
+            "univ_code": "SMU_UNI",
+            "info_type": "4년제",
+            "subjecttitle": "인문",
+            "status": "READY",
+            "refund_type": 1,
+            "document_type": "우편서류",
+            "document_id": "118",
+            "document": "예금잔고증명서",
+            "url": "",
+            "help_file": "",
+            "reason": "",
+            "status_id": 39,
+            "alarm": null
+        },
+        {
+            "id": 341,
+            "user_id": 19,
+            "univ_code": "SMU_UNI",
+            "info_type": "4년제",
+            "subjecttitle": "인문",
+            "status": "READY",
+            "refund_type": 1,
+            "document_type": "우편서류",
+            "document_id": "122",
+            "document": "장학증서",
+            "url": "",
+            "help_file": "",
+            "reason": "",
+            "status_id": 39,
+            "alarm": null
+        }
+    ],
+    "action": "get_player_document"
 }

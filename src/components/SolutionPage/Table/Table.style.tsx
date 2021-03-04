@@ -1,5 +1,5 @@
 import styled,{css}from 'styled-components';
-import { fontColor, whiteColor,mainColor600 } from '@util/style/color';
+import { fontColor, whiteColor,mainColor600,lightGreyColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 interface ColumnProps{
@@ -25,13 +25,13 @@ export const Row = styled.div<RowProps>`
   line-height: 22px;
 
   :first-child{
-    border-top : 1px solid #C4C4C4;
+    border-top : 1px solid ${lightGreyColor};
   };
-  border-bottom : 1px solid #C4C4C4;
+  border-bottom : 1px solid ${lightGreyColor};
 
   ${(props)=>(props.accent
     ?css`
-      border-top : 2px solid #C4C4C4;
+      border-top : 2px solid ${lightGreyColor};
       background: rgba(255, 114, 99, 0.08);      
       font-weight: bold;
       font-size: 18px;
@@ -53,7 +53,7 @@ export const Row = styled.div<RowProps>`
 `;
 
 export const Column = styled.div<ColumnProps>`
-    min-width: 150px;
+    min-width: 61px;
     padding: 17px;
     ${(props)=>(props.width
         ?css`width:${props.width*61}px`
@@ -102,7 +102,7 @@ export const HeaderRow = styled.div`
   font-size: 16px;
   line-height: 22px;
 
-  border-bottom : 2px solid #C4C4C4;
+  border-bottom : 2px solid ${lightGreyColor};
 `;
 
 

@@ -25,6 +25,10 @@ export const Block = styled.div`
     padding: 37px 50px 20px;
 `; 
 
+export const TopNonBlock = styled.div`
+    width: 1000px;
+    padding: 0px 50px 20px;
+`; 
 export const FooterBlock = styled.div`
     width: 1000px;
     padding: 0px 50px 20px;

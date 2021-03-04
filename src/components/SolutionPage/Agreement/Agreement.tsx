@@ -19,7 +19,7 @@ const Panel: React.FC<PanelProps> = ({
     return (
         <BlurScreen onClick={onClose}>
           <PanelContainer>
-              <Title> {t('agreementTitle')}</Title>
+              <Title>{t('agreementTitle')}</Title>
               <AgreementContainer>
                   {t('agreement').split('/n').map((line) => {
                     const firstChar = line.charAt(0);

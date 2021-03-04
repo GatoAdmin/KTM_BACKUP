@@ -413,11 +413,10 @@ const SolutionInfoPage: NextPage = ({
       }else if(type==="save"){
         jsonFormData.is_done = false;
       }
-      console.log(jsonFormData)
-      
+      // console.log(`/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`);
       axios({
         method: 'get',
-        url: `/api/?action=set_player_payrank&params=${JSON.stringify(jsonFormData)}&sid=${sid}`,
+        url: `/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`,
         withCredentials : true
       })
         .then((res) => {
@@ -428,12 +427,14 @@ const SolutionInfoPage: NextPage = ({
             console.log(res.data);
             setErrMsg((prev) => ({ ...prev, [status]: true }));
           } else {
-            // alert(t('notify-email-certification'));
-            const tempData = Object.assign(formData, update_userinfo);
+            let tempData = Object.assign(formData, update_userinfo);
+            tempData.birth_date = update_userinfo.birth_date.replaceAll('-','');
             setFormData(tempData);
             setLoading(false);
             if(type==="send"){
               setReadOnly(true);
+            }else{
+              alert(t('saved'));
             }
             // Router.push({
             //   pathname: '/login',
@@ -473,8 +474,6 @@ const SolutionInfoPage: NextPage = ({
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     
-
-    // let playerData = usePlayerData();
     const isFinal = () =>{
       const isRequire = requireData.map(dataName =>{
         if(formData[dataName] === undefined||formData[dataName] === ""){
@@ -487,11 +486,6 @@ const SolutionInfoPage: NextPage = ({
       }
       return true;
     }
-
-    const priceUnit = "KRW"; 
-    // if(playerData !== undefined){
-    //   const statusId = sessionStorage.getItem("user_status_id");
-    //   playerData = playerData.userstatus.find(status=>status.id === Number.parseInt(statusId));
 
       return (
         <DefaultLayout>
@@ -522,8 +516,8 @@ const SolutionInfoPage: NextPage = ({
                 <Row>
                   <RequireHeaderColumn>{t('sex')}</RequireHeaderColumn>
                   <FlexColumn width={12} >
-                    <RadioCheckbox id="sex_women" group="sex" value="FEMAIL" onChange={handleFormContent} checked={formData.sex==="FEMAIL"}>{t('women')}</RadioCheckbox>
-                    <RadioCheckbox id="sex_men" group="sex" value="MAIL" onChange={handleFormContent} checked={formData.sex==="MAIL"}>{t('men')}</RadioCheckbox>
+                    <RadioCheckbox id="sex_women" group="sex" value="FEMALE" onChange={handleFormContent} checked={formData.sex==="FEMALE"}>{t('women')}</RadioCheckbox>
+                    <RadioCheckbox id="sex_men" group="sex" value="MALE" onChange={handleFormContent} checked={formData.sex==="MALE"}>{t('men')}</RadioCheckbox>
                   </FlexColumn>
                 </Row>
                 <Row>

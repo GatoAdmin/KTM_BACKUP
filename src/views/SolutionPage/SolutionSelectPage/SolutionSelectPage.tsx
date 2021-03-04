@@ -153,6 +153,11 @@ const onClickNextStep=(isFinal:boolean, selectValue, univInfo)=>{
   }
 }
 
+const convertTime = (timeStr: string)=>{
+  const date = timeStr.replace(' / ','T');
+  return new Date(date);
+}
+
 const SolutionSelectPage: NextPage = ({
   router: {
     query: { lang: queryLang },
@@ -205,7 +210,7 @@ const SolutionSelectPage: NextPage = ({
       if(typeof window !== "undefined"){
         sid = window.sessionStorage.getItem('sid');
       }
-      const univcode = getChosseUnivCode();
+      // const univcode = getChosseUnivCode();
       axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
       .then((res) => {
         const {
@@ -214,13 +219,19 @@ const SolutionSelectPage: NextPage = ({
         if (status !== 'success') {
           setErrMsg((prev) => ({ ...prev, [status]: true }));
         } else { 
+            console.log(userstatus);
             // const user = userstatus.find(status=>status.id);univcode
-            const user = userstatus.find(status=>status.univ_code === univcode);
-            console.log(user);
+            // const user = userstatus.find(us=>us.univ_code === univcode);
+            const user = userstatus.sort(function(a,b){
+              const atime = convertTime(a.updated_at);
+              const btime = convertTime(b.updated_at);
+              atime>btime?1:atime<btime?-1:0;
+            })[0];//id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
+
             if(typeof window !== "undefined"){
               window.sessionStorage.setItem('chooseUnivName',user.univ_name);
-              window.sessionStorage.setItem('chooseSubjectname',user.subjectname);
-              window.sessionStorage.setItem('choosePayRank',user.pay_rank);
+              user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+              user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
             }
             if(user.step === STEP_STRING.STEP_TWO){
               Router.push("/solution/2")

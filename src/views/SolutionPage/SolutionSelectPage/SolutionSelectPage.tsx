@@ -211,6 +211,7 @@ const SolutionSelectPage: NextPage = ({
         sid = window.sessionStorage.getItem('sid');
       }
       // const univcode = getChosseUnivCode();
+      console.log(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`)
       axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
       .then((res) => {
         const {
@@ -229,6 +230,7 @@ const SolutionSelectPage: NextPage = ({
             })[0];//id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
 
             if(typeof window !== "undefined"){
+              window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
               window.sessionStorage.setItem('chooseUnivName',user.univ_name);
               user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
               user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;

@@ -70,7 +70,7 @@ export const DropdownItemContainer = styled.div<ContainerProps>`
     position: absolute;
     z-index: 50;
     top: 30px;
-    right: 0;
+    right: 36px;
     width: 120px;
     min-height: 40px;
     ${(props)=>(props.items
@@ -88,6 +88,7 @@ export const DropdownItemContainer = styled.div<ContainerProps>`
     border: 1px solid ${lightGreyColor};
     box-sizing: border-box;
     border-radius: 9px;
+    color: ${fontColor}
 `; 
 
 
@@ -102,7 +103,6 @@ export const DropdownItem = styled.div`
     font-weight: bold;
     font-size: 14px;
     line-height: 20px;
-
     :first-child{
         border-radius: 9px 9px 0px 0px;
     };
@@ -122,14 +122,4 @@ export const IconContainer =  styled.div`
     width: 15px;
     height: 15px;
     margin-right:10px;
-`; 
-
-
-export const TopNonBlock = styled.div`
-    width: 1000px;
-    padding: 0px 50px 20px;
-`; 
-export const FooterBlock = styled.div`
-    width: 1000px;
-    padding: 0px 50px 20px;
 `; 

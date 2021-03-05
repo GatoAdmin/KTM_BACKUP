@@ -10,6 +10,7 @@ interface ColumnProps{
 interface RowProps{
   accent?:boolean;
   readonly?:boolean;
+  alarm?:boolean;
 }
 export const Table = styled.div`
   display: block;
@@ -49,7 +50,18 @@ export const Row = styled.div<RowProps>`
       line-height: 22px; 
     `
     :null
-    )};  
+    )};
+
+    ${(props)=>(props.alarm
+      ?css`
+        background: rgba(255, 114, 99, 0.08);
+        color: ${mainColor600};
+      `
+      :null
+      )};
+  
+      
+
 `;
 
 export const Column = styled.div<ColumnProps>`

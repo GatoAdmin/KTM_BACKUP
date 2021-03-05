@@ -17,7 +17,6 @@ import useVisible from '@util/hooks/useVisible';
 
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/SolutionPage/solutionDocumentPage.json';
-import { getLocationOrigin } from 'next/dist/next-server/lib/utils';
 
 interface DropdownProps {
     type: string;
@@ -48,6 +47,19 @@ const dropdownIcon = {
         'END': 
             ['download'],
     },
+    '번역공증서류':{
+        'DOC_POST_REQUEST': 
+            ['download',
+            'transferCompleted'],
+        'DOC_CHECK_REQUEST': 
+            ['download',
+            'reviewCompleted',
+            'reviewReject'],
+        'DOC_CHECK_REJECT': 
+            ['download'],
+        'END': 
+            ['download'],
+    },
     '업로드 서류':{
         'DOC_UPLOAD_REQUEST': 
             ['download',
@@ -73,6 +85,20 @@ const dropdownIcon = {
     }
   };
 
+const onClickDropdownItem=(e, type:string)=>{
+    e.preventDefault();
+    if(type==="reviewReject"){
+
+    }else if(type==="transferCompleted"){
+
+    }else if(type==="reviewCompleted"){
+
+    }else if(type==="upload"){
+
+    }else if(type==="download"){
+
+    }    
+}
 const Dropdown: React.VFC<DropdownProps> = ({
   type,
   status
@@ -95,7 +121,7 @@ const Dropdown: React.VFC<DropdownProps> = ({
         {options.map((value, index) =>{
             const Icon = dropdownIcon[value];
             return (  
-                <DropdownItem key={value}>
+                <DropdownItem key={value} onClick={e=>onClickDropdownItem(e,value)}>
                     <IconContainer>
                        <Icon/>
                     </IconContainer> 

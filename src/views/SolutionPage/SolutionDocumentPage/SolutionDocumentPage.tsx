@@ -9,16 +9,16 @@ import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import StepHeader, {useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
-import RadioCheckbox from '@components/SolutionPage/RadioCheckbox/RadioCheckbox';
+import Alarm from '@components/SolutionPage/DocumentAlarm/Alarm';
 import Dropdown from '@components/SolutionPage/DocumentDropdown/Dropdown';
-import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
+import HelpTip from '@components/SolutionPage/DocumentHelpTip/HelpTip';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import {
   TopNonBlock,
   Block,
   FooterBlock,
   ReadyButton,
-  Form,
+  StringDot,
   FormAlert,
   Bold16,
   Bold22,
@@ -43,7 +43,7 @@ import {
   WarningColumn
 } from '@components/SolutionPage/Table/Table.style';
 import RequireHeaderColumn from '@components/SolutionPage/Table/RequireHeaderColumn';
-import { Router,withRouter} from 'next/router';
+import  Router,{withRouter} from 'next/router';
 
 const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
 const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
@@ -231,6 +231,26 @@ const usePlayerDoucmentData = ()=>{
   return Array.isArray(data)?data[0]:data;
 }
 
+const zeroFill=(data:string|number, length:number)=>{
+  const lenConvertString = (str:string, len:number)=>{
+    var s = '', i = 0; 
+    while (i++ < len) { s += str; } 
+    return s; 
+  }
+  if(typeof data ==="string"){
+    return lenConvertString("0",length - data.length) + data; 
+  }else{
+    return lenConvertString("0",length - data.toString().length) + data.toString(); 
+  }
+}
+
+const getDateFormat=(dateString: string)=>{
+  if(dateString!==undefined){
+    const date = new Date(dateString);
+    return date.getFullYear()+"."+zeroFill((date.getMonth()+1),2)+"."+zeroFill(date.getDate(),2);
+  }
+  return "";
+}
 const SolutionDocumentPage: NextPage = ({
   router: {
     query: { lang: queryLang },
@@ -339,19 +359,18 @@ const SolutionDocumentPage: NextPage = ({
                 <Column width={1}></Column>
               </HeaderRow>
               {/* 서류명칭 받아서 죽 생성시킬것 */}
-              
-              <Row>
-                  <Column width={6}>테스트</Column>
-                  <Column width={3}>{t('view')}</Column>
+              <Row alarm={true}>
+                  <FlexColumn width={6}>테스트<Alarm alarm="서류종류가 일치하지 않습니다."/></FlexColumn>
+                  <Column width={3}><HelpTip url={'/images/kr/solution_document_guide_ex.jpg'}/></Column>
                   <Column width={3}>2020.01.10</Column>
                   <Column width={3}>{t('DOC_CHECK_REQUEST')}</Column>
                   <Column width={1}><Dropdown type={'번역 공증 영사'} status={'DOC_CHECK_REQUEST'}/></Column>
                 </Row>
               {documentData?.map(data=>(
-                <Row>
-                  <Column width={6}>{data.document}</Column>
-                  <Column width={3}>{t('view')}</Column>
-                  <Column width={3}></Column>
+                <Row alarm={data.alarm!==null?true:false}>
+                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null?<Alarm alarm={data.reason}/>:null}</FlexColumn>
+                  <Column width={3}><HelpTip url={data.help_file}/></Column>
+                  <Column width={3}>{getDateFormat(data.update_datetime)}</Column>
                   <Column width={3}>{t(data.status)}</Column>
                   <Column width={1}><Dropdown type={data.document_type} status={data.status}/></Column>
                 </Row>

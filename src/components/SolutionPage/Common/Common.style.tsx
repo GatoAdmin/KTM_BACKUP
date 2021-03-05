@@ -191,3 +191,10 @@ export const FooterNoticeContainer = styled.div`
   line-height: 30px;
   text-align: center;
 `;
+
+export const StringDot = styled.div`
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

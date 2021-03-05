@@ -6,11 +6,11 @@ export const SubTitleContainer = styled.div`
 `;
 
 export const HelpImage = styled.img.attrs(props=>({
-  src: props.lang?`/images/solution_document_${props.lang}.png`:'/images/solution_document_kr.png',
+  src: props.lang?`/images/${props.lang}/solution_document.png`:'/images/kr/solution_document.png',
   alt: 'help_tip',
 }))`
   width: 1100px;
-  height: 393px;
+  height: auto;
 `;
 
 export const ConsultImage = styled.img.attrs({

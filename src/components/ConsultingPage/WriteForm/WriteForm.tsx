@@ -46,7 +46,7 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
       const data = await API.postMyQnA(
           $form.['consult-type'].value,
           $form.['title'].value,
-          $form.['content'].value
+          $form.['content'].value.replaceAll(/\n/g, '<br>')
       )
       if(data!=={}) router.replace("/consult")
       else alert("API 요청 에러")

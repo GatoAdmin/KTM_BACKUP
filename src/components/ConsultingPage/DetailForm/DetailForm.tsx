@@ -56,36 +56,38 @@ const DetailForm: React.FC<DetailFormProps> = ({ t }) => {
     setData(JSON.parse(decodeURI(url)));
   }, []);
 
-  console.log(data);
-
   return (
     <DetailFormContainer>
-      <SubTitle>1:1 상담</SubTitle>
+      <SubTitle>
+        {t('one-by-one-consult')}
+      </SubTitle>
       <FormWrapper name="consultForm">
         <WriteTable>
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 상담 분류 </BoldText>
+                <BoldText>
+                  {t('consult-type-text')}
+                </BoldText>
               </Flexbox>
             </TableHeader>
             <Td>
               <RadioWrap>
                 <RadioLabel htmlFor="Counseling_for_Studying_in_Korea" active={data.type === '한국 유학 상담'}>
                   <RadioButton type="radio" name="consult-type" id="Counseling_for_Studying_in_Korea" value="한국 유학 상담" checked={data.type === '한국 유학 상담'} onChange={() => false} />
-                  한국 유학 상담
+                  {t('Counseling-for-Studying-in-Korea')}
                 </RadioLabel>
                 <RadioLabel htmlFor="Admission_Solution_Consultation" active={data.type === '입학솔루션 상담'}>
                   <RadioButton type="radio" name="consult-type" id="Admission_Solution_Consultation" value="입학솔루션 상담" checked={data.type === '입학솔루션 상담'} onChange={() => false} />
-                  입학솔루션 상담
+                  {t('Admission-Solution-Consultation')}
                 </RadioLabel>
                 <RadioLabel htmlFor="Payment_and_Refund" active={data.type === '결제 및 환불'}>
                   <RadioButton type="radio" name="consult-type" id="Payment_and_Refund" value="결제 및 환불" checked={data.type === '결제 및 환불'} onChange={() => false} />
-                  결제 및 환불
+                  {t('Payment-and-Refund')}
                 </RadioLabel>
                 <RadioLabel htmlFor="etc" active={data.type === '기타 문의'}>
                   <RadioButton type="radio" name="consult-type" id="etc" value="기타 문의" checked={data.type === '기타 문의'} onChange={() => false} />
-                  기타 문의
+                  {t('Other-inquiries')}
                 </RadioLabel>
               </RadioWrap>
             </Td>
@@ -93,7 +95,9 @@ const DetailForm: React.FC<DetailFormProps> = ({ t }) => {
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 제목 </BoldText>
+                <BoldText>
+                  {t('qna-title')}
+                </BoldText>
               </Flexbox>
             </TableHeader>
             <Td>
@@ -103,7 +107,9 @@ const DetailForm: React.FC<DetailFormProps> = ({ t }) => {
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 내용 </BoldText>
+                <BoldText>
+                  {t('qna-content')}
+                </BoldText>
               </Flexbox>
             </TableHeader>
             <Td>
@@ -113,7 +119,9 @@ const DetailForm: React.FC<DetailFormProps> = ({ t }) => {
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 1:1 답변 </BoldText>
+                <BoldText>
+                  {t('qna-answer')}
+                </BoldText>
               </Flexbox>
             </TableHeader>
             <Td>
@@ -123,7 +131,9 @@ const DetailForm: React.FC<DetailFormProps> = ({ t }) => {
         </WriteTable>
       </FormWrapper>
       <ButtonWrap>
-        <Button onClick={() => { router.replace('/consult'); }}> 목록보기 </Button>
+        <Button onClick={() => { router.replace('/consult'); }}>
+          {t('qna-move-board-button')}
+        </Button>
       </ButtonWrap>
     </DetailFormContainer>
   );

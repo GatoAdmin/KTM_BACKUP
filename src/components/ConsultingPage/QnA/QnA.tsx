@@ -12,7 +12,6 @@ import {
 interface QnAProps {
   t: (s: string) => string;
   lang: string;
-  changeLang: (s: string) => void;
 }
 
 interface QuestionType {
@@ -24,7 +23,7 @@ interface QuestionType {
   vn_question_content: string | null;
 }
 
-const QnA: React.FC<QnAProps> = ({ t, lang, changeLang }) => {
+const QnA: React.FC<QnAProps> = ({ t, lang }) => {
   const [index, setIndex] = useState(0);
 
   const getQnAs = async () => {
@@ -48,8 +47,10 @@ const QnA: React.FC<QnAProps> = ({ t, lang, changeLang }) => {
 
   return (
     <QnAContainer>
-      <SubTitle> 자주 묻는 질문 </SubTitle>
-      <Tab index={index} setIndex={setIndex} />
+      <SubTitle>
+        {t('question')}
+      </SubTitle>
+      <Tab index={index} setIndex={setIndex} t={t} lang={lang} />
       <TitleBar />
       {questions[index]}
     </QnAContainer>

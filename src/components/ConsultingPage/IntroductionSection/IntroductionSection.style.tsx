@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 import { fontColor } from '@util/style/color';
 
+interface languageType {
+  lang: string;
+}
+
 export const IntroductionSectionContainer = styled.div`
   display: flex;
   position: relative;
@@ -40,9 +44,9 @@ export const IntroductionSectionImageWrap = styled.div`
   height: 100%;
 `;
 
-export const Title = styled.h2`
+export const Title = styled.h2<languageType>`
   position: relative;
-  width: 300px;
+  width: ${({ lang }) => (lang === 'ko' ? '300px' : '400px')};
   color: ${fontColor};
   font-family: inherit;
   font-weight: bold;

@@ -70,13 +70,13 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
   };
   return (
     <WriteFormContainer>
-      <SubTitle>1:1 상담</SubTitle>
+      <SubTitle> {t('one-by-one-consult')} </SubTitle>
       <FormWrapper name="consultForm" onChange={handlingOnChange}>
         <WriteTable>
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 상담 분류 </BoldText>
+                <BoldText> {t('consult-type-text')} </BoldText>
                 <StarText>*</StarText>
               </Flexbox>
             </TableHeader>
@@ -84,19 +84,19 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
               <RadioWrap onClick={handlingRadioClick} ref={RadioWrapRef}>
                 <RadioLabel htmlFor="Counseling_for_Studying_in_Korea">
                   <RadioButton type="radio" name="consult-type" id="Counseling_for_Studying_in_Korea" value="한국 유학 상담"/>
-                  한국 유학 상담
+                  {t('Counseling-for-Studying-in-Korea')}
                 </RadioLabel>
                 <RadioLabel htmlFor="Admission_Solution_Consultation">
                   <RadioButton type="radio" name="consult-type" id="Admission_Solution_Consultation" value="입학솔루션 상담"/>
-                  입학솔루션 상담
+                  {t('Admission-Solution-Consultation')}
                 </RadioLabel>
                 <RadioLabel htmlFor="Payment_and_Refund">
                   <RadioButton type="radio" name="consult-type" id="Payment_and_Refund" value="결제 및 환불"/>
-                  결제 및 환불
+                  {t('Payment-and-Refund')}
                 </RadioLabel>
                 <RadioLabel htmlFor="etc">
                   <RadioButton type="radio" name="consult-type" id="etc" value="기타 문의"/>
-                  기타 문의
+                  {t('Other-inquiries')}
                 </RadioLabel>
               </RadioWrap>
             </Td>
@@ -104,23 +104,23 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 제목 </BoldText>
+                <BoldText> {t('qna-title')} </BoldText>
                 <StarText>*</StarText>
               </Flexbox>
             </TableHeader>
             <Td>
-              <TitleInputBox name="title" placeholder="제목을 입력해주세요." />
+              <TitleInputBox name="title" placeholder={t('qna-title-placeholder')} />
             </Td>
           </Tr>
           <Tr>
             <TableHeader>
               <Flexbox>
-                <BoldText> 내용 </BoldText>
+                <BoldText> {t('qna-content')} </BoldText>
                 <StarText>*</StarText>
               </Flexbox>
             </TableHeader>
             <Td>
-              <ContentArea name="content"/>
+              <ContentArea name="content" placeholder={t('qna-content-placeholder')} />
             </Td>
           </Tr>
         </WriteTable>
@@ -129,7 +129,7 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
         <Button onClick={()=>{
             bComplete? handlingSubmit():
             alert("내용을 입력해주세요.");
-        }} active={bComplete}> 작성하기 </Button>
+        }} active={bComplete}> {t('qna-submmit-button')} </Button>
       </ButtonWrap>
     </WriteFormContainer>
   );

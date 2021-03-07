@@ -33,7 +33,6 @@ import {
 interface ConsultingBoardProps {
   t: (s: string) => string;
   lang: string;
-  changeLang: (s: string) => void;
 }
 
 interface userConsultDataType {
@@ -58,7 +57,7 @@ interface boardTableDatatype {
   user_qna: Array<userConsultDataType>;
 }
 
-const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }) => {
+const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang }) => {
   const [offset, setOffset] = useState(1);
   const router = useRouter();
   const convertId = (id: number) => String(id).padStart(5, '0');
@@ -108,7 +107,11 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
       <BoardTd>
         <TitleWrap>
           { qna.title }
-          { qna.is_answer ? <CompleteLabel> 답변완료 </CompleteLabel> : null}
+          { qna.is_answer ? (
+            <CompleteLabel>
+              {t('question-label')}
+            </CompleteLabel>
+          ) : null}
         </TitleWrap>
       </BoardTd>
       <BoardTd>
@@ -120,7 +123,9 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
   return (
     <ConsultingBoardContainer>
       <SubTitleWrap>
-        <SubTitle> 1:1 상담 내역 </SubTitle>
+        <SubTitle>
+          {t('one-by-one-consult-history')}
+        </SubTitle>
         <Button onClick={() => {
           if (isLogin()) router.replace('/consult/write');
           else {
@@ -129,22 +134,30 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
           }
         }}
         >
-          글작성
+          {t('write_qna-button-text')}
         </Button>
       </SubTitleWrap>
       <BoardTable>
         <BoardTHead>
           <BoardTHeadTr>
-            <BoardTh width="10%"> 번호 </BoardTh>
-            <BoardTh width="78%"> 제목 </BoardTh>
-            <BoardTh width="12%"> 등록일 </BoardTh>
+            <BoardTh width="10%">
+              {t('table-number')}
+            </BoardTh>
+            <BoardTh width="78%">
+              {t('table-title')}
+            </BoardTh>
+            <BoardTh width="12%">
+              {t('table-date')}
+            </BoardTh>
           </BoardTHeadTr>
         </BoardTHead>
         <BoardTBody>
           {bEmptyData
             ? (
               <BoardEmptyTr>
-                <BoardEmptyMessage colSpan="3"> 나의 1:1 상담 내역이 없습니다. </BoardEmptyMessage>
+                <BoardEmptyMessage colSpan="3">
+                  {t('board-empty-message')}
+                </BoardEmptyMessage>
               </BoardEmptyTr>
             ) : userConsultTable}
         </BoardTBody>

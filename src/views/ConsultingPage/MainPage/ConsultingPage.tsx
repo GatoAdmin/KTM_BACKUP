@@ -4,7 +4,7 @@ import Footer from '@components/Shared/Footer/Footer';
 import { NextPage } from 'next';
 import useTranslate from '@util/hooks/useTranslate';
 import { IntroductionSection, QnA, ConsultingBoard } from '@components/ConsultingPage';
-import i18nResource from '@assets/i18n/landingPage.json';
+import i18nResource from '@assets/i18n/consultPage.json';
 import {
   FontProvider, Introduction,
 } from './ConsultingPage.style';
@@ -14,15 +14,15 @@ const ConsultingPage: NextPage = () => {
   return (
     <FontProvider lang={lang}>
       <Header
+        background="dark"
         t={t}
-        lang={lang}
         changeLang={changeLang}
       />
       <Introduction>
-        <IntroductionSection t={t} />
+        <IntroductionSection t={t} lang={lang} />
       </Introduction>
-      <QnA t={t} lang={lang} changeLang={changeLang} />
-      <ConsultingBoard t={t} lang={lang} changeLang={changeLang} />
+      <QnA t={t} lang={lang} />
+      <ConsultingBoard t={t} lang={lang} />
       <Footer />
     </FontProvider>
   );

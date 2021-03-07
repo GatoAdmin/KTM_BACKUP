@@ -19,6 +19,8 @@ import {
   ButtonWrap,
 } from './WriteForm.style';
 import Button from '@components/Shared/Button/Button';
+import API from '@util/api';
+import { useRouter } from 'next/router';
 
 interface WriteFormProps {
   t: (s: string) => string;
@@ -27,6 +29,7 @@ interface WriteFormProps {
 const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
   const RadioWrapRef = useRef<HTMLDivElement>(null);
   const [bComplete, setComplete] = useState<boolean>(false);
+  const router = useRouter();
 
   const handlingOnChange = () => {
       const $form = document.consultForm;
@@ -37,6 +40,17 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
       if(bEmptyRadio && bEmptyTitle && bEmptyContent) setComplete(true);
       else setComplete(false);
   } // 나중에 쓰로틀링 걸면 좋을듯
+
+  const handlingSubmit = async () => {
+      const $form = document.consultForm;
+      const data = await API.postMyQnA(
+          $form.['consult-type'].value,
+          $form.['title'].value,
+          $form.['content'].value
+      )
+      if(data!=={}) router.replace("/consult")
+      else alert("API 요청 에러")
+  }
 
   const handlingRadioClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target !== RadioWrapRef.current) {
@@ -112,7 +126,10 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
         </WriteTable>
       </FormWrapper>
       <ButtonWrap>
-        <Button onClick={()=>{}} active={bComplete}> 작성하기 </Button>
+        <Button onClick={()=>{
+            bComplete? handlingSubmit():
+            alert("내용을 입력해주세요.");
+        }} active={bComplete}> 작성하기 </Button>
       </ButtonWrap>
     </WriteFormContainer>
   );

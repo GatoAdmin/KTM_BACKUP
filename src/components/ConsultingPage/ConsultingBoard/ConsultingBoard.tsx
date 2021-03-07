@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable camelcase */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SubTitle,
 } from '@components/ConsultingPage';
@@ -71,7 +71,11 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
     return QnAs;
   };
 
-  const [loading, resolved, error] = usePromise(getMyQnA, []);
+  const handlingOnClickQuestion = (qna: userConsultDataType) => {
+    router.replace(`/consult/detail/?data=${encodeURI(JSON.stringify(qna))}`);
+  };
+
+  const [loading, resolved, error] = usePromise(getMyQnA, [offset]);
 
   if (loading) return <> </>; // 나중에 스피너나 빈프레임 넣으면 좋을 것 같습니다 ㅎㅎ
   if (error) window.location.href = '/';
@@ -96,21 +100,19 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
     setOffset(offset + 1);
   };
 
-  const userConsultTable = user_qna.map(({
-    id, title, is_answer, uploaded_at,
-  }: userConsultDataType) => (
-    <BoardTr key={id}>
+  const userConsultTable = user_qna.map((qna: userConsultDataType) => (
+    <BoardTr key={qna.id} onClick={() => handlingOnClickQuestion(qna)}>
       <BoardTd>
-        { convertId(id) }
+        { convertId(qna.id) }
       </BoardTd>
       <BoardTd>
         <TitleWrap>
-          { title }
-          { is_answer ? <CompleteLabel> 답변완료 </CompleteLabel> : null}
+          { qna.title }
+          { qna.is_answer ? <CompleteLabel> 답변완료 </CompleteLabel> : null}
         </TitleWrap>
       </BoardTd>
       <BoardTd>
-        { uploaded_at }
+        { qna.uploaded_at }
       </BoardTd>
     </BoardTr>
   ));

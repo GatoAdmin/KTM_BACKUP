@@ -35,7 +35,7 @@ const QnA: React.FC<QnAProps> = ({ t, lang, changeLang }) => {
   const [loading, resolved, error] = usePromise(getQnAs, []);
 
   if (loading) return <> </>; // 나중에 스피너나 빈프레임 넣으면 좋을 것 같습니다 ㅎㅎ
-  if (error) window.location.href = '/';
+  if (error) window.alert('API 오류');
   if (!resolved) return null;
 
   const { consult, solution, payment } = resolved;

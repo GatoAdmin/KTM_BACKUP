@@ -5,6 +5,7 @@ import Tab from './Tab/Tab';
 import TitleBar from './TitleBar/TitleBar';
 import Accordion from './Accordion/Accordion';
 import ConsultingBoard from './ConsultingBoard/ConsultingBoard';
+import WriteForm from './WriteForm/WriteForm';
 
 export {
   IntroductionSection,
@@ -14,4 +15,5 @@ export {
   TitleBar,
   Accordion,
   ConsultingBoard,
+  WriteForm,
 };

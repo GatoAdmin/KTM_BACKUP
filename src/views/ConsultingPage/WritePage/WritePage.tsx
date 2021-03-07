@@ -3,8 +3,9 @@ import Header from '@components/Shared/Header/Header';
 import Footer from '@components/Shared/Footer/Footer';
 import { NextPage } from 'next';
 import useTranslate from '@util/hooks/useTranslate';
-import { IntroductionSection } from '@components/ConsultingPage';
+import { IntroductionSection, WriteForm } from '@components/ConsultingPage';
 import i18nResource from '@assets/i18n/landingPage.json';
+
 import {
   FontProvider, Introduction,
 } from './WritePage.style';
@@ -21,7 +22,7 @@ const WritePage: NextPage = () => {
       <Introduction>
         <IntroductionSection t={t} />
       </Introduction>
-
+      <WriteForm t={t} />
       <Footer />
     </FontProvider>
   );

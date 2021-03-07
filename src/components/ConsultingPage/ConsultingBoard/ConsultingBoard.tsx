@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable camelcase */
 import React, { useState } from 'react';
@@ -7,6 +8,7 @@ import {
 import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import Button from '@components/Shared/Button/Button';
+import isLogin from '@util/auth/auth';
 import { useRouter } from 'next/router';
 import {
   ConsultingBoardContainer,
@@ -117,7 +119,16 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang, changeLang }
     <ConsultingBoardContainer>
       <SubTitleWrap>
         <SubTitle> 1:1 상담 내역 </SubTitle>
-        <Button onClick={() => { router.replace('/consult/write'); }}> 글작성 </Button>
+        <Button onClick={() => {
+          if (isLogin()) router.replace('/consult/write');
+          else {
+            alert('로그인이 필요한 서비스입니다.');
+            router.replace('/login');
+          }
+        }}
+        >
+          글작성
+        </Button>
       </SubTitleWrap>
       <BoardTable>
         <BoardTHead>

@@ -88,7 +88,7 @@ export const ContentArea = styled.textarea`
   background-color: rgba(255, 114, 99, 0.08);
   font-size: 16px;
   line-height: 21.79px;
-  min-height: 160px;
+  min-height: 90px;
   width: -webkit-fill-available;
   margin: 13px 0px;
   padding: 10px;

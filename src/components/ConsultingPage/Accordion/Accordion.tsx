@@ -17,9 +17,10 @@ interface DataProps {
 
 interface AccordionProps {
   data: DataProps;
+  lang: string;
 }
 
-const Accordion: React.FC<AccordionProps> = ({ data }) => {
+const Accordion: React.FC<AccordionProps> = ({ data, lang }) => {
   const [bopen, setOpen] = useState(false);
 
   const handlingClick = () => {
@@ -32,17 +33,23 @@ const Accordion: React.FC<AccordionProps> = ({ data }) => {
     </Answer>
   ));
 
+  const createVnAnswer = data.vn_question_content?.split('<br>').map((text) => (
+    <Answer key={text}>
+      {text}
+    </Answer>
+  ));
+
   return (
     <AccordionContainer bopen={bopen ? 1 : 0} onClick={handlingClick}>
       <AccordionHeader>
         <Question bopen={bopen ? 1 : 0}>
-          {data.question_title}
+          {lang === 'ko' ? data.question_title : data.vn_question_title}
         </Question>
         <DownArrow bopen={bopen ? 1 : 0} />
       </AccordionHeader>
       {bopen ? (
         <AnswerWrap>
-          {createAnswer}
+          {lang === 'ko' ? createAnswer : createVnAnswer}
         </AnswerWrap>
       ) : null }
     </AccordionContainer>

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import React, { useState } from 'react';
 import {
@@ -40,9 +41,9 @@ const QnA: React.FC<QnAProps> = ({ t, lang }) => {
   const { consult, solution, payment } = resolved;
 
   const questions = [
-    consult.map((question: QuestionType) => <Accordion key={question.id} data={question} />),
-    solution.map((question: QuestionType) => <Accordion key={question.id} data={question} />),
-    payment.map((question: QuestionType) => <Accordion key={question.id} data={question} />),
+    consult.map((question: QuestionType) => <Accordion key={question.id} data={question} lang={lang} />),
+    solution.map((question: QuestionType) => <Accordion key={question.id} data={question} lang={lang} />),
+    payment.map((question: QuestionType) => <Accordion key={question.id} data={question} lang={lang} />),
   ];
 
   return (

@@ -129,7 +129,7 @@ const ConsultingBoard: React.FC<ConsultingBoardProps> = ({ t, lang }) => {
         <Button onClick={() => {
           if (isLogin()) router.replace('/consult/write');
           else {
-            alert('로그인이 필요한 서비스입니다.');
+            alert(t('request-login-alert'));
             router.replace('/login');
           }
         }}

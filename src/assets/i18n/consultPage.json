@@ -29,7 +29,9 @@
         "qna-content-placeholder": "상담 내용을 입력하세요.",
         "qna-answer": "1:1 답변",
         "qna-submmit-button": "작성하기",
-        "qna-move-board-button": "목록보기"
+        "qna-move-board-button": "목록보기",
+        "request-login-alert": "로그인이 필요한 서비스입니다.",
+        "request-input-alert": "상담분류, 제목, 내용을 모두 입력해주세요."
     },
     "vn": {
         "introduce": "Giới thiệu công ty",
@@ -61,6 +63,8 @@
         "qna-content-placeholder": "Vui lòng nhập nội dung cần tư vấn",
         "qna-answer": "Phản hồi 1:1",
         "qna-submmit-button": "Gửi",
-        "qna-move-board-button": "Xem mục lục"
+        "qna-move-board-button": "Xem mục lục",
+        "request-login-alert": "Đây là dịch vụ yêu cầu phải đăng nhập.",
+        "request-input-alert": "Vui lòng nhập tất cả các hạng mục bên trên."
     }
   }

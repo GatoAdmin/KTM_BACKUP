@@ -128,7 +128,7 @@ const WriteForm: React.FC<WriteFormProps> = ({ t }) => {
       <ButtonWrap>
         <Button onClick={()=>{
             bComplete? handlingSubmit():
-            alert("내용을 입력해주세요.");
+            alert(t('request-input-alert'));
         }} active={bComplete}> {t('qna-submmit-button')} </Button>
       </ButtonWrap>
     </WriteFormContainer>

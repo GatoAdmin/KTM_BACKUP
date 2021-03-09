@@ -34,7 +34,6 @@ import {
 import FamilyIcon from '@assets/svg/family_icon.svg';
 import EducationIcon from '@assets/svg/language_education_icon.svg';
 import CertificateIcon from '@assets/svg/education_qualification_icon.svg';
-import { isArray } from 'util';
 
 const qualificationIcons = [
   { type: '국적요건', icon: FamilyIcon },

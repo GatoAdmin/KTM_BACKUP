@@ -364,11 +364,11 @@ const SolutionDocumentPage: NextPage = ({
                   <Column width={3}><HelpTip url={'/images/kr/solution_document_guide_ex.jpg'}/></Column>
                   <Column width={3}>2020.01.10</Column>
                   <Column width={3}>{t('DOC_CHECK_REQUEST')}</Column>
-                  <Column width={1}><Dropdown type={'번역 공증 영사'} status={'DOC_CHECK_REQUEST'}/></Column>
+                  <Column width={1}><Dropdown type={'번역 공증 영사'} status={'DOC_CHECK_REQUEST'} url="/api/"/></Column>
                 </Row>
               {documentData?.map(data=>(
                 <Row alarm={data.alarm!==null?true:false}>
-                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null?<Alarm alarm={data.reason}/>:null}</FlexColumn>
+                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null?<Alarm alarm={data.alarm}/>:null}</FlexColumn>
                   <Column width={3}><HelpTip url={data.help_file}/></Column>
                   <Column width={3}>{getDateFormat(data.update_datetime)}</Column>
                   <Column width={3}>{t(data.status)}</Column>

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import {
     DropdownItemContainer,
     DropdownContainer,
@@ -13,12 +14,16 @@ import {
     UploadIcon,
     DownloadIcon
 } from '@components/SolutionPage/DocumentDropdown/Dropdown.style';
+import ReviewRejectPanel from '@components/SolutionPage/DocumentPanel/ReviewRejectPanel';
+import UploadPanel from '@components/SolutionPage/DocumentPanel/UploadPanel';
 import useVisible from '@util/hooks/useVisible';
 
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/SolutionPage/solutionDocumentPage.json';
 
 interface DropdownProps {
+    url?: string;
+    document?:string;
     type: string;
     status: string;
 }
@@ -85,33 +90,63 @@ const dropdownIcon = {
     }
   };
 
-const onClickDropdownItem=(e, type:string)=>{
-    e.preventDefault();
-    if(type==="reviewReject"){
-
-    }else if(type==="transferCompleted"){
-
-    }else if(type==="reviewCompleted"){
-
-    }else if(type==="upload"){
-
-    }else if(type==="download"){
-
-    }    
+  const downloadFile=(urlString:string, name:string)=>{
+    const blob = new Blob([urlString], {type: 'text/plain'});
+    const fileName = urlString.split('/');
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${name}_${fileName[fileName.length-1]}`
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(url);
 }
+
+const uploadFile=()=>{
+    console.log("업로드");
+}
+
 const Dropdown: React.VFC<DropdownProps> = ({
-  type,
-  status
+    url="",
+    document="",
+    type,
+    status
 }) => {
 //   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [visibleReject, toggleVisibleReject] = useVisible(containerRef);
+//   const [visibleUpload, toggleVisibleUpload] = useVisible(containerRef);
+  const [visibleUpload, setVisibleUpload] = useState<boolean>(false);
   const [visible, toggleVisible] = useVisible(containerRef);
+//   const [visible, setVisible] =useState<boolean>(false);
   const { t, lang, changeLang } = useTranslate(i18nResource);
   
+    const onClickDropdownItem=(e:MouseEvent, type:string, url:string, document:string)=>{
+        e.preventDefault();
+        if(type==="reviewReject"){
+            toggleVisibleReject();
+        }else if(type==="transferCompleted"){
+
+        }else if(type==="reviewCompleted"){
+
+        }else if(type==="upload"){
+            if(visibleUpload===false){
+                // toggleVisibleUpload();
+                setVisibleUpload(true);
+            }
+            return false;
+        }else if(type==="download"){
+            downloadFile(url, document);
+        }    
+    }
+    React.useEffect(() => {
+        console.log(visible);
+      }, [visible]);
+    
     const options = arrayKeeper[type][status];
     return (
       <DropdownContainer ref={containerRef}>
-         <DropdownMoreIconContainer  onClick={toggleVisible}>
+         <DropdownMoreIconContainer  onClick={()=>{console.log("너냐"); toggleVisible()}}>
             <MoreViewOnIcon />
             <MoreViewOffIcon />
         </DropdownMoreIconContainer>
@@ -121,7 +156,9 @@ const Dropdown: React.VFC<DropdownProps> = ({
         {options.map((value, index) =>{
             const Icon = dropdownIcon[value];
             return (  
-                <DropdownItem key={value} onClick={e=>onClickDropdownItem(e,value)}>
+                <DropdownItem key={value} onClick={e=>onClickDropdownItem(e,value,url,document)} >
+                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel onClose={(e)=>toggleVisibleReject()}/>:null}
+                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)}/>:null}
                     <IconContainer>
                        <Icon/>
                     </IconContainer> 

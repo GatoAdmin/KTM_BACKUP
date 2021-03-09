@@ -1,11 +1,12 @@
 import styled, { css } from 'styled-components';
-import { fontColor,mainColor600, whiteColor } from '@util/style/color';
+import { fontColor,greyColor,mainColor600, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import unchekedRadioSVG from '@assets/svg/uncheked_radio_icon.svg';
 import chekedRadioSVG from '@assets/svg/cheked_radio_icon.svg';
 
 interface ReadyButtonProps {
-    isReady : boolean;
+    isReady ?: boolean;
+    isCancle?: boolean;
 }
 interface TapItemProps {
     isViewTap : boolean;
@@ -101,11 +102,17 @@ export const ReadyButton = styled.button<ReadyButtonProps>`
     border: 1px solid ${mainColor600};
     box-sizing: border-box;
     border-radius: 100px;
-
+    cursor:pointer;
     ${(props)=>(props.isReady
         ?css`
             background:${mainColor600};
-            color: #FFFFFF;
+            color: ${whiteColor};
+        `
+        :props.isCancle
+        ?css`
+            background:${greyColor};
+            border: 1px solid ${greyColor};
+            color: ${whiteColor};
         `
         :css`
             background:rgba(255, 114, 99, 0.08);

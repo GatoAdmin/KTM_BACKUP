@@ -26,6 +26,8 @@ export const PanelContainer = styled.div`
     background: ${whiteColor};
     border-radius: 3px;
     z-index: 100;
+    overflow-y: scroll;
+    overflow-x: hidden;
 `;
 
 export const ImageContainer = styled.div`
@@ -36,10 +38,6 @@ export const ImageContainer = styled.div`
     max-height: 100%;
     padding: 10px;
     margin: auto;
-    border: 1px solid rgba(196, 196, 196, 0.8);
-    border-radius: 3px;
-    overflow-y: auto;
-    overflow-x: hidden;
 `;
 
 export const HelpTipContainer = styled.div`

@@ -24,7 +24,7 @@ export const AlarmTextContainer = styled.div<ContainerProps>`
     left: 0;
     min-width: 50px;
     width: max-content;
-    height: 17px;
+    min-height: 17px;
     background: ${mainColor600};
     border-radius: 100px;
 
@@ -40,6 +40,14 @@ export const AlarmTextContainer = styled.div<ContainerProps>`
         : css`
                 display: none;
             `)}
+    >div:only-child{
+        margin-left:0px;
+        margin-right:0px;
+    }
+    >div{
+        margin-left:5px;
+        margin-right:5px;
+    }
 `; 
 
 

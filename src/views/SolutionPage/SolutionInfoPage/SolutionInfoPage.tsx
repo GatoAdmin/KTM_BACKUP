@@ -522,7 +522,7 @@ const SolutionInfoPage: NextPage = ({
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('date-birth')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="birth_date" type="number" placeholder={`${t('enter-date-birth')} (ex.20001010)`}  onChange={handleFormContent} value={formData.birth_date}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="birth_date" type="number" placeholder={`${t('enter-date-birth')} (ex.20001010)`}  onChange={handleFormContent} value={formData.birth_date} min={8} max={8}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('passport-number')}</RequireHeaderColumn>

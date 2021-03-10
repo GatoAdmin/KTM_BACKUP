@@ -23,8 +23,8 @@ const Alarm: React.VFC<AlarmProps> = ({
             <AlarmIcon/>
         </AlarmIconContainer>
         <AlarmTextContainer show={visible}>
-        {alarm.split('<br/>').map((line) => {
-                    return <div>{line}</div>;
+        {alarm.split('<br>').map((line, index) => {
+                    return <div key={index}>{line}</div>;
                     })}
         </AlarmTextContainer>
       </AlarmContainer>

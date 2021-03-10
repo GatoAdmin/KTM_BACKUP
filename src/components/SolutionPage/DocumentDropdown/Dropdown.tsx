@@ -22,10 +22,24 @@ import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/SolutionPage/solutionDocumentPage.json';
 
 interface DropdownProps {
-    url?: string;
-    document?:string;
-    type: string;
-    status: string;
+    userdocument:{
+        id: number;
+        user_id: number;
+        univ_code: string;
+        info_type: string;
+        subjecttitle: string;
+        status: string;
+        refund_type: number;
+        document_type: string;
+        document_id: string;
+        document: string;
+        url: string;
+        help_file: string;
+        admin_reason: string;
+        user_reason: string;
+        status_id: number;
+        alarm: string;
+    };
 }
 
 const dropdownIcon = {
@@ -107,46 +121,82 @@ const uploadFile=()=>{
 }
 
 const Dropdown: React.VFC<DropdownProps> = ({
-    url="",
-    document="",
-    type,
-    status
+    userdocument
 }) => {
 //   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const [visibleReject, toggleVisibleReject] = useVisible(containerRef);
-//   const [visibleUpload, toggleVisibleUpload] = useVisible(containerRef);
+  const [visibleReject, setVisibleReject] = useState<boolean>(false);
   const [visibleUpload, setVisibleUpload] = useState<boolean>(false);
   const [visible, toggleVisible] = useVisible(containerRef);
+  const {status,document_type,url, univ_code, user_id, document, document_id } = userdocument;
 //   const [visible, setVisible] =useState<boolean>(false);
   const { t, lang, changeLang } = useTranslate(i18nResource);
+
   
-    const onClickDropdownItem=(e:MouseEvent, type:string, url:string, document:string)=>{
+  const onClickDropdownItem=(e:MouseEvent, menu_type:string)=>{
         e.preventDefault();
-        if(type==="reviewReject"){
-            toggleVisibleReject();
-        }else if(type==="transferCompleted"){
-
-        }else if(type==="reviewCompleted"){
-
-        }else if(type==="upload"){
+        if(menu_type==="reviewReject"){
+            if(visibleReject===false){
+                setVisibleReject(true);
+            }
+        }else if(menu_type==="transferCompleted"){
+            if(confirm(t('did-complete-mail-transfer'))){
+                let sid = ""; 
+                if(typeof window !== "undefined"){
+                  sid = window.sessionStorage.getItem('sid');
+                }
+                let rUrl:string = '';
+                if(document_type === '우편서류'){
+                    rUrl=`/api/?action=user_doc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                }else{
+                    rUrl=`/api/?action=user_doc_tnc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                }
+                axios.get(rUrl)
+                .then(res=>{
+                    if(res.data.status==="success"){
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.log(error.response);//중간에 실패가 돌아올 경우, 에러를 패치해야함
+                });
+            }
+        }else if(menu_type==="reviewCompleted"){
+            if(confirm(t('did-completed-document-review'))){
+                let sid = ""; 
+                if(typeof window !== "undefined"){
+                  sid = window.sessionStorage.getItem('sid');
+                }
+                let rUrl:string = '';
+                if(document_type === '번역공증서류'){
+                    rUrl=`/api/?action=user_doc_tnc_end&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                }else{
+                    rUrl=`/api/?action=user_doc_tnc_consul&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                }
+                axios.get(rUrl)
+                .then(res=>{
+                    if(res.data.status==="success"){
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.log(error.response);//중간에 실패가 돌아올 경우, 에러를 패치해야함
+                });
+            }
+        }else if(menu_type==="upload"){
             if(visibleUpload===false){
-                // toggleVisibleUpload();
                 setVisibleUpload(true);
             }
             return false;
-        }else if(type==="download"){
+        }else if(menu_type==="download"){
             downloadFile(url, document);
         }    
     }
-    React.useEffect(() => {
-        console.log(visible);
-      }, [visible]);
-    
-    const options = arrayKeeper[type][status];
+
+    const options = arrayKeeper[document_type][status];
     return (
       <DropdownContainer ref={containerRef}>
-         <DropdownMoreIconContainer  onClick={()=>{console.log("너냐"); toggleVisible()}}>
+         <DropdownMoreIconContainer  onClick={()=>{toggleVisible()}}>
             <MoreViewOnIcon />
             <MoreViewOffIcon />
         </DropdownMoreIconContainer>
@@ -156,14 +206,17 @@ const Dropdown: React.VFC<DropdownProps> = ({
         {options.map((value, index) =>{
             const Icon = dropdownIcon[value];
             return (  
-                <DropdownItem key={value} onClick={e=>onClickDropdownItem(e,value,url,document)} >
-                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel onClose={(e)=>toggleVisibleReject()}/>:null}
-                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)}/>:null}
-                    <IconContainer>
-                       <Icon/>
-                    </IconContainer> 
-                    {t(value)} 
-                </DropdownItem>
+                <div key={index}>
+                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel document_id={document_id} onClose={()=>setVisibleReject(false)}/>:null}
+                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} user_id={user_id} univ_code={univ_code} document_id={document_id} document_type={document_type}/>:null}
+                
+                    <DropdownItem key={value} onClick={e=>onClickDropdownItem(e,value)} >
+                        <IconContainer>
+                        <Icon/>
+                        </IconContainer> 
+                        {t(value)} 
+                    </DropdownItem>
+                </div>
             );
         } )}
         </DropdownItemContainer>

@@ -180,7 +180,8 @@ const getSesstionData =()=>{
 //       document:string;
 //       url: string;
 //       help_file: string;
-//       reason: string;
+//       admin_reason: string;
+//       user_reason: string;
 //       status_id: string;
 //       language_skill: string;
 //       residence_no: string;
@@ -188,6 +189,7 @@ const getSesstionData =()=>{
 //       }>
 //     }  = res.data;
     
+//     console.log(res.data)
 //     return {userdocument: userdocument};
 //   });
 const fetchPlayerDocumentInfo = () => {
@@ -217,12 +219,13 @@ const fetchPlayerDocumentInfo = () => {
     
     return {userdocument: userdocument};
   }
+
 const usePlayerDoucmentData = ()=>{
   let sid = ""; 
   if(typeof window !== "undefined"){
     sid = window.sessionStorage.getItem('sid');
   }
-  const getKey = () => `/api/?action=get_user_info&params=${JSON.stringify({})}&sid=${sid}`;
+  const getKey = () => `/api/?action=get_player_document&params=${JSON.stringify({})}&sid=${sid}`;
   // let { data } = useSWRInfinite(
   //   getKey,
   //   (url) => fetchPlayerDocumentInfo(url)
@@ -260,8 +263,7 @@ const SolutionDocumentPage: NextPage = ({
     const ArrayT = useTranslate(i18nArrayResource);
     const { t, lang, changeLang } = useTranslate(i18nResource);
     
-    const documentData = usePlayerDoucmentData().userdocument;
-    console.log(documentData);
+    const documentData = usePlayerDoucmentData().userdocument; 
     // React.useEffect(() => {
     //   setLoading(true);
     //   if (typeof documentData === 'undefined') return;   
@@ -337,8 +339,20 @@ const SolutionDocumentPage: NextPage = ({
     // let playerData = usePlayerData();
     const isFinal = () =>{
      //모든 서류의 서류 상태가 ‘준비 완료’ 상태가 되어야 버튼이 활성화 됨
-      return false;
+     let isFinal = true;
+    if(documentData!==undefined&&documentData.length>0){
+      documentData.map(document=>{
+        if(document.status!=='END'){
+          isFinal = false; 
+        }
+      })
+    }else{
+      isFinal = false;
     }
+      
+      return isFinal;
+    }
+    if(documentData!==undefined){
       return (
         <DefaultLayout>
           {loading && (
@@ -359,20 +373,13 @@ const SolutionDocumentPage: NextPage = ({
                 <Column width={1}></Column>
               </HeaderRow>
               {/* 서류명칭 받아서 죽 생성시킬것 */}
-              <Row alarm={true}>
-                  <FlexColumn width={6}>테스트<Alarm alarm="서류종류가 일치하지 않습니다."/></FlexColumn>
-                  <Column width={3}><HelpTip url={'/images/kr/solution_document_guide_ex.jpg'}/></Column>
-                  <Column width={3}>2020.01.10</Column>
-                  <Column width={3}>{t('DOC_CHECK_REQUEST')}</Column>
-                  <Column width={1}><Dropdown type={'번역 공증 영사'} status={'DOC_CHECK_REQUEST'} url="/api/"/></Column>
-                </Row>
-              {documentData?.map(data=>(
-                <Row alarm={data.alarm!==null?true:false}>
+              {documentData?.map((data, index)=>(
+                <Row key={data.document_id+index} alarm={data.alarm!==null?true:false}>
                   <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null?<Alarm alarm={data.alarm}/>:null}</FlexColumn>
                   <Column width={3}><HelpTip url={data.help_file}/></Column>
                   <Column width={3}>{getDateFormat(data.update_datetime)}</Column>
                   <Column width={3}>{t(data.status)}</Column>
-                  <Column width={1}><Dropdown type={data.document_type} status={data.status}/></Column>
+                  <Column width={1}><Dropdown userdocument={data}/></Column>
                 </Row>
               ))}
             </Table>
@@ -382,6 +389,7 @@ const SolutionDocumentPage: NextPage = ({
           </FooterBlock>
         </DefaultLayout>
       );
+    }
     }
   return <DefaultLayout></DefaultLayout>
 };

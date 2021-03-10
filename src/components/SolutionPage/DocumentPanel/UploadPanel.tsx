@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect, ChangeEvent} from 'react';
 import axios from 'axios';
+import S3 from 'react-aws-s3';
+import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import {
     UploadIcon,
     CloseIcon,
@@ -27,6 +29,10 @@ import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '../../../assets/i18n/SolutionPage/solutionDocumentPage.json';
 
 interface PanelProps {
+    user_id:number;
+    univ_code:string;
+    document_id:string;
+    document_type:string;
     onClose: (event: React.MouseEvent) => void;
 }
 interface InputFileTypes {
@@ -34,18 +40,47 @@ interface InputFileTypes {
     object: File;
   }
 
-const onSubmitReject=(e)=>{
-    e.preventDefault();
-}
-const Panel: React.VFC<PanelProps> = ({
+
+const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요. 향후 API 완료후 해볼것.
+    user_id,
+    univ_code,
+    document_id,
+    document_type,
     onClose
 }) => {
+
+  const [errMsg, setErrMsg] = React.useState({
+    ERROR_NOT_EXIST_USERNAME: false,
+    ERROR_NOT_EXIST_LAST_NAME: false,
+    ERROR_LAST_NAME_ONLY_ENGLISH: false,
+    ERROR_NOT_EXIST_FIRST_NAME: false,
+    ERROR_FIRST_NAME_ONLY_ENGLISH: false,
+    ERROR_NOT_EXIST_EMAIL: false,
+    ERROR_EXIST_EMAIL: false,
+    ERROR_NOT_EXIST_PASSWORD: false,
+    ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
+    ERROR_NOT_EXIST_NATIONALITY: false,
+    ERROR_NOT_EXIST_BIRTH_DATE: false,
+    ERROR_NOT_EXIST_TOPIK_LEVEL: false,
+    ERROR_NOT_EXIST_IDENTITY: false,
+    ERROR_NOT_PROPER_PASSWORD: false,
+    ERROR_PASSWORD_CONFIRM_FAIL: false,
+    ERROR_NOT_VALID_EMAIL: false,
+  });
+  const [loading, setLoading] = React.useState<boolean>(false);
+  useEffect(() => {
+    if (loading) {
+      const errObj = { ...errMsg };
+      Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
+      setErrMsg(errObj);
+    }
+  }, [loading]);
+
   const { t, lang, changeLang } = useTranslate(i18nResource);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [files, setFiles] = useState<InputFileTypes[]>([]);
 
   const dragRef = useRef<HTMLLabelElement | null>(null);
-  const fileInput = React.createRef<HTMLInputElement | null>();//useRef<HTMLInputElement | null>(null);
   const fileId = useRef<number>(0);  
 
   const onChangeFiles = useCallback(
@@ -73,20 +108,6 @@ const Panel: React.VFC<PanelProps> = ({
     },
     [files]
   );
-
-  const onClickHere = useCallback(
-    (e:React.MouseEvent<HTMLDivElement, MouseEvent>): void =>{
-    e.preventDefault();
-    // const fileInput = document.getElementById('fileUpload');
-    if (fileInput.current !== null) {
-        console.log("file")
-        fileInput.current.click();
-    }
-    // if(fileInput!== null){
-    //     fileInput.click();
-    //     console.log("꾸에")
-    // }
-  },[]);
 
   const handleFilterFile = useCallback(
     (e:React.MouseEvent<HTMLDivElement, MouseEvent>, id: number): void => {
@@ -151,19 +172,133 @@ const Panel: React.VFC<PanelProps> = ({
     initDragEvents();
     return () => resetDragEvents();
   }, [initDragEvents, resetDragEvents]);
-// 
+  
+  
+  const s3config = {
+    bucketName: process.env.REACT_APP_BUCKET_NAME,
+    region: process.env.REACT_APP_REGION,
+    dirName:`media/${user_id}/${univ_code}/${document_id}`,
+    accessKeyId: process.env.REACT_APP_ACCESS_ID,
+    secretAccessKey: process.env.REACT_APP_ACCESS_KEY,
+    s3Url : process.env.REACT_APP_S3_URL
+  };
+  //https://katumm-bucket-seoul.s3-ap-northeast-2.amazonaws.com/media/19/SMU_UNI/000/7544zaPETfPUYeSvUEnwVh.jpeg
+  //업로드 성공사례
+  const ReactS3Client = new S3(s3config);
+
+  const reactS3Upload = useCallback((file:File)=>{
+    return new Promise(function(resolve, reject){
+      ReactS3Client
+          .uploadFile(file)
+          .then(data=>{
+            if(data.status===204){
+              console.log(data);
+              resolve({doc_url: `${user_id}/${univ_code}/${document_id}`, file_name:file.name})
+            }
+          })
+          .catch(error => {
+            console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
+            reject(error);
+            setLoading(false);
+          });
+    })
+  },[files]);
+  const s3Upload = useCallback(()=>{
+    return new Promise(async function(resolve, reject){
+      let doc_url_list:Array<string> = [];
+      let file_name_list:Array<string> = [];
+      await Promise.all(files.map(async (file:InputFileTypes)=>{
+        const {doc_url, file_name} = await reactS3Upload(file.object);
+        doc_url_list.push(doc_url);
+        file_name_list.push(file_name);
+      }));
+      
+      if(doc_url_list.length>0){
+        resolve({doc_url_list:doc_url_list,file_name_list:file_name_list })
+      }else{
+        reject();
+      }
+    });
+  },[files]);
+  
+ const onSubmitUpload = useCallback(
+  async (e: ChangeEvent<HTMLInputElement> | any) => { 
+      e.preventDefault();
+      if(files.length>0){
+        // let doc_url_list:Array<string> = [];
+        // let file_name_list:Array<string> = [];
+        setLoading(true);
+        // const {doc_url_list, file_name_list } = await s3Upload();
+        s3Upload().then(
+          list =>{
+            let sid = ""; 
+            if(typeof window !== "undefined"){
+              sid = window.sessionStorage.getItem('sid');
+            }
+            const data = {
+              document_id:document_id,
+              doc_url:list.doc_url_list,
+              doc_file_name:list.file_name_list
+            };
+            let rurl = '';
+            if(document_type==='업로드 서류'){
+              rurl = `/api/?action=user_doc_upload_request&params=${JSON.stringify(data)}&sid=${sid}`;
+            }else{
+              rurl = `/api/?action=user_doc_app_request&params=${JSON.stringify(data)}&sid=${sid}`;
+            }
+            console.log(rurl)
+            axios.get(rurl)
+            .then(res=>{
+              console.log(res.data)
+              if(res.data.status==='success'){
+                alert(t('upload-completed-successfully'));
+                location.reload();
+              }
+              setLoading(false);
+            })
+            .catch(error => {
+              console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
+              setLoading(false);
+            });
+
+          }
+        )
+        // await files.map((file:InputFileTypes)=>{
+        //   ReactS3Client
+        //   .uploadFile(file.object)
+        //   .then(data=>{
+        //     if(data.status===204){
+        //       console.log(data);
+        //       doc_url_list.push(`${user_id}/${univ_code}/${document_id}`);
+        //       file_name_list.push(`${file.object.name}`);
+        //     }
+        //   })
+        //   .catch(error => {
+        //     console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
+        //     setLoading(false);
+        //   });
+        // });
+      }
+     
+    },
+    [files]
+  );
   return (
         <BlurScreen>
           <PanelContainer>
+        {loading && (
+          <LoadingPopup>
+            <Loading />
+          </LoadingPopup>
+        )}       
                 <PanelTitle>{t('to-add-file')}</PanelTitle>
-                {/* <input type="file" id="fileUpload"/> */}
                 <FileInput type="file" id="fileUpload" multiple={true} onChange={onChangeFiles}/>
-                <UserDragableFieldContainer isDragging={isDragging} htmlFor="fileUpload" ref={dragRef}>
+                <UserDragableFieldContainer isDragging={isDragging} ref={dragRef}>
                     <UploadTextContainer>
                         <IconContainer><UploadIcon/></IconContainer>
                     {t('going-to-upload-file-here')}<br/>
                     {t('drag-it')}<br/>
-                    <HereTextContainer>{t('or')}<Here onClick={(e)=>onClickHere(e)}>{t('here')}</Here>{t('click-to-upload')}</HereTextContainer>
+                    <HereTextContainer>{t('or')}<Here htmlFor="fileUpload">{t('here')}</Here>{t('click-to-upload')}</HereTextContainer>
                     </UploadTextContainer>
                 </UserDragableFieldContainer>
                 <UserFileListContainer>
@@ -182,7 +317,7 @@ const Panel: React.VFC<PanelProps> = ({
                 </UserFileListContainer>
                 <ButtonContainer>
                     <ReadyButton isCancle={true} onClick={onClose}>{t('cancle')}</ReadyButton>
-                    <ReadyButton isReady={true}>{t('completion')}</ReadyButton>
+                    <ReadyButton isReady={true} onClick={(e)=>onSubmitUpload(e)}>{t('completion')}</ReadyButton>
                 </ButtonContainer>
           </PanelContainer>
         </BlurScreen>

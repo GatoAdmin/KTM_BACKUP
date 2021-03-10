@@ -48,11 +48,13 @@ export const UserFieldContainer = styled.div`
     border-radius: 8px;
 
     margin: 30px 0px 0px 0px;
+
+    padding: 17px 18px;
 `;
 export const FileInput = styled.input`
     display: none;
 `;
-export const UserDragableFieldContainer = styled.label<DragProps>`
+export const UserDragableFieldContainer = styled.div<DragProps>`
     display: block;
     width: 794px;
     height: 248px;
@@ -126,12 +128,21 @@ export const ButtonContainer = styled.div`
     padding: 0px;
     margin-top :23px;
 `;
+export const TextArea = styled.textarea`
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background-color: transparent;
+    border: 0px;
 
+    ::placeholder{
+        color:${greyColor};
+    };
+`;
 export const UploadTextContainer = styled.div`
     text-align: center;
     padding-top: 53px;
     vertical-align: middle;
-    cursor: pointer;
     font-weight: bold;
     font-size: 20px;
     line-height: 29px;
@@ -146,8 +157,9 @@ export const HereTextContainer = styled.div`
     line-height: 23px;
 `;
 
-export const Here = styled.div`
+export const Here = styled.label`
     margin:0px 2px;
     color: ${mainColor600};
     text-decoration-line: underline;
+    cursor: pointer;
 `;

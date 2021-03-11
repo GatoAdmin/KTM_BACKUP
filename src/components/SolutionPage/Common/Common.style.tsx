@@ -199,6 +199,9 @@ export const FooterNoticeContainer = styled.div`
   text-align: center;
 `;
 
+export const BoldText = styled.div`
+  font-weight: bold;
+`;
 export const StringDot = styled.div`
   max-width: 90%;
   white-space: nowrap;

@@ -1,8 +1,7 @@
 import React, {useState, useReducer} from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
-import i18nResource from '@assets/i18n/SolutionPage/solutionDocumentPage.json';
-import i18nArrayResource from '@assets/i18n/registerPage.json';
+import i18nResource from '@assets/i18n/SolutionPage/solutionFinishPage.json';
 import Dummy from '@components/SolutionPage/dummy.json';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
@@ -12,6 +11,7 @@ import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import Alarm from '@components/SolutionPage/DocumentAlarm/Alarm';
 import Dropdown from '@components/SolutionPage/DocumentDropdown/Dropdown';
 import HelpTip from '@components/SolutionPage/DocumentHelpTip/HelpTip';
+import Checkbox from '@components/SolutionPage/BigCheckbox/BigCheckbox';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import {
   TopNonBlock,
@@ -19,13 +19,8 @@ import {
   FooterBlock,
   ReadyButton,
   StringDot,
-  FormAlert,
-  Bold16,
-  Bold22,
-  SmallNotice,
+  BoldText,
   FooterNoticeContainer,
-  UncheckedRadioIcon,
-  CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
 import {
   HelpImage
@@ -123,16 +118,6 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinal:boolean, selectValue, t)=>{//, afterFuntion:void
-  if(isFinal){
-    // if(window.confirm(t('completed-information-entry'))){
-    //   // afterFuntion;
-    // }
-    Router.push('/solution/5');
-  }else{
-    return window.alert(t('all-document-status-should-be-ready'));
-  }
-}
 
 const getChosseUnivCode =()=>{
     let data = null;
@@ -255,23 +240,15 @@ const getDateFormat=(dateString: string)=>{
   }
   return "";
 }
-const SolutionDocumentPage: NextPage = ({
+const SolutionFinishPage: NextPage = ({
   router: {
     query: { lang: queryLang },
   },
 })  => {
   if(typeof window !== "undefined"){
-    const ArrayT = useTranslate(i18nArrayResource);
     const { t, lang, changeLang } = useTranslate(i18nResource);
-    
     const documentData = usePlayerDoucmentData().userdocument; 
-    // React.useEffect(() => {
-    //   setLoading(true);
-    //   if (typeof documentData === 'undefined') return;   
-    //   // const tempData = Object.assign(formData, playerData.userinfo);
-    //   // setFormData(tempData);
-    //   setLoading(false);
-    // }, [documentData]);
+    const [readOnly, setReadOnly] =  React.useState<boolean>(false);
     
     React.useEffect(() => {
       let sid = ""; 
@@ -318,10 +295,9 @@ const SolutionDocumentPage: NextPage = ({
       ERROR_NOT_VALID_EMAIL: false,
     });
     const [loading, setLoading] = React.useState<boolean>(false);
-
+    const [isConfirm, setConfirm] = React.useState<boolean>(false);
     React.useEffect(() => {
       if (queryLang !== undefined) {
-        ArrayT.changeLang(queryLang);
         changeLang(queryLang);
       }
     }, [queryLang]);
@@ -339,20 +315,20 @@ const SolutionDocumentPage: NextPage = ({
     
     // let playerData = usePlayerData();
     const isFinal = () =>{
-     //모든 서류의 서류 상태가 ‘준비 완료’ 상태가 되어야 버튼이 활성화 됨
-      let isFinal = true;
-      if(documentData!==undefined&&documentData.length>0){
-        documentData.map(document=>{
-          if(document.status!=='END'){
-            isFinal = false; 
-          }
-        })
-      }else{
-        isFinal = false;
-      }
-      
-      return isFinal;
+      return isConfirm;
     }
+
+    const onClickNextStep=(isFinal:boolean,t)=>{
+      if(isFinal){
+        if(window.confirm(t('do-you-complete-process'))){
+          setReadOnly(true);
+          // Router.push('/solution/5');
+        }
+      }else{
+        return window.alert(t('please-agree-submit-document'));
+      }
+    }
+
     if(documentData!==undefined){
       return (
         <DefaultLayout>
@@ -362,8 +338,7 @@ const SolutionDocumentPage: NextPage = ({
             </LoadingPopup>
           )}          
           <Header background="light" position="relative" />
-          <StepHeader step={4} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
-          <HelpImage lang={queryLang}/>
+          <StepHeader step={5} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
           <TopNonBlock>
             <Table>
               <HeaderRow>
@@ -384,10 +359,20 @@ const SolutionDocumentPage: NextPage = ({
                 </Row>
               ))}
             </Table>
+            <Checkbox id="isConfirm" checked={isConfirm} onChange={()=>setConfirm(true)}>{t('confirmed-all-documents')}</Checkbox>
           </TopNonBlock>
-          <FooterBlock>
-            <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, t)}>{t('next-step')}</ReadyButton>
-          </FooterBlock>
+            {readOnly
+            ?<Block>
+              <FooterNoticeContainer>
+                <BoldText>{t('completed-application-admission')}</BoldText>
+                <BoldText>{t('after-schedules-carried-out')}</BoldText>
+              </FooterNoticeContainer>
+            </Block>
+          
+            :<FooterBlock>
+              <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),t)}>{t('progress-completed')}</ReadyButton>
+            </FooterBlock>}
+          
         </DefaultLayout>
       );
     }
@@ -395,4 +380,4 @@ const SolutionDocumentPage: NextPage = ({
   return <DefaultLayout></DefaultLayout>
 };
 
-export default withRouter(SolutionDocumentPage);
+export default withRouter(SolutionFinishPage);

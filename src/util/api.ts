@@ -23,4 +23,8 @@ export default {
     const response = await axios.get(`/?action=set_qna&params={"type":"${type}","title":"${title}","contents":"${contents}"}&sid=${sid}`);
     return response.data;
   },
+  login: async (formData: any) => {
+    const response = await axios.post('/login', formData);
+    return response;
+  },
 };

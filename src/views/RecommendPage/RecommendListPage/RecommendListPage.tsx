@@ -36,6 +36,8 @@ import CategoryFilter, {
   UnivCategory,
 } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
 import useIntersection from '@util/hooks/useInteraction';
+import useTranslate from '@util/hooks/useTranslate';
+import i18nResource from '@assets/i18n/landingPage.json';
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -219,6 +221,7 @@ const usePushRouterWithFiiterValue = ({
 }: FilterRefObject,
 mutate: responseInterface<Array<SWRData>, unknown>['mutate']): UpdateUrlQueryFunction => {
   const router = useRouter();
+
   return (propertyKey, newPropertyValue) => {
     const queryUrlObject = {
       location: String(location.current?.value),
@@ -258,10 +261,11 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
       loadUnivList();
     }
   }, [isTriggerLoadUnivList]);
+  const { t, lang, changeLang } = useTranslate(i18nResource);
 
   return (
     <DefaultLayout>
-      <Header background="dark" position="absolute" />
+      <Header background="dark" position="absolute" t={t} changeLang={changeLang} />
       <SearchSectionContainer>
         <SearchSectionTitle>
           모든 대학을 알려드립니다

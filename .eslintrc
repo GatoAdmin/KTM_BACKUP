@@ -42,7 +42,9 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "linebreak-style": "off",
+    "no-use-before-define": "off"
   },
   "overrides": [
     {

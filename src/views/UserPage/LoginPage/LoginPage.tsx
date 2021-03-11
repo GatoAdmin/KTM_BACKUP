@@ -23,7 +23,7 @@ import {
   LoadingPopup,
   Loading,
 } from '@views/UserPage/LoginPage/LoginPage.style';
-import axios from 'axios';
+import API from '@util/api';
 import useTranslate from '@util/hooks/useTranslate';
 import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import i18nLoginResource from '../../../assets/i18n/loginPage.json';
@@ -46,41 +46,38 @@ const LoginPage: NextPage = ({
   });
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const handleFormContent = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFormContent = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setLoading(true);
 
     const prevFormData = { ...formData };
     const axiosFormData = new FormData();
-    Object.keys(prevFormData).forEach((key: string) => axiosFormData.append(key, prevFormData[key]));
+    const appendFuntion = (key: string) => axiosFormData.append(key, prevFormData[key]);
+    Object.keys(prevFormData).forEach(appendFuntion);
 
-    axios
-      .post('/api/login/', axiosFormData, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        const { status } = res.data;
-        if (status !== 'success') {
-          if (status === 'ERROR_NOT_YET_EMAIL_CONFIRM') {
-            alert('이메일 인증을 완료해 주세요.');
-          } else {
-            setErrMsg((prev) => ({ ...prev, [status]: true }));
-          }
-          setLoading(false);
-        } else {
-          setLoading(false);
-          const {
-            data: { sid },
-          } = res;
-          sessionStorage.setItem('sid', sid);
-          Router.push('/');
-        }
-      });
+    const res = await API.login(axiosFormData);
+
+    const { status } = res.data;
+    if (status !== 'success') {
+      if (status === 'ERROR_NOT_YET_EMAIL_CONFIRM') {
+        alert('이메일 인증을 완료해 주세요.');
+      } else {
+        setErrMsg((prev) => ({ ...prev, [status]: true }));
+      }
+      setLoading(false);
+    } else {
+      setLoading(false);
+      const {
+        data: { sid },
+      } = res;
+      sessionStorage.setItem('sid', sid);
+      Router.push('/');
+    }
   };
 
   React.useEffect(() => {

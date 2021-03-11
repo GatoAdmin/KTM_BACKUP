@@ -3,6 +3,7 @@ module.exports = {
   trailingSlash: false,
   env: {
     API_PATH: process.env.API_PATH,
+    CLIENT_HOST: process.env.CLIENT_HOST
   },
   webpack(config) {
     config.module.rules.push({

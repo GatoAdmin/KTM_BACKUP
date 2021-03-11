@@ -17,12 +17,14 @@ const HelpTip: React.VFC<HelpTipProps> = ({
   const [visible, toggleVisible] = useVisible(containerRef);
   
     return (
+      <div>
+        {visible?<Panel onClose={toggleVisible} url={url}/>:null}
       <HelpTipContainer ref={containerRef}>
          <HelpText  onClick={toggleVisible}>
             {t('view')}
         </HelpText>
-        {visible?<Panel onClose={toggleVisible} url={url}/>:null}
       </HelpTipContainer>
+      </div>
   );
 };
 

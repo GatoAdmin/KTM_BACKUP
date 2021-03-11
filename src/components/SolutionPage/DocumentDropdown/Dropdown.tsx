@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Aws from 'aws-sdk/dist/aws-sdk-react-native';
 import {
     DropdownItemContainer,
     DropdownContainer,
@@ -104,17 +105,6 @@ const dropdownIcon = {
     }
   };
 
-  const downloadFile=(urlString:string, name:string)=>{
-    const blob = new Blob([urlString], {type: 'text/plain'});
-    const fileName = urlString.split('/');
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name}_${fileName[fileName.length-1]}`
-    a.click()
-    a.remove()
-    window.URL.revokeObjectURL(url);
-}
 
 const uploadFile=()=>{
     console.log("업로드");
@@ -128,11 +118,40 @@ const Dropdown: React.VFC<DropdownProps> = ({
   const [visibleReject, setVisibleReject] = useState<boolean>(false);
   const [visibleUpload, setVisibleUpload] = useState<boolean>(false);
   const [visible, toggleVisible] = useVisible(containerRef);
-  const {status,document_type,url, univ_code, user_id, document, document_id } = userdocument;
+  const {status,document_type,url, univ_code, user_id, document_id } = userdocument;
+  const document_name = userdocument.document;
 //   const [visible, setVisible] =useState<boolean>(false);
   const { t, lang, changeLang } = useTranslate(i18nResource);
+  const downloadFile=(urlString:string, name:string)=>{
+  const s3config = {
+    bucketName: process.env.REACT_APP_BUCKET_NAME,
+    region: process.env.REACT_APP_REGION,
+    accessKeyId: process.env.REACT_APP_ACCESS_ID,
+    secretAccessKey: process.env.REACT_APP_ACCESS_KEY
+    };
+  const s3 = new Aws.S3({params:{Bucket: process.env.REACT_APP_BUCKET_NAME}});
 
-  
+  s3.config.update(s3config)
+    const arrayUrl =  urlString.split('/');
+    const arrayUrlLength = arrayUrl.length;
+    //TODO:url 형식이 정해지면 그에 따라서 바꿀것
+    const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key: `${arrayUrl[arrayUrlLength-5]}/${arrayUrl[arrayUrlLength-4]}/${arrayUrl[arrayUrlLength-3]}/${arrayUrl[arrayUrlLength-2]}/${arrayUrl[arrayUrlLength-1]}`}
+    s3.getObject(params, (err, data)=>{
+        if (err){console.log(err)}
+        if(data){
+            const blob = new Blob([data.Body], {type: data.ContentType});
+            const fileName = urlString.split('/');
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${fileName[fileName.length-1]}`//`${name}_${fileName[fileName.length-1]}`
+            a.click()
+            a.remove()
+            window.URL.revokeObjectURL(url);
+        }
+    })
+    
+}
   const onClickDropdownItem=(e:MouseEvent, menu_type:string)=>{
         e.preventDefault();
         if(menu_type==="reviewReject"){
@@ -189,7 +208,7 @@ const Dropdown: React.VFC<DropdownProps> = ({
             }
             return false;
         }else if(menu_type==="download"){
-            downloadFile(url, document);
+            downloadFile(url, document_name);
         }    
     }
 

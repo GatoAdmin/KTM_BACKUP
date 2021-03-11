@@ -29,7 +29,7 @@ import {
 } from '@components/SolutionPage/Common/Common.style';
 import {
   HelpImage
-} from '@views/SolutionPage/SolutionDocumentPage/SolutionDocumentPage.style';
+} from '@views/SolutionPage/SolutionFinishPage/SolutionFinishPage.style';
 import {STEP_STRING} from '@components/SolutionPage/StepString';
 
 import {

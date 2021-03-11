@@ -11,13 +11,13 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
   position: fixed;
   top: 0;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   min-width: 1400px;
-  height: 116px;
-  border-radius: 0 0 40px 40px;
+  height: 90px;
   line-height: 116px;
-  background-color: ${(props) => (props.isTop ? 'transparent' : 'rgba(255, 255, 255, 0.85)')};
+  background-color: ${(props) => (props.isTop ? 'rgba(255, 255, 255, 0.6);' : 'white')};
   user-select: none;
   z-index: 3;
   transition: transform 0.5s ease 1.6s;
@@ -25,29 +25,24 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   transform-origin: top center;
 `;
 
-export const Logo = styled(LogoIcon)`
-  width: 81px;
-  height: 81px;
-  margin-right: 19px;
-  
-  > path {
-    fill: ${mainColor};
-  }
-`;
-
 export const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 29px;
-  color: ${mainColor};
-  font: 900 45px/116px Nunito, sans-serif;
+  font-family: Montserrat;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 29px;
+  color: ${fontColor};
 `;
 
-export const Navigation = styled.div``;
+export const Navigation = styled.div`
+  font-weight: bold;
+  font-size: 14px;
+`;
 
 export const NavigationContainer = styled.nav`
   display: flex;
-  margin-right: 89px;
+  margin-right: 100px;
 `;
 
 export const NavLink = styled.a`
@@ -57,8 +52,8 @@ export const NavLink = styled.a`
 `;
 
 export const LocalizationButtonContainer = styled.div`
+  display: flex;
   position: relative;
-  width: 144px;
   margin-left: 90px;
 `;
 
@@ -85,6 +80,7 @@ export const LocalizationButton = styled.button`
   color: ${fontColor};
   background-color: transparent;
   cursor: pointer;
+  outline: none;
 
   :last-of-type {
     margin: 0;
@@ -95,9 +91,6 @@ export const LocalizationButton = styled.button`
   }
   :nth-child(2):hover ~ ${LocalizationSelector} {
     transform: translateX(58px);
-  }
-  :nth-child(3):hover ~ ${LocalizationSelector} {
-    transform: translateX(116px);
   }
 `;
 

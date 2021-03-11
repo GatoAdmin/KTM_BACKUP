@@ -72,7 +72,9 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>
       <LogoContainer>
-        katumm
+        <Link href="/" key="introduce" passHref>
+          <NavLink>katumm</NavLink>
+        </Link>
       </LogoContainer>
       <NavigationContainer>
         <Navigation>

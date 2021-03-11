@@ -50,7 +50,9 @@ const Header: React.VFC<HeaderProps> = ({
   return (
     <HeaderContainer background={background} position={position}>
       <LogoContainer>
-        katumm
+        <Link href="/" key="introduce" passHref>
+          <NavLink>katumm</NavLink>
+        </Link>
       </LogoContainer>
       <NavigationContainer>
         <Navigation>

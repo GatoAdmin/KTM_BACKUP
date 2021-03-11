@@ -33,7 +33,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: 'consult',
-    link: '/',
+    link: '/consult',
   },
   {
     name: 'one-click',

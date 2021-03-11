@@ -8,6 +8,7 @@ module.exports = {
     REACT_APP_BUCKET_NAME: process.env.REACT_APP_BUCKET_NAME,
     REACT_APP_REGION: process.env.REACT_APP_REGION,
     REACT_APP_S3_URL: process.env.REACT_APP_S3_URL,
+    CLIENT_HOST: process.env.CLIENT_HOST
   },
   webpack(config) {
     config.module.rules.push({

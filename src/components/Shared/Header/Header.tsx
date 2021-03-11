@@ -16,32 +16,36 @@ interface headerLink {
   link: string;
 }
 
-const headerLinks: Array<headerLink> = [
-  {
-    name: '회사 소개',
-    link: '/',
-  },
-  {
-    name: '대학 소개&추천',
-    link: '/recommend',
-  },
-  {
-    name: '입학 상담',
-    link: '/',
-  },
-  {
-    name: '원클릭 입학솔루션',
-    link: '/solution',
-  },
-];
-
 interface HeaderProps {
   position?: 'relative' | 'absolute';
   background: 'light' | 'dark';
+  t: (s: string) => string;
+  changeLang: (s: string) => void;
 }
 
-const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute' }) => {
+const Header: React.VFC<HeaderProps> = ({
+  background, position = 'absolute', t, changeLang,
+}) => {
   const [languageIndex, setLanguageIndex] = React.useState<number>(0);
+
+  const headerLinks: Array<headerLink> = [
+    {
+      name: t('introduce'),
+      link: '/',
+    },
+    {
+      name: t('university'),
+      link: '/recommend',
+    },
+    {
+      name: t('consult'),
+      link: '/consult',
+    },
+    {
+      name: t('one-click'),
+      link: '/solution',
+    },
+  ];
 
   return (
     <HeaderContainer background={background} position={position}>
@@ -57,12 +61,12 @@ const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute' }) =
           ))}
         </Navigation>
         <LocalizationButtonContainer>
-          <LocalizationButton onClick={() => setLanguageIndex(0)}>KR</LocalizationButton>
+          <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
           /
-          <LocalizationButton onClick={() => setLanguageIndex(2)}>VE</LocalizationButton>
+          <LocalizationButton onClick={() => changeLang('vn')}>VE</LocalizationButton>
         </LocalizationButtonContainer>
         <Link href="/login" passHref>
-          <LoginLink>로그인</LoginLink>
+          <LoginLink>{t('login')}</LoginLink>
         </Link>
       </NavigationContainer>
     </HeaderContainer>

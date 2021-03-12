@@ -59,9 +59,8 @@ export const StepContainer = styled.header`
 
 export const Navigation = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex: 1 1 0;
-  padding: 0 250px;
   color: ${fontColor};
 `;
 
@@ -69,7 +68,7 @@ export const NavigationContainer = styled.nav`
   display: flex;
   flex: 1 1 0;
   margin-right: 50px;
-  width: 50%;
+  min-width: 50%;
 `;
 
 export const NavLink = styled.a`
@@ -90,8 +89,11 @@ export const NavItem = styled.div<NavItemProps>`
     :css`
     color: ${(props.color||'inherit')};
     `
-      
   )}
+  margin-right:50px;
+  :last-child{
+    margin-right:0px;
+  }
 `;
 
 export const UnivSelectButton = styled.button`

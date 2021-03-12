@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
@@ -28,32 +30,8 @@ import {
     UnivSelectMajor
 } from './StepHeader.style';
 import {
-    EmptyText,
-    ReadyButton
+    EmptyText
 } from '@components/SolutionPage/Common/Common.style';
-
-import FamilyIcon from '@assets/svg/family_icon.svg';
-import EducationIcon from '@assets/svg/language_education_icon.svg';
-import CertificateIcon from '@assets/svg/education_qualification_icon.svg';
-import WritePictogram from '@assets/svg/write_pictogram.svg';
-import SearchPictogram from '@assets/svg/search_pictogram.svg';
-import StudyPictogram from '@assets/svg/study_pictogram.svg';
-import FamilyPictogram from '@assets/svg/family_pictogram.svg';
-import BalancePictogram from '@assets/svg/balance_pictogram.svg';
-
-const qualificationIcons = [
-  { type: '국적요건', icon: FamilyIcon },
-  { type: '어학요건', icon: EducationIcon },
-  { type: '학력요건', icon: CertificateIcon },
-] as const;
-
-const documentPictogram = {
-  write: WritePictogram,
-  check: SearchPictogram,
-  study: StudyPictogram,
-  family: FamilyPictogram,
-  balance: BalancePictogram,
-} as const;
 
 interface step {
   name: string;
@@ -62,65 +40,11 @@ interface step {
 
 interface StepProps {
     step: number;
-    major?: string;
-    plan?: string;
+    major_str?: string;
+    plan_str?: string;
     t: (s: string) => string;
     changeLang: (s: string) => void;
 }
-
-type ConditionType = typeof qualificationIcons[number]['type'];
-type Pictogram = keyof typeof documentPictogram;
-
-const formatKRW = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' });
-
-const fetchUnivDetailInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {const {
-    univ_info,
-    major,
-    document
-  }: {
-      univ_info:{
-        kor_name: string;
-        eng_name: string;
-        category: string;
-        address: string;
-        logo:string;
-      },
-      major: {
-        "인문": Array<string>;
-        "자연": Array<string>;
-        "예체능": Array<string>;
-      },
-      document:{
-        essential: Array<{
-          name : string;
-          pictogram :string;
-        }>;
-        noessential: Array<{
-          name : string;
-          pictogram :string;
-        }>;
-      }
-    }  = res.data;
-
-    window.sessionStorage.setItem('chooseUnivName',univ_info.kor_name);
-    return {univ_info, major, document};
-  });
-  
-const useUnivData = (univ_code:string) => {
-  let sid = 0; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-    window.sessionStorage.setItem('chooseUniv',univ_code);
-  }
-  const getKey = () => `/api/?action=oneclick_univ&params=${JSON.stringify({ univ_code: univ_code })}&sid=${sid}`;
-  const { data } = useSWRInfinite(
-    getKey,
-    (url) => fetchUnivDetailInfo(url)
-  );
-
-  return Array.isArray(data)?data[0]:data;
-};
 
 export const getLoginCheck=()=>{
   if(typeof window !== "undefined"){
@@ -141,7 +65,7 @@ const onClickSelectUniv=()=>{
   }
 };
 
-export const getSelectUnivInfo=()=>{
+export const getSelectUnivInfo= async ()=>{
   try{
     if(getLoginCheck()){//
       // const univ_code = window.sessionStorage.getItem('chooseUniv');
@@ -149,7 +73,7 @@ export const getSelectUnivInfo=()=>{
       if(univ_code===null){
         return null;
       }else{
-        const univInfo = useUnivData(univ_code);
+        const univInfo = await API.getUnivData(univ_code);
         return univInfo;
       }
     }
@@ -166,9 +90,9 @@ interface initialSelectEnter{
   univ_name?:string;
   step?:number|null;
   enter_type?:string|null;
-  major?:string|number;
+  major_str?:string|number;
   major_type?:string;
-  plan?: string;
+  plan_str?: string;
   pay_method?: string;
 }
 
@@ -202,7 +126,7 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
         ...selectValue,
         enter_type:"new_enter",
         major_type:"인문",
-        major:undefined,
+        major_str:undefined,
         pay_method:undefined,
       });
     }
@@ -219,9 +143,16 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
   ];
 }
 
-const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan, t, lang, changeLang}) => {  
+const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, lang, changeLang}) => {  
+  const [loading, resolved, error] = usePromise(getSelectUnivInfo, []);
+  if (loading) return <div></div>; 
+  if (error) window.alert('API 오류');
+  if (!resolved) return null;
+  
+  const { univ_info, major, document } = resolved;
+  
   if(typeof window !== "undefined"){
-  const univInfo = getSelectUnivInfo()?.univ_info;
+  let univInfo = univ_info;
   const steps: Array<step> = [
     {
       name: `1. ${t('select-school')}`,
@@ -232,7 +163,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan, t, lang, chan
       index: 2,
     },
     {
-      name: `3. ${t('input-information')}`,
+      name: `3. ${t('create-person-information')}`,
       index: 3,
     },
     {
@@ -244,68 +175,71 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan, t, lang, chan
       index: 5,
     },
   ];
-  
   return (
-      <SolutionHeader>
-        <StepContainer>
-            <NavigationContainer>
-            <Navigation>
-                {steps.map(({ name, index }) =>  (
-                  <NavItem key={index} isStep={step === index}>
-                      {name}
-                  </NavItem>
+    <SolutionHeader>
+      <StepContainer>
+          <NavigationContainer>
+          <Navigation>
+              {steps.map(({ name, index }) =>  (
+                <NavItem key={index} isStep={step === index}>
+                    {name}
+                </NavItem>
+              ))}
+          </Navigation>
+          </NavigationContainer>
+      </StepContainer>
+      <UnivContainer>
+        {univInfo?
+        <UnivItem>
+          <UnivLogo src={univInfo.logo}/>
+          <UnivTextContainer>
+            <UnivNameContainer>
+              <UnivName>
+                {univInfo.kor_name}
+              </UnivName>
+              <UnivCategory>
+                {univInfo.category}
+              </UnivCategory>
+              {major_str
+                ?<UnivSelectMajor>
+                      {major_str}
+                </UnivSelectMajor>
+                :null
+              }
+              {plan_str
+                ?<PlanItem type={plan_str}/>
+                :null
+              }
+            </UnivNameContainer>
+            <UnivDetailText>
+                {univInfo.eng_name}
+            </UnivDetailText>
+            <UnivDetailText>
+                {univInfo.address}
+            </UnivDetailText>
+          </UnivTextContainer>
+        </UnivItem>
+        :<EmptyText>
+              {t('click-right-button-select-university')}
+          </EmptyText>
+        }
+         {univInfo?
+         <UnivSelectButton onClick={onClickSelectUniv}>
+              <ChangeCircleIcon/>
+              {t('university-change').split('<br>').map(line=>(
+                <div>{line}</div>
                 ))}
-            </Navigation>
-            </NavigationContainer>
-        </StepContainer>
-        <UnivContainer>
-          {univInfo?
-          <UnivItem>
-            <UnivLogo src={univInfo.logo}/>
-            <UnivTextContainer>
-              <UnivNameContainer>
-                <UnivName>
-                  {univInfo.kor_name}
-                </UnivName>
-                <UnivCategory>
-                  {univInfo.category}
-                </UnivCategory>
-                {major
-                  ?<UnivSelectMajor>
-                        {major}
-                  </UnivSelectMajor>
-                  :null
-                }
-                {plan
-                  ?<PlanItem type={plan}/>
-                  :null
-                }
-              </UnivNameContainer>
-              <UnivDetailText>
-                  {univInfo.eng_name}
-              </UnivDetailText>
-              <UnivDetailText>
-                  {univInfo.address}
-              </UnivDetailText>
-            </UnivTextContainer>
-          </UnivItem>
-          :<EmptyText>
-                우측의 버튼을 클릭하여 입학을 준비할 대학교를 선택하세요.
-            </EmptyText>
+          </UnivSelectButton>
+          :<UnivSelectButton onClick={onClickSelectUniv}>
+              <ClickIcon/>
+              {t('university-select').split('<br>').map(line=>(
+                <div>{line}</div>
+                ))}
+          </UnivSelectButton>
           }
-           {univInfo?
-           <UnivSelectButton onClick={onClickSelectUniv}>
-                <ChangeCircleIcon/>
-                대학교<br/>변경하기
-            </UnivSelectButton>
-            :<UnivSelectButton onClick={onClickSelectUniv}>
-                <ClickIcon/>
-                대학교<br/>선택하기
-            </UnivSelectButton>
-            }
-        </UnivContainer>
-      </SolutionHeader>
-  );
+      </UnivContainer>
+    </SolutionHeader>
+);
   }
   return <SolutionHeader></SolutionHeader>
 };

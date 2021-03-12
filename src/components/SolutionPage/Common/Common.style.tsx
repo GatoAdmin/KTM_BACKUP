@@ -61,9 +61,8 @@ export const SelectContainer = styled.header`
 
 export const Tap = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   flex: 1 1 0;
-  padding: 0 665px 0 0;
   color: ${fontColor};
 `;
 
@@ -77,6 +76,7 @@ export const TapContainer = styled.div`
 export const TapItem = styled.div<TapItemProps>`
   text-decoration: none;
   font-weight: bold;
+  margin-right:20px;
   padding: 21px 8px 18px 8px;
   cursor: pointer;
   
@@ -89,6 +89,9 @@ export const TapItem = styled.div<TapItemProps>`
     color: ${(props.color||'#9E9E9E')};
     `
   )}
+  :last-child{
+    margin-right:0px;
+  }
 `;
 export const ReadyButton = styled.button<ReadyButtonProps>`
     min-width: 52px;

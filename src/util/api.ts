@@ -27,4 +27,14 @@ export default {
     const response = await axios.post('/login', formData);
     return response;
   },
+  getPlayerStatus:  async () => {
+    const sid = sessionStorage.getItem('sid');
+    const response = await axios.get(`/?action=get_player_status&params={}&sid=${sid}`);
+    return response.data;
+  },
+  getUnivData :  async (univ_code:string) => {
+    const sid = sessionStorage.getItem('sid');
+    const response = await axios.get(`/?action=oneclick_univ&params={"univ_code":"${univ_code}"}&sid=${sid}`);
+    return response.data;
+  },
 };

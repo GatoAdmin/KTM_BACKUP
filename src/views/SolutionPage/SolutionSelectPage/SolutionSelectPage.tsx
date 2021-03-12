@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import { GetServerSideProps, NextPage } from 'next';
 import Router, { withRouter } from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
-import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import Header from '@components/Shared/Header/Header';
-import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
-import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
+import StepHeader, { getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import DocumentShortItem from '@components/SolutionPage/DocumentShortItem/DocumentShortItem';
@@ -38,23 +38,6 @@ interface tap {
   index : number;
 }
 
-const taps: Array<tap> = [
-  {
-    name: '인문계열',
-    type: '인문',
-    index: 1,
-  },
-  {
-    name: '자연계열',
-    type: '자연',
-    index: 2,
-  },
-  {
-    name: '예체능계열',
-    type: '예체능',
-    index: 3,
-  }
-];
 
 const getChosseUnivCode =()=>{
   let data = null;
@@ -154,66 +137,60 @@ const SolutionSelectPage: NextPage = ({
   },
 }) => {
   if(typeof window !== "undefined"){
-    const { t, lang, changeLang } = useTranslate(i18nResource);
-    const [errMsg, setErrMsg] = React.useState({
-      ERROR_NOT_EXIST_USERNAME: false,
-      ERROR_NOT_EXIST_LAST_NAME: false,
-      ERROR_LAST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_FIRST_NAME: false,
-      ERROR_FIRST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_EMAIL: false,
-      ERROR_EXIST_EMAIL: false,
-      ERROR_NOT_EXIST_PASSWORD: false,
-      ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
-      ERROR_NOT_EXIST_NATIONALITY: false,
-      ERROR_NOT_EXIST_BIRTH_DATE: false,
-      ERROR_NOT_EXIST_TOPIK_LEVEL: false,
-      ERROR_NOT_EXIST_IDENTITY: false,
-      ERROR_NOT_PROPER_PASSWORD: false,
-      ERROR_PASSWORD_CONFIRM_FAIL: false,
-      ERROR_NOT_VALID_EMAIL: false,
-    });
-    const [loading, setLoading] = React.useState<boolean>(false);
+    const getUnivInfo= async ()=>{
+      const univInfo = await getSelectUnivInfo();
+      return univInfo
+    }
 
+    let {univ_info, major, document} = getUnivInfo();
+    const { t, lang, changeLang } = useTranslate(i18nResource);
+    const taps: Array<tap> = [
+      {
+        name: t('academic-type'),
+        type: '인문',
+        index: 1,
+      },
+      {
+        name: t('natural-world-type'),
+        type: '자연',
+        index: 2,
+      },
+      {
+        name: t('art-and-physical-type'),
+        type: '예체능',
+        index: 3,
+      }
+    ];
+    console.log(univ_info)
+    let sessionData = getSesstionData();
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
+    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
+    const [viewTap,setViewTaps] = React.useState({type:viewType}); 
+  
     React.useEffect(() => {
       if (queryLang !== undefined) {
         changeLang(queryLang);
       }
     }, [queryLang]);
+
+    React.useEffect(() => {
+      const univInfo = getUnivInfo();
+      univ_info = univInfo.univ_info;
+      major = univInfo.major;
+      document = univInfo.document;
+    }, [univ_info, major, document]);
   
     React.useEffect(() => {
-      if (loading) {
-        const errObj = { ...errMsg };
-        Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
-        setErrMsg(errObj);
-      }
-    }, [loading]);
-
-    const univInfo = getSelectUnivInfo();
-    let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
-    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
-
-    const [viewTap,setViewTaps] = React.useState({type:viewType}); 
-    
-    React.useEffect(() => {
-      let sid = ""; 
-      if(typeof window !== "undefined"){
-        sid = window.sessionStorage.getItem('sid');
-      }
-      axios.get(`/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
-      .then((res) => {
-        const {
-          data: { status, userstatus },
-        } = res;
-        console.log(res);
-        if (status !== 'success') {
-          setErrMsg((prev) => ({ ...prev, [status]: true }));
+      API.getPlayerStatus()
+      .then((data)=>{
+        console.log(data);
+        if (data.status !== 'success') {
+          console.log(data);
         } else { 
-            console.log(userstatus);
+            console.log(data.userstatus);
             // const user = userstatus.find(status=>status.id);univcode
             // const user = userstatus.find(us=>us.univ_code === univcode);
-            const user = userstatus.sort(function(a,b){
+            const user = data.userstatus.sort(function(a,b){
               const atime = convertTime(a.updated_at);
               const btime = convertTime(b.updated_at);
               atime>btime?1:atime<btime?-1:0;
@@ -225,13 +202,15 @@ const SolutionSelectPage: NextPage = ({
               user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
               user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
             }
-            if(user.step === STEP_STRING.STEP_TWO){
-              Router.push("/solution/2")
-            }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
-              Router.push("/solution/3")
-            }else if(user.step === STEP_STRING.STEP_FOUR){
-              Router.push("/solution/4")
-            }
+            // if(user.step === STEP_STRING.STEP_TWO){
+            //   Router.push("/solution/2")
+            // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+            //   Router.push("/solution/3")
+            // }else if(user.step === STEP_STRING.STEP_FOUR){
+            //   Router.push("/solution/4")
+            // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
+            //   Router.push("/solution/5")
+            // }
         }
       })
       .catch((err) => {
@@ -245,32 +224,32 @@ const SolutionSelectPage: NextPage = ({
     }
 
     const isFinal = () =>{
-      if(univInfo){
-        if(selectValue!==null&&typeof selectValue.major==="string"){
+      if(univ_info){
+        if(selectValue!==null&&typeof selectValue.major_str==="string"){
           return true;
         }
       }
       return false;
     }
+    
     return (
       <DefaultLayout>
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-        <StepHeader step={1} major={ selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} t={t} lang={lang} changeLang={changeLang}/>
+        <StepHeader step={1} major_str={ selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} t={t} lang={lang} changeLang={changeLang}/>
         <Block>
-          <BlockHeader>입학 계열 선택</BlockHeader>
-          {univInfo
+          <BlockHeader>{t('select-enter-type')}</BlockHeader>
+          {univ_info
             ?<RadioButtonContainer>
-              <RadioButton id="new_enter" group="enter_type" value="new_enter" checked={selectValue?.enter_type==="new_enter"} onChange={handleSelectEnter}>신입학</RadioButton>
-              {/* <RadioButton id="transfer_enter" group="enter_type" value="transfer_enter" checked={selectValue?.enter_type==="transfer_enter"} onChange={handleSelectEnter}>편입학</RadioButton> */}
+              <RadioButton id="new_enter" group="enter_type" value="new_enter" checked={selectValue?.enter_type==="new_enter"} onChange={handleSelectEnter}>{t('new-enter')}</RadioButton>
+              {/* <RadioButton id="transfer_enter" group="enter_type" value="transfer_enter" checked={selectValue?.enter_type==="transfer_enter"} onChange={handleSelectEnter}>{t('transfer-enter')}</RadioButton> */}
             </RadioButtonContainer>
             :<EmptyText>
-              먼저 대학 선택 버튼을 눌러 입학을 준비할 대학교를 선택해주세요
+              {t('first-select-university-button')}
             </EmptyText>
           }
-          
         </Block>
         <Block>
-          <BlockHeader>학과 선택</BlockHeader>
+          <BlockHeader>{t('select-major')}</BlockHeader>
           <SelectContainer>
           <TapContainer>
             <Tap>
@@ -282,42 +261,40 @@ const SolutionSelectPage: NextPage = ({
             </Tap>
           </TapContainer>
           </SelectContainer>
-          {univInfo
+          {major
             ?selectValue!==null&&typeof selectValue.enter_type==="string"
               ?<RadioButtonContainer>
-                  {univInfo.major[viewTap.type].map((name:string,index:number) => (
-                    <RadioButton id={`${viewTap.type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major===name} onChange={handleSelectEnter}>
+                  {major[viewTap.type].map((name:string,index:number) => (
+                    <RadioButton id={`${viewTap.type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major_str===name} onChange={handleSelectEnter}>
                           {name}
                       </RadioButton>
                   ))}
               </RadioButtonContainer>
               :<EmptyText>
-                  먼저 대학교와 입학 계열을 선택해주세요.
+                  {t('first-select-university-and-enter-type')}
                 </EmptyText>
             :<EmptyText>
-              먼저 대학교와 입학 계열을 선택해주세요.
+              {t('first-select-university-and-enter-type')}
             </EmptyText>
           }
-          
         </Block>
         <Block>
-          <BlockHeader>제출서류 안내</BlockHeader>
-          {univInfo
-            ?selectValue!==null&&typeof selectValue.major==="string"
+          <BlockHeader>{t('submission-guide')}</BlockHeader>
+          {document
+            ?selectValue!==null&&typeof selectValue.major_str==="string"
               ?<div>
-                <ColorBold>필수 제출서류</ColorBold>
+                <ColorBold>{t('require-submission')}</ColorBold>
                 <DocumentShortContainer>
-                {univInfo.document.essential.map(({name, pictogram})=>(
+                {document.essential.map(({name, pictogram})=>(
                   <DocumentShortItem pictogram={pictogram}>
                     {name}
                   </DocumentShortItem>
                   ))
                 }
                 </DocumentShortContainer>
-                
-                <ColorBold>선택 제출서류</ColorBold>
+                <ColorBold>{t('selection-submission')}</ColorBold>
                 <DocumentShortContainer>
-                {univInfo.document.noessential.map(({name, pictogram})=>(
+                {document.noessential.map(({name, pictogram})=>(
                   <DocumentShortItem pictogram={pictogram}>
                     {name}
                   </DocumentShortItem>
@@ -326,15 +303,15 @@ const SolutionSelectPage: NextPage = ({
                 </DocumentShortContainer>
                 </div>
               :<EmptyText>
-                먼저 입학할 학과를 선택해 주세요.
+                  {t('first-select-major')}
               </EmptyText>
             :<EmptyText>
-              먼저 입학할 학과를 선택해 주세요.
+              {t('first-select-major')}
             </EmptyText>
           }
         </Block>
         <Block>
-          <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, univInfo?.univ_info)}>다음단계</ReadyButton>
+          <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, univ_info)}>{t('next-step')}</ReadyButton>
         </Block>
         <ImageContainer>
           <CoverImage/>

@@ -6,7 +6,7 @@ export const IntroductionSectionContainer = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  height: 85vh;
+  height: 95vh;
   overflow: hidden;
 `;
 

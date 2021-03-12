@@ -1,15 +1,5 @@
 import styled from 'styled-components';
 
-export const ConsultBannerContainer = styled.div`
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 340px;
-  margin-bottom: 50px;
-`;
-
 export const BackgroundImg = styled.img.attrs({
   src: '/images/consult_banner.jpg',
   alt: 'background image',
@@ -18,6 +8,8 @@ export const BackgroundImg = styled.img.attrs({
     height: 100%;
     object-fit: cover;
     object-position: 50% 43%;
+    transition: transform ease 0.3s;
+    transition-property: object-position;
 `;
 
 export const Box = styled.div`
@@ -36,4 +28,20 @@ export const ConsultBannerText = styled.p`
   font-size: 22px;
   line-height: 32px;
   color: white;
+`;
+
+export const ConsultBannerContainer = styled.div`
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 340px;
+  margin-bottom: 50px;
+
+  &:hover {
+    ${BackgroundImg} {
+      object-position: 50% 42%;
+    }
+  }
 `;

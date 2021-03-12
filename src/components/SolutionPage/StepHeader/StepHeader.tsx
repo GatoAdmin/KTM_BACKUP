@@ -60,33 +60,12 @@ interface step {
   index : number;
 }
 
-const steps: Array<step> = [
-  {
-    name: '1. 학교 선택',
-    index: 1,
-  },
-  {
-    name: '2. 동의 및 결제',
-    index: 2,
-  },
-  {
-    name: '3. 인적 정보 작성',
-    index: 3,
-  },
-  {
-    name: '4. 서류 등록',
-    index: 4,
-  },
-  {
-    name: '5. 최종 동의',
-    index: 5,
-  },
-];
-
 interface StepProps {
     step: number;
     major?: string;
     plan?: string;
+    t: (s: string) => string;
+    changeLang: (s: string) => void;
 }
 
 type ConditionType = typeof qualificationIcons[number]['type'];
@@ -240,9 +219,32 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
   ];
 }
 
-const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan}) => {  
+const StepHeader: React.VFC<StepProps> = ({ step = 1, major, plan, t, lang, changeLang}) => {  
   if(typeof window !== "undefined"){
   const univInfo = getSelectUnivInfo()?.univ_info;
+  const steps: Array<step> = [
+    {
+      name: `1. ${t('select-school')}`,
+      index: 1,
+    },
+    {
+      name: `2. ${t('agreement-and-payment')}`,
+      index: 2,
+    },
+    {
+      name: `3. ${t('input-information')}`,
+      index: 3,
+    },
+    {
+      name: `4. ${t('document-registration')}`,
+      index: 4,
+    },
+    {
+      name: `5. ${t('final-agreement')}`,
+      index: 5,
+    },
+  ];
+  
   return (
       <SolutionHeader>
         <StepContainer>

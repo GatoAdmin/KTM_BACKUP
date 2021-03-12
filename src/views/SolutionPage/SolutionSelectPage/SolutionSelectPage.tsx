@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
+import i18nResource from '@assets/i18n/solutionPage.json';
 import { GetServerSideProps, NextPage } from 'next';
 import Router, { withRouter } from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
@@ -31,16 +32,6 @@ import {
   CoverImage
 } from '@views/SolutionPage/SolutionSelectPage/SolutionSelectPage.style';
 
-import FamilyIcon from '@assets/svg/family_icon.svg';
-import EducationIcon from '@assets/svg/language_education_icon.svg';
-import CertificateIcon from '@assets/svg/education_qualification_icon.svg';
-
-const qualificationIcons = [
-  { type: '국적요건', icon: FamilyIcon },
-  { type: '어학요건', icon: EducationIcon },
-  { type: '학력요건', icon: CertificateIcon },
-] as const;
-
 interface tap {
   name: string;
   type: string;
@@ -68,7 +59,7 @@ const taps: Array<tap> = [
 const getChosseUnivCode =()=>{
   let data = null;
   if(typeof window !=="undefined"){
-    data = "SMU_UNI";//window.sessionStorage.getItem('chooseUniv');
+    data = window.sessionStorage.getItem('chooseUniv')|"SMU_UNI";
   }
   return data;
 }
@@ -134,7 +125,7 @@ const sendPlayerInfo = (selectValue, univInfo) => {
     subjecttitle:selectValue.major_type,
     subjectname:selectValue.major,
   };
-  const getKey = () => `/api/?action=set_player_status&params=${JSON.stringify(parms)}&sid=${sid}`;
+  const getKey = () => `/?action=set_player_status&params=${JSON.stringify(parms)}&sid=${sid}`;
   // const { data } = useSWRInfinite(
   //   getKey,
   //   (url) => fetchSendPlayerInfo(url)
@@ -163,6 +154,7 @@ const SolutionSelectPage: NextPage = ({
   },
 }) => {
   if(typeof window !== "undefined"){
+    const { t, lang, changeLang } = useTranslate(i18nResource);
     const [errMsg, setErrMsg] = React.useState({
       ERROR_NOT_EXIST_USERNAME: false,
       ERROR_NOT_EXIST_LAST_NAME: false,
@@ -185,7 +177,7 @@ const SolutionSelectPage: NextPage = ({
 
     React.useEffect(() => {
       if (queryLang !== undefined) {
-        // changeLang(queryLang);
+        changeLang(queryLang);
       }
     }, [queryLang]);
   
@@ -209,13 +201,12 @@ const SolutionSelectPage: NextPage = ({
       if(typeof window !== "undefined"){
         sid = window.sessionStorage.getItem('sid');
       }
-      // const univcode = getChosseUnivCode();
-      console.log(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`)
-      axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
+      axios.get(`/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
       .then((res) => {
         const {
           data: { status, userstatus },
         } = res;
+        console.log(res);
         if (status !== 'success') {
           setErrMsg((prev) => ({ ...prev, [status]: true }));
         } else { 
@@ -226,7 +217,7 @@ const SolutionSelectPage: NextPage = ({
               const atime = convertTime(a.updated_at);
               const btime = convertTime(b.updated_at);
               atime>btime?1:atime<btime?-1:0;
-            })[0];//id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
+            })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
 
             if(typeof window !== "undefined"){
               window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
@@ -263,8 +254,8 @@ const SolutionSelectPage: NextPage = ({
     }
     return (
       <DefaultLayout>
-        <Header background="light" position="relative" />
-        <StepHeader step={1} major={ selectValue?typeof selectValue.major==="string"?selectValue.major:null:null}/>
+        <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
+        <StepHeader step={1} major={ selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} t={t} lang={lang} changeLang={changeLang}/>
         <Block>
           <BlockHeader>입학 계열 선택</BlockHeader>
           {univInfo

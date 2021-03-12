@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
+import i18nResource from '@assets/i18n/solutionPage.json';
 import { GetServerSideProps, NextPage } from 'next';
-import Router from 'next/router';
+import Router,{withRouter} from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
@@ -245,8 +246,13 @@ const getPriceList = (selectValue:object, priceData:object)=>{
   ); 
 }
 
-const SolutionAgreePage: NextPage = () => {
+const SolutionAgreePage: NextPage = ({
+  router: {
+    query: { lang: queryLang },
+  },
+}) => {
   if(typeof window !== "undefined"){
+    const { t, lang, changeLang } = useTranslate(i18nResource);
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     const [isAgree, setIsAgree]= useState(false);
@@ -262,8 +268,8 @@ const SolutionAgreePage: NextPage = () => {
     return (
       <DefaultLayout>
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
-        <Header background="light" position="relative" />
-        <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+        <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
+        <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null} t={t} lang={lang} changeLang={changeLang}/>
         <PriceInfoContainer>
           <PriceInfoHeaderRow>
             <PriceInfoHeaderColumn><Bold22>결제등급을<br/>선택해주세요</Bold22></PriceInfoHeaderColumn>
@@ -396,4 +402,4 @@ const SolutionAgreePage: NextPage = () => {
   return <DefaultLayout></DefaultLayout>
 };
 
-export default SolutionAgreePage;
+export default withRouter(SolutionAgreePage);

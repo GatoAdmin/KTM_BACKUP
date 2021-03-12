@@ -1,7 +1,7 @@
 import React, {useState, useReducer} from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
-import i18nResource from '@assets/i18n/SolutionPage/solutionInfoPage.json';
+import i18nResource from '@assets/i18n/solutionPage.json';
 import i18nArrayResource from '@assets/i18n/registerPage.json';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
@@ -413,7 +413,7 @@ const SolutionInfoPage: NextPage = ({
       }else if(type==="save"){
         jsonFormData.is_done = false;
       }
-      // console.log(`/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`);
+      
       axios({
         method: 'get',
         url: `/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`,
@@ -494,7 +494,7 @@ const SolutionInfoPage: NextPage = ({
               <Loading />
             </LoadingPopup>
           )}          
-          <Header background="light" position="relative" />
+          <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
           <StepHeader step={3} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
           <Block>
             <Bold22>{t('create-person-information')}</Bold22>

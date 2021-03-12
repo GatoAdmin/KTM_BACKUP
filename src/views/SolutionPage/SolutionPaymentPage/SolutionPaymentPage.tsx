@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
+import i18nResource from '@assets/i18n/solutionPage.json';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
@@ -33,7 +34,7 @@ import {
   HeaderColumn,
   TopBottomNonPaddingColumn
 } from '@components/SolutionPage/Table/Table.style';
-import Router from 'next/router';
+import Router,{withRouter} from 'next/router';
 
 interface service {
   name: string;
@@ -193,8 +194,13 @@ const convertPrice=(price:number)=>{
   return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-const SolutionPaymentPage: NextPage = () => {
+const SolutionPaymentPage: NextPage = ({
+  router: {
+    query: { lang: queryLang },
+  },
+}) => {
   if(typeof window !== "undefined"){
+    const { t, lang, changeLang } = useTranslate(i18nResource);
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     const [accountTransferName, setAccountTransferName]= useState("");
@@ -219,7 +225,7 @@ const SolutionPaymentPage: NextPage = () => {
 
       return (
         <DefaultLayout>
-          <Header background="light" position="relative" />
+          <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
           <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
   
           <Block>
@@ -269,4 +275,4 @@ const SolutionPaymentPage: NextPage = () => {
   return <DefaultLayout></DefaultLayout>
 };
 
-export default SolutionPaymentPage;
+export default withRouter(SolutionPaymentPage);

@@ -109,6 +109,10 @@ export const DropdownItem = styled.div`
     :last-child{
         border-radius: 0px 0px 9px 9px;
     };
+    
+    :only-child{
+        border-radius: 9px 9px 9px 9px;
+    };
     &+&{
         border-top: 1px solid ${lightGreyColor};
     };

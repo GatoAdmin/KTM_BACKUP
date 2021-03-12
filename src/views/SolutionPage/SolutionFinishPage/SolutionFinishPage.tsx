@@ -1,7 +1,7 @@
 import React, {useState, useReducer} from 'react';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
-import i18nResource from '@assets/i18n/SolutionPage/solutionFinishPage.json';
+import i18nResource from '@assets/i18n/solutionPage.json';
 import Dummy from '@components/SolutionPage/dummy.json';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
@@ -337,7 +337,7 @@ const SolutionFinishPage: NextPage = ({
               <Loading />
             </LoadingPopup>
           )}          
-          <Header background="light" position="relative" />
+          <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
           <StepHeader step={5} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
           <TopNonBlock>
             <Table>

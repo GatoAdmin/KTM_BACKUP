@@ -28,10 +28,24 @@ export const Title = styled.p`
 
 export const ScrollArea = styled.div<ScrollAreaProps>`
   display: grid;
+  padding: 0 0 10px 0;
   overflow-x: scroll;
   grid-template-columns: repeat(${(props) => props.length}, 280px);
   grid-column-gap: 20px;
   cursor: pointer;
   -ms-overflow-style: none;
-  ::-webkit-scrollbar{ display:none; }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background:#D3D1CB;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background:#AEACA6;
+  }
 `;

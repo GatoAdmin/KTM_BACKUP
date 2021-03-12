@@ -27,4 +27,12 @@ export default {
     const response = await axios.post('/login', formData);
     return response;
   },
+  getUniversityList: async () => {
+    const response = await axios.get('/?action=get_univ_info_with_catch_phrase&params={}');
+    return response.data.university;
+  },
+  getReviewList: async () => {
+    const response = await axios.get('/?action=get_review&params={}');
+    return response.data.university;
+  },
 };

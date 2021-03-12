@@ -31,4 +31,7 @@ export const ScrollArea = styled.div<ScrollAreaProps>`
   overflow-x: scroll;
   grid-template-columns: repeat(${(props) => props.length}, 280px);
   grid-column-gap: 20px;
+  cursor: pointer;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar{ display:none; }
 `;

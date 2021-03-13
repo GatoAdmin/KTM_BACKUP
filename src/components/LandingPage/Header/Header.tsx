@@ -3,7 +3,6 @@ import Link from 'next/link';
 import useIntersection from '@util/hooks/useInteraction';
 import {
   HeaderContainer,
-  Logo,
   LogoContainer,
   LocalizationButton,
   LocalizationButtonContainer,
@@ -73,8 +72,9 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>
       <LogoContainer>
-        <Logo />
-        katumm
+        <Link href="/" key="introduce" passHref>
+          <NavLink>katumm</NavLink>
+        </Link>
       </LogoContainer>
       <NavigationContainer>
         <Navigation>
@@ -86,13 +86,13 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
         </Navigation>
         <LocalizationButtonContainer>
           <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
-          <LocalizationButton>EN</LocalizationButton>
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
-          <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 2} />
+          <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 1} />
+
+          <Link href={{ pathname: '/login', query: { lang } }} passHref>
+            <LoginLink>{t('login')}</LoginLink>
+          </Link>
         </LocalizationButtonContainer>
-        <Link href={{ pathname: '/login', query: { lang } }} passHref>
-          <LoginLink>{t('login')}</LoginLink>
-        </Link>
       </NavigationContainer>
     </HeaderContainer>
   );

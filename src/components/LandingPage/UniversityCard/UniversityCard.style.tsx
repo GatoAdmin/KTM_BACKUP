@@ -15,6 +15,7 @@ export const UniversityCardContainer = styled.div`
 export const Img = styled.img`
   width: 230px;
   height: 280px;
+  object-fit: cover;
 `;
 
 export const CardInfo = styled.div`

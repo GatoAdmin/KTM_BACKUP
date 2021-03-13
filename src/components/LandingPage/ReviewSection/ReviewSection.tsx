@@ -11,6 +11,7 @@ import {
 
 interface ReviewSectionProps {
   t: (s: string) => string;
+  lang: string;
 }
 
 interface ReviewInfo {
@@ -23,7 +24,7 @@ interface ReviewInfo {
   vn_review: string,
 }
 
-const ReviewSection: React.FC<ReviewSectionProps> = ({ t }) => {
+const ReviewSection: React.FC<ReviewSectionProps> = ({ t, lang }) => {
   const [reviewList, setReviewList] = useState<Array<ReviewInfo>>([]);
   const [bMouseDown, setMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -60,12 +61,12 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ t }) => {
     scrollAreaEl.current.scrollLeft = scrollLeft - walk;
   };
 
-  const drawReview = reviewList.map((review) => <ReviewCard data={review} />);
+  const drawReview = reviewList.map((review) => <ReviewCard data={review} lang={lang} />);
 
   return (
     <ReviewSectionContainer>
       <Box>
-        <Title>여러분도 카툼과 함께 도전하세요.</Title>
+        <Title>{t('landing-review-section-title')}</Title>
         <ScrollArea
           length={reviewList.length}
           onMouseDown={handlingMouseDown}

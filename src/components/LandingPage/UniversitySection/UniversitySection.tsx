@@ -10,6 +10,7 @@ import {
 
 interface UniversitySectionProps {
   t: (s: string) => string;
+  lang: string;
 }
 
 interface UniversityInfo {
@@ -21,7 +22,7 @@ interface UniversityInfo {
   vn_catch_phrase: string;
 }
 
-const UniversitySection: React.FC<UniversitySectionProps> = ({ t }) => {
+const UniversitySection: React.FC<UniversitySectionProps> = ({ t, lang }) => {
   const [universitys, setUniversity] = useState<Array<UniversityInfo>>([]);
 
   useEffect(() => {
@@ -32,11 +33,11 @@ const UniversitySection: React.FC<UniversitySectionProps> = ({ t }) => {
     getUniversityList();
   }, []);
 
-  const drawUniversity = universitys.map((university: UniversityInfo) => <UniversityCard data={university} />);
+  const drawUniversity = universitys.map((university: UniversityInfo) => <UniversityCard data={university} lang={lang} />);
 
   return (
     <UniversitySectionContainer>
-      <Title> 한국의 대학교에서 새로운 도전을 시작하세요. </Title>
+      <Title>{t('landing-university-section-title')}</Title>
       <UniversityCardContainer>
         {drawUniversity}
       </UniversityCardContainer>

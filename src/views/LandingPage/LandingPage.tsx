@@ -27,10 +27,10 @@ const LandingPage: NextPage = () => {
       />
       <Content>
         <IntroductionSection t={t} />
-        <UniversitySection t={t} />
+        <UniversitySection t={t} lang={lang} />
         <ConsultBanner t={t} />
-        <ReviewSection t={t} />
-        <SolutionSection t={t} />
+        <ReviewSection t={t} lang={lang} />
+        <SolutionSection t={t} lang={lang} />
       </Content>
       <Footer />
     </FontProvider>

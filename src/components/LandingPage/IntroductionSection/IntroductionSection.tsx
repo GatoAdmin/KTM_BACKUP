@@ -31,11 +31,11 @@ const IntroductionSection: React.FC<IntroductionSectionProps> = ({ t }) => {
           <SubTitle>
             {t('landing-subtitle-1')}
             <br />
-            <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-section-1-subtitle-2') }} />
+            <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-subtitle-2') }} />
           </SubTitle>
         </IntroductionContent>
         <InputWrap>
-          <InputUniversity placeholder="궁금한 대학교를 검색해 보세요!" />
+          <InputUniversity placeholder={t('landing-input-placeholder')} />
           <SearchIcon />
         </InputWrap>
       </Introduction>

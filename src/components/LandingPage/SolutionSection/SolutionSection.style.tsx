@@ -1,6 +1,10 @@
 import { fontColor } from '@util/style/color';
 import styled from 'styled-components';
 
+interface Titleprops {
+  lang: string;
+}
+
 export const SolutionSectionContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -62,14 +66,14 @@ export const FrontSolutionImg = styled.img.attrs({
 `;
 
 export const TextWrap = styled.div`
-  margin: 0 0 0 40px;
-  width: 420px;
+  margin: 0 0 0 70px;
+  width: 486px;
 `;
 
-export const Title = styled.p`
+export const Title = styled.p<Titleprops>`
   margin: 0 0 31px 0;
   font-weight: bold;
-  font-size: 32px;
+  font-size: ${(props) => (props.lang === 'ko' ? '32px' : '24px')};
   line-height: 45px;
   color: ${fontColor};
 `;

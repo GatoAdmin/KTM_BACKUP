@@ -20,11 +20,11 @@ const ConsultBanner: React.FC<ConsultBannerProps> = ({ t }) => {
       <BackgroundImg />
       <Box>
         <ConsultBannerText>
-          한국 유학의 지름길,
+          {t('landing-consult-banner-title-1')}
           <br />
-          전문 유학 매니저에게 무엇이든 물어보세요.
+          {t('landing-consult-banner-title-2')}
         </ConsultBannerText>
-        <Button onClick={() => router.replace('/consult')}>입학 상담 바로가기 </Button>
+        <Button onClick={() => router.replace('/consult')}>{t('landing-consult-banner-button-text')}</Button>
       </Box>
     </ConsultBannerContainer>
   );

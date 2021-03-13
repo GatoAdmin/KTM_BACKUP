@@ -15,9 +15,10 @@ import {
 
 interface SolutionSectionProps {
   t: (s: string) => string;
+  lang: string;
 }
 
-const SolutionSection: React.FC<SolutionSectionProps> = ({ t }) => {
+const SolutionSection: React.FC<SolutionSectionProps> = ({ t, lang }) => {
   const router = useRouter();
 
   return (
@@ -29,13 +30,13 @@ const SolutionSection: React.FC<SolutionSectionProps> = ({ t }) => {
         </Box>
         <Box>
           <TextWrap>
-            <Title>빠르고 저렴한 대학교 입학 신청</Title>
+            <Title lang={lang}>{t('landing-solution-section-title')}</Title>
             <Detail>
-              온라인으로 대학교 선택, 서류 준비, 원서접수까지
+              {t('landing-solution-section-detail-1')}
               <br />
-              입학에 필요한 모든 과정을 한번에 진행하세요.
+              {t('landing-solution-section-detail-2')}
             </Detail>
-            <Button onClick={() => { router.replace('/'); }}>입학 솔루션 바로가기</Button>
+            <Button onClick={() => { router.replace('/'); }}>{t('landing-solution-section-button')}</Button>
           </TextWrap>
         </Box>
       </SolutionSectionInnerBox>

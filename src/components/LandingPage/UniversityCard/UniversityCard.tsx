@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import Button from '@components/Shared/Button/Button';
+import { useRouter } from 'next/router';
 import {
   UniversityCardContainer,
   Img,
@@ -17,6 +18,7 @@ import {
 
 interface UniversityCardProps {
   data: UniversityInfo;
+  lang: string;
 }
 
 interface UniversityInfo {
@@ -28,8 +30,11 @@ interface UniversityInfo {
   vn_catch_phrase: string;
 }
 
-const UniversityCard: React.FC<UniversityCardProps> = ({ data }) => {
-  const detailText = data.catch_phrase.split(' <br> ').map((text) => <CardInfoDetail>{text}</CardInfoDetail>);
+const UniversityCard: React.FC<UniversityCardProps> = ({ data, lang }) => {
+  const detailKorText = data.catch_phrase.split(' <br> ').map((text) => <CardInfoDetail>{text}</CardInfoDetail>);
+  const detailVnText = data.vn_catch_phrase.split(' <br> ').map((text) => <CardInfoDetail>{text}</CardInfoDetail>);
+  const router = useRouter();
+
   return (
     <UniversityCardContainer>
       <Img alt="#" src={data.photo} />
@@ -42,9 +47,9 @@ const UniversityCard: React.FC<UniversityCardProps> = ({ data }) => {
           <CardInfoComment> Comment </CardInfoComment>
         </CardInfoCommentWrap>
         <DetailTextWrap>
-          {detailText}
+          {lang === 'ko' ? detailKorText : detailVnText}
         </DetailTextWrap>
-        <Button onClick={() => console.log('hi')}> 상세보기 </Button>
+        <Button onClick={() => router.replace(`/recommand/${data.univ_code}`)}> 상세보기 </Button>
       </CardInfo>
     </UniversityCardContainer>
   );

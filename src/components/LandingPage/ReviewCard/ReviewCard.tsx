@@ -16,6 +16,7 @@ import {
 
 interface ReviewCardProps {
   data: ReviewInfo;
+  lang: string;
 }
 
 interface ReviewInfo {
@@ -28,8 +29,11 @@ interface ReviewInfo {
   vn_review: string,
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ data }) => {
-  const detailTexts = data.review.split(' <br> ').map((text) => (
+const ReviewCard: React.FC<ReviewCardProps> = ({ data, lang }) => {
+  const detailKorTexts = data.review.split(' <br> ').map((text) => (
+    <DetailText>{text}</DetailText>
+  ));
+  const detailVnTexts = data.vn_review.split(' <br> ').map((text) => (
     <DetailText>{text}</DetailText>
   ));
 
@@ -38,7 +42,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ data }) => {
       <ReviewDetailBox>
         <PaddingBox>
           <NameText>{data.reviewer}</NameText>
-          {detailTexts}
+          {lang === 'ko' ? detailKorTexts : detailVnTexts}
         </PaddingBox>
       </ReviewDetailBox>
       <UniversityBox>

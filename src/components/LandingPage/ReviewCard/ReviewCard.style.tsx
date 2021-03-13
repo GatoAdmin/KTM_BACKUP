@@ -89,4 +89,11 @@ export const UniversityEnglishNameText = styled.p`
   line-height: 21px;
   letter-spacing: -0.4px;
   color: #9E9E9E;
+  overflow : hidden;
+  text-overflow : ellipsis;
+  height : 45px;
+  word-wrap : break-word; 
+  display : -webkit-box;
+  -webkit-line-clamp : 2;
+  -webkit-box-orient: vertical; 
 `;

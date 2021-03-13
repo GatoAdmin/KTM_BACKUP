@@ -17,7 +17,7 @@ export const UniversityCardContainer = styled.div`
 `;
 
 export const Title = styled.p`
-  font-family: Noto Sans KR;
+  font-family: Noto Sans;
   font-weight: bold;
   font-size: 32px;
   line-height: 46px;

@@ -150,6 +150,10 @@ export const DocumentShortContainer = styled.div`
   flex-wrap: wrap;
   width: 95%;
   `;
+  
+export const Accent = styled.span`
+    color: ${mainColor600};
+`; 
 export const ColorBold = styled.div`
   font-weight: bold;
   font-size: 18px;

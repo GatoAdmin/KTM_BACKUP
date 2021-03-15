@@ -1,5 +1,7 @@
 import React, {useState, useReducer} from 'react';
 import axios from 'axios';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import i18nArrayResource from '@assets/i18n/registerPage.json';
@@ -221,17 +223,17 @@ const fetchPlayerDocumentInfo = () => {
     return {userdocument: userdocument};
   }
 
-const usePlayerDoucmentData = ()=>{
-  let sid = ""; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-  const getKey = () => `/api/?action=get_player_document&params=${JSON.stringify({})}&sid=${sid}`;
+const usePlayerDoucmentData = async ()=>{
+  // let sid = ""; 
+  // if(typeof window !== "undefined"){
+  //   sid = window.sessionStorage.getItem('sid');
+  // }
+  // const getKey = () => `/api/?action=get_player_document&params=${JSON.stringify({})}&sid=${sid}`;
   // let { data } = useSWRInfinite(
   //   getKey,
   //   (url) => fetchPlayerDocumentInfo(url)
   // );
-  let data = fetchPlayerDocumentInfo();
+  let data = await API.getPlayerDocument();//fetchPlayerDocumentInfo();
   return Array.isArray(data)?data[0]:data;
 }
 
@@ -260,11 +262,56 @@ const SolutionDocumentPage: NextPage = ({
     query: { lang: queryLang },
   },
 })  => {
+  const ArrayT = useTranslate(i18nArrayResource);
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+  
+  React.useEffect(() => {
+    const univcode = getChosseUnivCode();
+    API.getPlayerStatus()
+    .then((data)=>{
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+          console.log(data.userstatus);
+          // const user = userstatus.find(status=>status.id);univcode
+          // const user = userstatus.find(us=>us.univ_code === univcode);
+          const user = data.userstatus.sort(function(a,b){
+            const atime = convertTime(a.updated_at);
+            const btime = convertTime(b.updated_at);
+            atime>btime?1:atime<btime?-1:0;
+          })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
+
+          if(typeof window !== "undefined"){
+            window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            window.sessionStorage.setItem('chooseUnivName',user.univ_name);
+            user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+            user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+          }
+          // if(user.step === STEP_STRING.STEP_TWO){
+          //   Router.push("/solution/2")
+          // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+          //   Router.push("/solution/3")
+          // }else if(user.step === STEP_STRING.STEP_FOUR){
+          //   Router.push("/solution/4")
+          // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
+          //   Router.push("/solution/5")
+          // }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);
+  
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      ArrayT.changeLang(queryLang);
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
+
   if(typeof window !== "undefined"){
-    const ArrayT = useTranslate(i18nArrayResource);
-    const { t, lang, changeLang } = useTranslate(i18nResource);
-    
-    const documentData = usePlayerDoucmentData().userdocument; 
+    // const documentData = usePlayerDoucmentData().userdocument; 
     // React.useEffect(() => {
     //   setLoading(true);
     //   if (typeof documentData === 'undefined') return;   
@@ -272,71 +319,17 @@ const SolutionDocumentPage: NextPage = ({
     //   // setFormData(tempData);
     //   setLoading(false);
     // }, [documentData]);
-    
-    React.useEffect(() => {
-      let sid = ""; 
-      if(typeof window !== "undefined"){
-        sid = window.sessionStorage.getItem('sid');
-      }
-      const univcode = getChosseUnivCode();
-      axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
-      .then((res) => {
-        const {
-          data: { status, userstatus },
-        } = res;
-        if (status !== 'success') {
-          setErrMsg((prev) => ({ ...prev, [status]: true }));
-        } else {
-          console.log(userstatus);
-          const user = userstatus.find(us=>us.univ_code === univcode);
-            if(user.step === STEP_STRING.STEP_THREE_PENDING){
-              // setReadOnly(true);
-            }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }, []);
-    
-    const [errMsg, setErrMsg] = React.useState({
-      ERROR_NOT_EXIST_USERNAME: false,
-      ERROR_NOT_EXIST_LAST_NAME: false,
-      ERROR_LAST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_FIRST_NAME: false,
-      ERROR_FIRST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_EMAIL: false,
-      ERROR_EXIST_EMAIL: false,
-      ERROR_NOT_EXIST_PASSWORD: false,
-      ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
-      ERROR_NOT_EXIST_NATIONALITY: false,
-      ERROR_NOT_EXIST_BIRTH_DATE: false,
-      ERROR_NOT_EXIST_TOPIK_LEVEL: false,
-      ERROR_NOT_EXIST_IDENTITY: false,
-      ERROR_NOT_PROPER_PASSWORD: false,
-      ERROR_PASSWORD_CONFIRM_FAIL: false,
-      ERROR_NOT_VALID_EMAIL: false,
-    });
-    const [loading, setLoading] = React.useState<boolean>(false);
-
-    React.useEffect(() => {
-      if (queryLang !== undefined) {
-        ArrayT.changeLang(queryLang);
-        changeLang(queryLang);
-      }
-    }, [queryLang]);
-  
-    React.useEffect(() => {
-      if (loading) {
-        const errObj = { ...errMsg };
-        Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
-        setErrMsg(errObj);
-      }
-    }, [loading]);
-  
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     
+    
+    const [loading, resolved, error] = usePromise(usePlayerDoucmentData, []);
+    if (loading) return <div></div>; 
+    if (error) window.alert('API 오류');
+    if (!resolved) return null;
+    const documentData =resolved.userdocument; 
+    console.log(resolved)
+  
     // let playerData = usePlayerData();
     const isFinal = () =>{
      //모든 서류의 서류 상태가 ‘준비 완료’ 상태가 되어야 버튼이 활성화 됨
@@ -362,7 +355,7 @@ const SolutionDocumentPage: NextPage = ({
             </LoadingPopup>
           )}          
           <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={4} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+          <StepHeader step={4} major_str={selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} plan_str={selectValue?typeof selectValue.plan_str==="string"?selectValue.plan_str:null:null} t={t}  lang={lang} changeLang={changeLang} />
           <HelpImage lang={queryLang}/>
           <TopNonBlock>
             <Table>

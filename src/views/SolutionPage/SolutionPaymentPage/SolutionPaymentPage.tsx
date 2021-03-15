@@ -216,7 +216,7 @@ const SolutionPaymentPage: NextPage = ({
       }
       return false;
     }
-    const selectUnivName = window.sessionStorage.getItem("chooseUnivName"); 
+    const selectUnivName = sessionStorage.getItem("chooseUnivName"); 
     const plan = services.find(service=>service.type===selectValue.plan).name;
     const priceUnit = "KRW"; 
     if(playerData !== undefined){
@@ -226,13 +226,13 @@ const SolutionPaymentPage: NextPage = ({
       return (
         <DefaultLayout>
           <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+          <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null} t={t} lang={lang} changeLang={changeLang}/>
   
           <Block>
-            <Bold22>결제 수단</Bold22>
+            <Bold22>{t('payment-method')}</Bold22>
             <RadioButtonPaymentContainer>
-                <RadioButton id="account_transfer" group="pay_method" value="account_transfer" checked={selectValue?.pay_method==="account_transfer"} onChange={handleSelectEnter}>계좌이체</RadioButton>
-                <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={selectValue?.pay_method==="card_paypal"} onChange={handleSelectEnter}>카드결제(페이팔)</RadioButton>
+                <RadioButton id="account_transfer" group="pay_method" value="account_transfer" checked={selectValue?.pay_method==="account_transfer"} onChange={handleSelectEnter}>{t('account-transfer')}</RadioButton>
+                <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={selectValue?.pay_method==="card_paypal"} onChange={handleSelectEnter}>{t('card-payment-paypal')}</RadioButton>
              </RadioButtonPaymentContainer>
             <Table>
               <Row>

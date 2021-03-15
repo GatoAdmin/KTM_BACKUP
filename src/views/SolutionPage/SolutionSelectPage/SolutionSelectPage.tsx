@@ -11,6 +11,7 @@ import Header from '@components/Shared/Header/Header';
 import StepHeader, { getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
+import LineParser from '@components/SolutionPage/LineParser/LineParser';
 import DocumentShortItem from '@components/SolutionPage/DocumentShortItem/DocumentShortItem';
 import {STEP_STRING} from '@components/SolutionPage/StepString';
 import {
@@ -63,68 +64,41 @@ const getSesstionData =()=>{
   return data;
 }
 
-const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {const {
-    update_userstatus,
-    userdocument
-  }: {
-    update_userstatus:{
-        id: number;
-        user_id: number;
-        univ_code: string;
-        info_type: string;
-        subjecttitle: string;
-        subjectname: string;
-        pay_rank: string;
-        pay_cost: string;
-        doc_cost:number;
-        pay_complete:boolean;
-      },
-      userdocument:{
-        essential: Array<{
-          name : string;
-          pictogram :string;
-        }>;
-        noessential: Array<{
-          name : string;
-          pictogram :string;
-        }>;
-      }
-    }  = res.data;
-    console.log(res.data)
-    window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
-    window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));
-    return {update_userstatus, userdocument};
-  });
+// const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
+//   .then((res) => {const {
+//     update_userstatus,
+//     userdocument
+//   }: {
+//     update_userstatus:{
+//         id: number;
+//         user_id: number;
+//         univ_code: string;
+//         info_type: string;
+//         subjecttitle: string;
+//         subjectname: string;
+//         pay_rank: string;
+//         pay_cost: string;
+//         doc_cost:number;
+//         pay_complete:boolean;
+//       },
+//       userdocument:{
+//         essential: Array<{
+//           name : string;
+//           pictogram :string;
+//         }>;
+//         noessential: Array<{
+//           name : string;
+//           pictogram :string;
+//         }>;
+//       }
+//     }  = res.data;
+//     console.log(res.data)
+//     window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
+//     window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));
+//     return {update_userstatus, userdocument};
+//   });
   
-const sendPlayerInfo = (selectValue, univInfo) => {
-  let sid = 0; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-  const parms = {
-    univ_code : selectValue.univ_code,
-    info_type : univInfo.category,
-    subjecttitle:selectValue.major_type,
-    subjectname:selectValue.major,
-  };
-  const getKey = () => `/?action=set_player_status&params=${JSON.stringify(parms)}&sid=${sid}`;
-  // const { data } = useSWRInfinite(
-  //   getKey,
-  //   (url) => fetchSendPlayerInfo(url)
-  // );
-  const data = fetchSendPlayerInfo(getKey());
-  return true;
-};
 
-const onClickNextStep=(isFinal:boolean, selectValue, univInfo)=>{
-  if(isFinal){
-      sendPlayerInfo(selectValue, univInfo);
-      Router.push('/solution/2');
-  }else{
-    window.alert("학교와 학과를 먼저 선택해주세요.");
-  }
-}
 
 const convertTime = (timeStr: string)=>{
   const date = timeStr.replace(' / ','T');
@@ -136,14 +110,64 @@ const SolutionSelectPage: NextPage = ({
     query: { lang: queryLang },
   },
 }) => {
-  if(typeof window !== "undefined"){
-    const getUnivInfo= async ()=>{
-      const univInfo = await getSelectUnivInfo();
-      return univInfo
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+ 
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      changeLang(queryLang);
     }
+  }, [queryLang]);
 
-    let {univ_info, major, document} = getUnivInfo();
-    const { t, lang, changeLang } = useTranslate(i18nResource);
+  React.useEffect(() => {
+    API.getPlayerStatus()
+    .then((data)=>{
+      console.log(data);
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+          console.log(data.userstatus);
+          // const user = userstatus.find(status=>status.id);univcode
+          // const user = userstatus.find(us=>us.univ_code === univcode);
+          const user = data.userstatus.sort(function(a,b){
+            const atime = convertTime(a.updated_at);
+            const btime = convertTime(b.updated_at);
+            atime>btime?1:atime<btime?-1:0;
+          })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
+
+          if(typeof window !== "undefined"){
+            window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            window.sessionStorage.setItem('chooseUnivName',user.univ_name);
+            user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+            user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+          }
+          // if(user.step === STEP_STRING.STEP_TWO){
+          //   Router.push("/solution/2")
+          // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+          //   Router.push("/solution/3")
+          // }else if(user.step === STEP_STRING.STEP_FOUR){
+          //   Router.push("/solution/4")
+          // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
+          //   Router.push("/solution/5")
+          // }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
+  if(typeof window !== "undefined"){
+    let sessionData = getSesstionData();
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
+    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
+    const [viewTap,setViewTaps] = React.useState({type:viewType}); 
+  
+    const [loading, resolved, error] = usePromise(getSelectUnivInfo, []);
+    if (loading) return <div></div>; 
+    if (error) window.alert('API 오류');
+    if (!resolved) return null;
+    const {univ_info, major, document} = resolved;
+
     const taps: Array<tap> = [
       {
         name: t('academic-type'),
@@ -161,62 +185,6 @@ const SolutionSelectPage: NextPage = ({
         index: 3,
       }
     ];
-    console.log(univ_info)
-    let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
-    let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
-    const [viewTap,setViewTaps] = React.useState({type:viewType}); 
-  
-    React.useEffect(() => {
-      if (queryLang !== undefined) {
-        changeLang(queryLang);
-      }
-    }, [queryLang]);
-
-    React.useEffect(() => {
-      const univInfo = getUnivInfo();
-      univ_info = univInfo.univ_info;
-      major = univInfo.major;
-      document = univInfo.document;
-    }, [univ_info, major, document]);
-  
-    React.useEffect(() => {
-      API.getPlayerStatus()
-      .then((data)=>{
-        console.log(data);
-        if (data.status !== 'success') {
-          console.log(data);
-        } else { 
-            console.log(data.userstatus);
-            // const user = userstatus.find(status=>status.id);univcode
-            // const user = userstatus.find(us=>us.univ_code === univcode);
-            const user = data.userstatus.sort(function(a,b){
-              const atime = convertTime(a.updated_at);
-              const btime = convertTime(b.updated_at);
-              atime>btime?1:atime<btime?-1:0;
-            })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
-
-            if(typeof window !== "undefined"){
-              window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
-              window.sessionStorage.setItem('chooseUnivName',user.univ_name);
-              user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
-              user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
-            }
-            // if(user.step === STEP_STRING.STEP_TWO){
-            //   Router.push("/solution/2")
-            // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
-            //   Router.push("/solution/3")
-            // }else if(user.step === STEP_STRING.STEP_FOUR){
-            //   Router.push("/solution/4")
-            // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
-            //   Router.push("/solution/5")
-            // }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }, []);
 
     const changeViewTap =(type:string)=>{
       setViewTaps({type:type});
@@ -232,6 +200,42 @@ const SolutionSelectPage: NextPage = ({
       return false;
     }
     
+  const sendPlayerInfo = () => {
+    let sid = 0; 
+    if(typeof window !== "undefined"){
+      sid = window.sessionStorage.getItem('sid');
+    }
+    const parms = {
+      univ_code : selectValue.univ_code,
+      info_type : univ_info.category,
+      subjecttitle:selectValue.major_type,
+      subjectname:selectValue.major_str,
+    };
+    const key= `/?action=set_player_status&params=${JSON.stringify(parms)}&sid=${sid}`;
+
+    API.sendPlayerInfo(key).then(
+      data=>{
+        if(data.status==="success"){
+          const {update_userstatus, userdocument} = data;
+          window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
+          window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));
+        }else{
+          window.alert(t('warn-2'));
+          return false;
+        }
+      }
+    )
+    return true;
+  };
+  const onClickNextStep=(isFinal:boolean)=>{
+    if(isFinal){
+        if(sendPlayerInfo()){
+          Router.push('/solution/2');
+        }
+    }else{
+      window.alert(t('warn-1'));
+    }
+  }
     return (
       <DefaultLayout>
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
@@ -311,13 +315,14 @@ const SolutionSelectPage: NextPage = ({
           }
         </Block>
         <Block>
-          <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, univ_info)}>{t('next-step')}</ReadyButton>
+          <ReadyButton isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal())}>{t('next-step')}</ReadyButton>
         </Block>
         <ImageContainer>
           <CoverImage/>
-          <div><Accent>katumm</Accent>의 유학 전문가와 함께<br/>
+          <LineParser str={t('katumm-welecom')}/>
+          {/* <div><Accent>katumm</Accent>의 유학 전문가와 함께<br/>
               성공적인 유학생활을 시작하세요.
-          </div>
+          </div> */}
         </ImageContainer>
       </DefaultLayout>
     );  

@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import { GetServerSideProps, NextPage } from 'next';
@@ -12,6 +14,7 @@ import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import LabelClickCheckbox from '@components/SolutionPage/LabelClickCheckbox/LabelClickCheckbox';
 import Agreement from '@components/SolutionPage/Agreement/Agreement';
+import LineParser from '@components/SolutionPage/LineParser/LineParser';
 import PriceInfoHeader from '@components/SolutionPage/PriceInfoHeader/PriceInfoHeader';
 import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
 import {
@@ -121,15 +124,6 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinial:boolean, selectValue)=>{
-  if(isFinial){
-    sendPlayerInfo(selectValue.plan);
-    Router.push('/solution/2/payment');
-  }else{
-    window.alert("결제등급과 약관 동의를 클릭해주세요.");
-  }
-}
-
 const getChosseUnivCode =()=>{
     let data = null;
     if(typeof window !=="undefined"){
@@ -190,32 +184,32 @@ const fetchPlayerPayrankInfo = (url: string) => axios.get(url,{withCredentials :
     return {userstatus: userstatus, pay_rank_dict: pay_rank_dict, apply_fee: apply_fee};
   });
   
-const usePriceData = ()=>{
-  // getChosseUnivCode();
-  let sid = ""; 
-  let status_id = "";
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-    const sessionData = window.sessionStorage.getItem('user_status_id');
-    status_id = sessionData;
-  }
-  const getKey = () => `/api/?action=get_player_payrank&params=${JSON.stringify({ status_id: status_id })}&sid=${sid}`;
-  let { data } = useSWRInfinite(
-    getKey,
-    (url) => fetchPlayerPayrankInfo(url)
-  );
-  let modifyServices = services.map(service=>{
-    let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    service.strPrice = price;
-    return service;
-  });
-  if(Array.isArray(data)){
-    data = data[0]
-  }
-  let application = data?data.apply_fee?data.apply_fee:0:0;
+// const usePriceData = ()=>{
+//   // getChosseUnivCode();
+//   let sid = ""; 
+//   let status_id = "";
+//   if(typeof window !== "undefined"){
+//     sid = window.sessionStorage.getItem('sid');
+//     const sessionData = window.sessionStorage.getItem('user_status_id');
+//     status_id = sessionData;
+//   }
+//   const getKey = () => `/api/?action=get_player_payrank&params=${JSON.stringify({ status_id: status_id })}&sid=${sid}`;
+//   let { data } = useSWRInfinite(
+//     getKey,
+//     (url) => fetchPlayerPayrankInfo(url)
+//   );
+//   let modifyServices = services.map(service=>{
+//     let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+//     service.strPrice = price;
+//     return service;
+//   });
+//   if(Array.isArray(data)){
+//     data = data[0]
+//   }
+//   let application = data?data.apply_fee?data.apply_fee:0:0;
 
-  return {services: modifyServices, application:application, unit:"KRW"};
-}
+//   return {services: modifyServices, application:application, unit:"KRW"};
+// }
 
 const convertPrice=(price:number)=>{
   return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -251,47 +245,136 @@ const SolutionAgreePage: NextPage = ({
     query: { lang: queryLang },
   },
 }) => {
+
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
+
+  React.useEffect(() => {
+    API.getPlayerStatus()
+    .then((data)=>{
+      console.log(data);
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+          console.log(data.userstatus);
+          // const user = userstatus.find(status=>status.id);univcode
+          // const user = userstatus.find(us=>us.univ_code === univcode);
+          const user = data.userstatus.sort(function(a,b){
+            const atime = convertTime(a.updated_at);
+            const btime = convertTime(b.updated_at);
+            atime>btime?1:atime<btime?-1:0;
+          })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
+
+          if(typeof window !== "undefined"){
+            sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            sessionStorage.setItem('chooseUnivName',user.univ_name);
+            user.subjectname?sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+            user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+          }
+          // if(user.step === STEP_STRING.STEP_TWO){
+          //   Router.push("/solution/2")
+          // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+          //   Router.push("/solution/3")
+          // }else if(user.step === STEP_STRING.STEP_FOUR){
+          //   Router.push("/solution/4")
+          // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
+          //   Router.push("/solution/5")
+          // }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);  
+
   if(typeof window !== "undefined"){
-    const { t, lang, changeLang } = useTranslate(i18nResource);
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     const [isAgree, setIsAgree]= useState(false);
     const [isOpenAgree, setIsOpenAgree]= useState(false);
-    const priceData = usePriceData();
+
+    const usePriceData =async()=>{
+      let data = await API.getPlayerPayrank();
+
+      let modifyServices = services.map(service=>{
+        let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        service.strPrice = price;
+        return service;
+      });
+
+      if(Array.isArray(data)){
+        data = data[0]
+      }
+      let application = data?data.apply_fee?data.apply_fee:0:0;
+    
+      return {services: modifyServices, application:application, unit:"KRW"};
+    }
+    
+    // const [loading, resolved, error] = usePromise(usePriceData, []);
+    // if (loading) return <div></div>; 
+    // if (error) window.alert('API 오류');
+    // if (!resolved) return null;
+    // let {services, application, unit} = resolved;
+    // const priceData = usePriceData();
+    let modifyServices = services.map(service=>{
+      let price = String(service.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      service.strPrice = price;
+      return service;
+    });
+    const priceData = {
+      services :modifyServices,
+      application: 0,
+      unit:"KRW"
+    }
+
     const isFinial = () =>{
-      if(selectValue!==null&&typeof selectValue.plan==="string"&&isAgree){
+      if(selectValue!==null&&typeof selectValue.plan_str==="string"&&isAgree){
           return true;
       }
       return false;
     }
 
+    const onClickNextStep=(isFinial:boolean)=>{
+      if(isFinial){
+        sendPlayerInfo(selectValue.plan_str);
+        Router.push('/solution/2/payment');
+      }else{
+        window.alert(t('warn-3'));
+      }
+    }
+    
     return (
       <DefaultLayout>
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-        <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null} t={t} lang={lang} changeLang={changeLang}/>
+        <StepHeader step={2} major_str={selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} plan_str={selectValue?typeof selectValue.plan_str==="string"?selectValue.plan_str:null:null} t={t} lang={lang} changeLang={changeLang}/>
         <PriceInfoContainer>
           <PriceInfoHeaderRow>
-            <PriceInfoHeaderColumn><Bold22>결제등급을<br/>선택해주세요</Bold22></PriceInfoHeaderColumn>
+            <PriceInfoHeaderColumn><Bold22><LineParser str={t('please-selection-payrank')}/></Bold22></PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#FF988C">
-                번역 공증<br/>서비스
+                <LineParser str={t('translation-notarization-service')}/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#2EC5CE">
-                입학지원<br/>서비스
+                <LineParser str={t('enter-support-service')}/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#8C30F5">
-                입학지원<br/>PRO
+                <LineParser str={t('enter-support-pro')}/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
           </PriceInfoHeaderRow>
           <PriceInfoTableHeaderRow>
             <PriceInfoTableHeaderColumn>
-              <Bold22>PRICING<br/>TABLE</Bold22>
+              <Bold22><LineParser str={t('pricing-table')}/></Bold22>
             </PriceInfoTableHeaderColumn>
               {priceData
                 ?priceData.services.map((service)=>(
@@ -313,7 +396,7 @@ const SolutionAgreePage: NextPage = ({
           </PriceInfoTableHeaderRow>
           <PriceInfoTableRow>
             <PriceInfoTableColumn>
-              <Bold18>1 대 1 담당 유학 컨설팅</Bold18>
+              <Bold18>{t('one-on-one-consulting')}</Bold18>
             </PriceInfoTableColumn>
             <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
             <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
@@ -321,7 +404,7 @@ const SolutionAgreePage: NextPage = ({
           </PriceInfoTableRow>
           <PriceInfoTableRow>
             <PriceInfoTableColumn>
-              <Bold18>서류 번역 및 공증</Bold18>
+              <Bold18>{t('document-translation-and-notarization')}</Bold18>
             </PriceInfoTableColumn>
             <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
             <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
@@ -329,15 +412,7 @@ const SolutionAgreePage: NextPage = ({
           </PriceInfoTableRow>
           <PriceInfoTableRow>
             <PriceInfoTableColumn>
-              <Bold18>자기소개서 첨삭</Bold18>
-            </PriceInfoTableColumn>
-            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
-            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
-          </PriceInfoTableRow>
-          <PriceInfoTableRow>
-            <PriceInfoTableColumn>
-              <Bold18>서류 준비 및 원서접수</Bold18>
+              <Bold18>{t('self-introduction-correction')}</Bold18>
             </PriceInfoTableColumn>
             <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
             <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
@@ -345,7 +420,7 @@ const SolutionAgreePage: NextPage = ({
           </PriceInfoTableRow>
           <PriceInfoTableRow>
             <PriceInfoTableColumn>
-              <Bold18>서류제출 대행</Bold18>
+              <Bold18>{t('preparing-documents-and-accepting-applications')}</Bold18>
             </PriceInfoTableColumn>
             <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
             <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
@@ -353,7 +428,15 @@ const SolutionAgreePage: NextPage = ({
           </PriceInfoTableRow>
           <PriceInfoTableRow>
             <PriceInfoTableColumn>
-              <Bold18>영사확인 대행</Bold18>
+              <Bold18>{t('acting-submission-agent')}</Bold18>
+            </PriceInfoTableColumn>
+            <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+            <PriceInfoTableColumn><CheckedRadioIcon/></PriceInfoTableColumn>
+          </PriceInfoTableRow>
+          <PriceInfoTableRow>
+            <PriceInfoTableColumn>
+              <Bold18>{t('acting-consul-confirmation')}</Bold18>
             </PriceInfoTableColumn>
             <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
             <PriceInfoTableColumn><UncheckedRadioIcon/></PriceInfoTableColumn>
@@ -362,25 +445,25 @@ const SolutionAgreePage: NextPage = ({
           <PriceInfoFooterRow>
             <PriceInfoFooterColumn></PriceInfoFooterColumn>
             <PriceInfoFooterColumn>
-              <ReadyRadioButton id="is_select_trans" value="trans" group="plan" checked={selectValue?.plan==="trans"} onChange={handleSelectEnter}>선택</ReadyRadioButton>
+              <ReadyRadioButton id="is_select_trans" value="trans" group="plan" checked={selectValue?.plan==="trans"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
             </PriceInfoFooterColumn>
             <PriceInfoFooterColumn>
-              <ReadyRadioButton id="is_select_support" value="support" group="plan" checked={selectValue?.plan==="support"} onChange={handleSelectEnter}>선택</ReadyRadioButton>
+              <ReadyRadioButton id="is_select_support" value="support" group="plan" checked={selectValue?.plan==="support"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
             </PriceInfoFooterColumn>
             <PriceInfoFooterColumn>
-              <ReadyRadioButton id="is_select_pro" value="pro" group="plan" checked={selectValue?.plan==="pro"} onChange={handleSelectEnter}>선택</ReadyRadioButton>
+              <ReadyRadioButton id="is_select_pro" value="pro" group="plan" checked={selectValue?.plan==="pro"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
             </PriceInfoFooterColumn>
           </PriceInfoFooterRow>
         </PriceInfoContainer>
         <Block>
-          <Bold22>서비스 결제 내역</Bold22>
+          <Bold22>{t('service-payment-history')}</Bold22>
           <Table>
             <HeaderRow>
               <Column width={14}>
-                결제 내용
+                {t('payment-content')}
               </Column>
               <Column width={2}>
-                결제 비용
+                {t('payment-costs')}
               </Column>
             </HeaderRow>
             {selectValue?.plan
@@ -391,10 +474,10 @@ const SolutionAgreePage: NextPage = ({
             </Row>
             }
           </Table>
-          <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}>입학솔루션 이용약관에 동의합니다.</LabelClickCheckbox>
+          <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}>{t('agree-to-enter-solution-conditions')}</LabelClickCheckbox>
         </Block>
         <FooterBlock>
-          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue)}>결제수단 선택</ReadyButton>
+          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue)}>{t('select-payment-method')}</ReadyButton>
         </FooterBlock>
       </DefaultLayout>
     );

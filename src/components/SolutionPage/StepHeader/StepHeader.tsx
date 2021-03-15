@@ -42,6 +42,7 @@ interface StepProps {
     step: number;
     major_str?: string;
     plan_str?: string;
+    univ_info: object|null;
     t: (s: string) => string;
     changeLang: (s: string) => void;
 }
@@ -108,12 +109,13 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
           } else {
             newSelectValue = value;
           }
+          console.log(newSelectValue)
           if(name ==="major"){
             let strIds = id.split('_');
             setSelectValue({
               ...selectValue,
               major_type:strIds[0],
-              major:newSelectValue
+              major_str:newSelectValue
             });
           }else{
             setSelectValue({
@@ -148,9 +150,8 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, la
   if (loading) return <div></div>; 
   if (error) window.alert('API 오류');
   if (!resolved) return null;
-  
-  const { univ_info, major, document } = resolved;
-  
+  let {univ_info, major, document} = resolved;
+
   if(typeof window !== "undefined"){
   let univInfo = univ_info;
   const steps: Array<step> = [

@@ -23,6 +23,7 @@ export const PriceInfoTableColumn = styled.div`
   margin: auto;
   text-align: center;
   padding: 20px 40px 20px 40px;
+  white-space: nowrap;
   :first-child{
     width: 270px;
     text-align: left;

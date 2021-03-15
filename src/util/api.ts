@@ -37,6 +37,21 @@ export default {
     const response = await axios.get(`/?action=oneclick_univ&params={"univ_code":"${univ_code}"}&sid=${sid}`);
     return response.data;
   },
+  sendPlayerInfo: async (url:string) => {
+    const response = await axios.get(url);
+     return response.data;
+  },
+  getPlayerPayrank: async () => {
+    const sid = sessionStorage.getItem('sid');
+    const status_id = sessionStorage.getItem('user_status_id');
+    const response = await axios.get(`/?action=get_player_payrank&params={"status_id":"${status_id}"}&sid=${sid}`);
+    return response.data;
+  },
+  getPlayerDocument: async () => {
+    const sid = sessionStorage.getItem('sid');
+    const response = await axios.get(`/?action=get_player_document&params={}&sid=${sid}`);
+    return response.data;
+  },
   getUniversityList: async () => {
     const response = await axios.get('/?action=get_univ_info_with_catch_phrase&params={}');
     return response.data.university;

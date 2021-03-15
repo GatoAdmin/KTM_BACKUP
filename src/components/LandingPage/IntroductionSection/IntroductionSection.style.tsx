@@ -1,11 +1,12 @@
-import styled, { css, keyframes } from 'styled-components';
-import { fontColor, mainColor } from '@util/style/color';
+import styled, { css } from 'styled-components';
+import { fontColor } from '@util/style/color';
+import Search from '@assets/svg/search_icon.svg';
 
 export const IntroductionSectionContainer = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 80vh;
   overflow: hidden;
 `;
 
@@ -21,7 +22,7 @@ export const IntroductionSectionBackground = styled.img.attrs({
   position: relative;
   width: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: 50% 40%;
 `;
 
 export const IntroductionContent = styled.div`
@@ -30,111 +31,51 @@ export const IntroductionContent = styled.div`
   box-sizing: border-box;
 `;
 
-export const CompanyName = styled.h1`
-  display: block;
-  width: 320px;
-  margin: 0 auto 44px;
-  color: ${mainColor};
-  font: 900 80px/109px Nunito, sans-serif;
-  text-align: center;
-  transition-property: opacity, transform;
-  transition: 0.5s ease 0.5s;
-`;
-
 export const Title = styled.h2`
-  margin: 0 0 67px;
+  margin: 0 0 25px;
   color: ${fontColor};
   font-family: inherit;
   font-weight: bold;
-  font-size: 45px;
-  line-height: 40px;
+  font-size: 32px;
+  line-height: 46px;
   text-align: center;
   transition-property: opacity, transform;
   transition: 0.5s ease 1s;
 `;
 
 export const SubTitle = styled.h3`
-  margin: 0 auto 75px;
+  margin: 0 auto 60px;
   color: ${fontColor};
-  font-family: inherit;
-  font-weight: normal;
-  font-size: 24px;
-  line-height: 40px;
+  font-family: Noto Sans KR;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 32px;
   text-align: center;
   transition-property: opacity, transform;
   transition: 0.5s ease 1.3s;
 `;
 
-export const EmphasisTitle = styled.span`
-  color: ${mainColor};
-`;
-
-const rotate = keyframes`
-  0% {
-    transform: rotate(0deg) translate3d(0, 0, 0);
-  }
-  25% {
-    transform: rotate(3deg) translate3d(0, 0, 0);
-  }
-  50% {
-    transform: rotate(-3deg) translate3d(0, 0, 0);
-  }
-  75% {
-    transform: rotate(1deg) translate3d(0, 0, 0);
-  }
-  100% {
-    transform: rotate(0deg) translate3d(0, 0, 0);
-  }
-`;
-
-const storm = keyframes`
-  0% {
-    transform: translate3d(0, 0, 0) translateZ(0);
-  }
-  25% {
-    transform: translate3d(4px, 0, 0) translateZ(0);
-  }
-  50% {
-    transform: translate3d(-3px, 0, 0) translateZ(0);
-  }
-  75% {
-    transform: translate3d(2px, 0, 0) translateZ(0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) translateZ(0);
-  }
-`;
-
-export const StormAnimatedText = styled.span``;
-
-export const RouteIntroductionButton = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 266px;
-  height: 63px;
-  margin: 0 auto;
-  border: 2px solid #df4d3e;
-  border-radius: 20px;
-  font-family: inherit;
-  font-weight: bold;
-  font-size: 20px;
-  color: ${mainColor};
-  background: white;
-  text-decoration: none;
-  text-align: center;
-  line-height: 63px;
+export const InputWrap = styled.div`
+  position: relative;
   transition-property: opacity, transform;
   transition: 0.5s ease 1.6s;
+`;
 
-  &:hover {
-    animation: ${rotate} 0.7s ease-in-out both;
+export const InputUniversity = styled.input`
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 100px;
+  width: 540px;
+  height: 50px;
+  padding: 0 30px;
+  outline: none;
+`;
 
-    ${StormAnimatedText} {
-      animation: ${storm} 0.7s ease-in-out both;
-      animation-delay: 0.06s;
-    }
-  }
+export const SearchIcon = styled(Search)`
+  position: absolute;
+  right: 30px;
+  top: 15px;
+  color: #232323;
+  cursor: pointer;
 `;
 
 interface IntroductionProps {
@@ -142,16 +83,16 @@ interface IntroductionProps {
 }
 
 export const Introduction = styled.div<IntroductionProps>`
+  display: flex;
+  flex-direction: column;
   position: absolute;
+  justify-content: center;
+  align-items: center;
   top: calc(50% - 238px);
   width: 100%;
   height: 476px;
   ${(props) => (props.show
     ? css`
-          ${CompanyName} {
-            opacity: 1;
-            transform: translateY(0);
-          }
           ${Title} {
             opacity: 1;
             transform: translateY(0);
@@ -160,16 +101,12 @@ export const Introduction = styled.div<IntroductionProps>`
             opacity: 1;
             transform: translateY(0);
           }
-          ${RouteIntroductionButton} {
+          ${InputWrap} {
             opacity: 1;
             transform: translateY(0);
           }
         `
     : css`
-          ${CompanyName} {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
           ${Title} {
             opacity: 0;
             transform: translateY(-20px);
@@ -178,7 +115,7 @@ export const Introduction = styled.div<IntroductionProps>`
             opacity: 0;
             transform: translateY(-20px);
           }
-          ${RouteIntroductionButton} {
+          ${InputWrap} {
             opacity: 0;
             transform: translateY(-20px);
           }

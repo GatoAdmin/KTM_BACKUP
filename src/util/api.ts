@@ -37,4 +37,12 @@ export default {
     const response = await axios.get(`/?action=oneclick_univ&params={"univ_code":"${univ_code}"}&sid=${sid}`);
     return response.data;
   },
+  getUniversityList: async () => {
+    const response = await axios.get('/?action=get_univ_info_with_catch_phrase&params={}');
+    return response.data.university;
+  },
+  getReviewList: async () => {
+    const response = await axios.get('/?action=get_review&params={}');
+    return response.data.university;
+  },
 };

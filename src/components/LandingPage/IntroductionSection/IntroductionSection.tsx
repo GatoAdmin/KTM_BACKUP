@@ -1,18 +1,16 @@
 import React from 'react';
-import Link from 'next/link';
 import useIntersection from '@util/hooks/useInteraction';
 import {
-  CompanyName,
-  EmphasisTitle,
   Introduction,
   IntroductionContent,
   IntroductionSectionBackground,
   IntroductionSectionContainer,
   SubTitle,
-  StormAnimatedText,
   Title,
-  RouteIntroductionButton,
   SubTitleContainer,
+  InputUniversity,
+  InputWrap,
+  SearchIcon,
 } from './IntroductionSection.style';
 
 // temp interface for temporary translation(delete if change to next.js 10
@@ -29,19 +27,17 @@ const IntroductionSection: React.FC<IntroductionSectionProps> = ({ t }) => {
       <IntroductionSectionBackground />
       <Introduction show={visible}>
         <IntroductionContent>
-          <CompanyName>katumm</CompanyName>
           <Title>{t('landing-title')}</Title>
           <SubTitle>
             {t('landing-subtitle-1')}
             <br />
-            <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-section-1-subtitle-2') }} />
+            <SubTitleContainer dangerouslySetInnerHTML={{ __html: t('landing-subtitle-2') }} />
           </SubTitle>
-          <Link href="/introduction" passHref>
-            <RouteIntroductionButton>
-              <StormAnimatedText>{t('landing-introduce-button')}</StormAnimatedText>
-            </RouteIntroductionButton>
-          </Link>
         </IntroductionContent>
+        <InputWrap>
+          <InputUniversity placeholder={t('landing-input-placeholder')} />
+          <SearchIcon />
+        </InputWrap>
       </Introduction>
     </IntroductionSectionContainer>
   );

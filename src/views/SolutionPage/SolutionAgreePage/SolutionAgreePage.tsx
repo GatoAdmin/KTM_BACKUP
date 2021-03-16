@@ -57,29 +57,6 @@ interface service {
   index: number;
 }
 
-let services: Array<service> = [
-  {
-    name: '번역 공증 서비스',
-    type: "trans",
-    price : 20000,
-    strPrice:'',
-    index: 1
-  },
-  {
-    name: '입학지원 서비스',
-    type: "support",
-    price : 25000,
-    strPrice:'',
-    index: 2
-  },
-  {
-    name: '입학지원 PRO',
-    type: "pro",
-    price : 30000,
-    strPrice:'',
-    index: 3
-  }
-];
 
 const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {const {
@@ -106,24 +83,6 @@ const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : tr
     return {userstatus};
   });
   
-const sendPlayerInfo = (plan:string) => {
-  let sid = ""; 
-  let statusId = "";
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-    statusId = window.sessionStorage.getItem("user_status_id");
-  }
-  const rank = services.find(service=>service.type===plan)?.index;
-  const parms = {
-    status_id: statusId,
-    rank: rank
-  };
-  const getKey = () => `/api/?action=set_player_payrank&params=${JSON.stringify(parms)}&sid=${sid}`;
-
-  const data = fetchSendPlayerInfo(getKey());
-  return true;
-};
-
 const getChosseUnivCode =()=>{
     let data = null;
     if(typeof window !=="undefined"){
@@ -132,22 +91,6 @@ const getChosseUnivCode =()=>{
     return data;
 }
 
-const getSesstionData =()=>{
-    let data = null;
-    if(typeof window !=="undefined"){
-      const univ_code = getChosseUnivCode();
-      let sessionData = sessionStorage.getItem('select_enter_value');
-      if(sessionData&&sessionData!==""){
-        sessionData=JSON.parse(sessionData);
-      }else{
-        sessionData = null;
-      }
-      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
-        data = sessionData;
-      }
-    }
-    return data;
-  }
 
 const fetchPlayerPayrankInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {const {
@@ -215,31 +158,6 @@ const convertPrice=(price:number)=>{
   return String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-const getPriceList = (selectValue:object, priceData:object)=>{
-  const plan = services.find(service=>(service.type === selectValue.plan));
-  const univName = typeof window !== "undefined"?window.sessionStorage.getItem("chooseUnivName"):"선문대학교";
-  let resultPrice = plan?.price+(plan.type !== "trans"?priceData.application:0);
-  resultPrice = convertPrice(resultPrice);
-  return (
-    <>
-      <Row>
-        <Column width={14}>{plan?.name}-{univName}</Column>
-        <Column width={2} textAlign="right">{plan.strPrice} {priceData.unit}</Column>
-      </Row>
-      {plan.type !== "trans"
-        ?<Row>
-            <Column width={14}>원서접수비-{univName}</Column>
-            <Column width={2} textAlign="right">{convertPrice(priceData.application)} {priceData.unit}</Column>
-          </Row>
-        :null}
-      <Row accent={true}>
-        <Column width={14}>결제 금액 (VAT 포함)</Column>
-        <Column width={2} textAlign="right">{resultPrice} {priceData.unit}</Column>
-      </Row>
-    </>
-  ); 
-}
-
 const SolutionAgreePage: NextPage = ({
   router: {
     query: { lang: queryLang },
@@ -248,6 +166,54 @@ const SolutionAgreePage: NextPage = ({
 
   const { t, lang, changeLang } = useTranslate(i18nResource);
 
+  let services: Array<service> = [
+    {
+      name: t('translation-notarization-service'),
+      type: "trans",
+      price : 20000,
+      strPrice:'',
+      index: 1
+    },
+    {
+      name: t('enter-support-service'),
+      type: "support",
+      price : 25000,
+      strPrice:'',
+      index: 2
+    },
+    {
+      name: t('enter-support-pro'),
+      type: "pro",
+      price : 30000,
+      strPrice:'',
+      index: 3
+    }
+  ];
+  
+  const getSesstionData =()=>{
+    let data = null;
+    if(typeof window !=="undefined"){
+      const univ_code = getChosseUnivCode();
+      let sessionData = sessionStorage.getItem('select_enter_value');
+      if(sessionData&&sessionData!==""){
+        sessionData=JSON.parse(sessionData);        
+        sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
+        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
+        sessionData.major_str = sessionStorage.getItem('chooseSubjectname');
+        if(sessionStorage.getItem('choosePayRank')!==null){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
+        }
+        console.log(sessionData)
+      }else{
+        sessionData = null;
+      }
+      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
+        data = sessionData;
+      }
+    }
+    return data;
+  }
   React.useEffect(() => {
     if (queryLang !== undefined) {
       changeLang(queryLang);
@@ -348,6 +314,49 @@ const SolutionAgreePage: NextPage = ({
       }
     }
     
+  const sendPlayerInfo = (plan:string) => {
+    let sid = ""; 
+    let statusId = "";
+    if(typeof window !== "undefined"){
+      sid = window.sessionStorage.getItem('sid');
+      statusId = window.sessionStorage.getItem("user_status_id");
+    }
+    const rank = services.find(service=>service.type===plan)?.index;
+    const parms = {
+      status_id: statusId,
+      rank: rank
+    };
+    const getKey = () => `/api/?action=set_player_payrank&params=${JSON.stringify(parms)}&sid=${sid}`;
+
+    const data = fetchSendPlayerInfo(getKey());
+    return true;
+  };
+
+  const getPriceList = ()=>{
+    const plan = services.find(service=>(service.type === selectValue.plan_str));
+    const univName = typeof window !== "undefined"?window.sessionStorage.getItem("chooseUnivName"):"선문대학교";
+    let resultPrice = plan?.price+(plan.type !== "trans"?priceData.application:0);
+    resultPrice = convertPrice(resultPrice);
+    return (
+      <>
+        <Row>
+          <Column width={14}>{plan?.name}-{univName}</Column>
+          <Column width={2} textAlign="right" fontSize={18}>{plan.strPrice} {priceData.unit}</Column>
+        </Row>
+        {plan.type !== "trans"
+          ?<Row>
+              <Column width={14}>{t('application-fee')}-{univName}</Column>
+              <Column width={2} textAlign="right" fontSize={18}>{convertPrice(priceData.application)} {priceData.unit}</Column>
+            </Row>
+          :null}
+        <Row accent={true}>
+          <Column width={14}>{t('payment-amount-including-VAT')}</Column>
+          <Column width={2} textAlign="right" fontSize={18}>{resultPrice} {priceData.unit}</Column>
+        </Row>
+      </>
+    ); 
+  }
+  
     return (
       <DefaultLayout>
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
@@ -358,17 +367,17 @@ const SolutionAgreePage: NextPage = ({
             <PriceInfoHeaderColumn><Bold22><LineParser str={t('please-selection-payrank')}/></Bold22></PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#FF988C">
-                <LineParser str={t('translation-notarization-service')}/>
+                <LineParser str={t('translation-notarization-service-title')}/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#2EC5CE">
-                <LineParser str={t('enter-support-service')}/>
+                <LineParser str={t('enter-support-service-title')}/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#8C30F5">
-                <LineParser str={t('enter-support-pro')}/>
+                <LineParser str={t('enter-support-pro-title')}/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
           </PriceInfoHeaderRow>
@@ -378,7 +387,7 @@ const SolutionAgreePage: NextPage = ({
             </PriceInfoTableHeaderColumn>
               {priceData
                 ?priceData.services.map((service)=>(
-                  <PriceInfoTableHeaderColumn>
+                  <PriceInfoTableHeaderColumn key={service.name}>
                     <Bold22>{service.strPrice}<br/><GreyText>{priceData.unit}</GreyText></Bold22>
                   </PriceInfoTableHeaderColumn>
                 )):
@@ -445,13 +454,13 @@ const SolutionAgreePage: NextPage = ({
           <PriceInfoFooterRow>
             <PriceInfoFooterColumn></PriceInfoFooterColumn>
             <PriceInfoFooterColumn>
-              <ReadyRadioButton id="is_select_trans" value="trans" group="plan" checked={selectValue?.plan==="trans"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
+              <ReadyRadioButton id="is_select_trans" value="trans" group="plan_str" checked={selectValue?.plan_str==="trans"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
             </PriceInfoFooterColumn>
             <PriceInfoFooterColumn>
-              <ReadyRadioButton id="is_select_support" value="support" group="plan" checked={selectValue?.plan==="support"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
+              <ReadyRadioButton id="is_select_support" value="support" group="plan_str" checked={selectValue?.plan_str==="support"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
             </PriceInfoFooterColumn>
             <PriceInfoFooterColumn>
-              <ReadyRadioButton id="is_select_pro" value="pro" group="plan" checked={selectValue?.plan==="pro"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
+              <ReadyRadioButton id="is_select_pro" value="pro" group="plan_str" checked={selectValue?.plan_str==="pro"} onChange={handleSelectEnter}>{t('selection')}</ReadyRadioButton>
             </PriceInfoFooterColumn>
           </PriceInfoFooterRow>
         </PriceInfoContainer>
@@ -462,12 +471,12 @@ const SolutionAgreePage: NextPage = ({
               <Column width={14}>
                 {t('payment-content')}
               </Column>
-              <Column width={2}>
+              <Column width={2} oneLine={true}>
                 {t('payment-costs')}
               </Column>
             </HeaderRow>
-            {selectValue?.plan
-            ?getPriceList(selectValue, priceData)
+            {selectValue?.plan_str
+            ?getPriceList()
             :<Row>
               <Column width={14}>-</Column>
               <Column width={2} textAlign="right">0 {priceData.unit}</Column>
@@ -477,7 +486,7 @@ const SolutionAgreePage: NextPage = ({
           <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}>{t('agree-to-enter-solution-conditions')}</LabelClickCheckbox>
         </Block>
         <FooterBlock>
-          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial(),selectValue)}>{t('select-payment-method')}</ReadyButton>
+          <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>{t('select-payment-method')}</ReadyButton>
         </FooterBlock>
       </DefaultLayout>
     );

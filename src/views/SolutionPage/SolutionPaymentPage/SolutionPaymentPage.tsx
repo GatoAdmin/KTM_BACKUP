@@ -141,8 +141,9 @@ const getSesstionData =()=>{
         sessionData=JSON.parse(sessionData);
         sessionData.univ_code = sessionStorage.getItem('chooseUniv');
         sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
-        sessionData.major = sessionStorage.getItem('chooseSubjectname');
-        sessionData.plan = sessionStorage.getItem('choosePayRank');
+        sessionData.major_str = sessionStorage.getItem('chooseSubjectname');
+        const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+        sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
       }else{
         sessionData = null;
       }
@@ -199,8 +200,78 @@ const SolutionPaymentPage: NextPage = ({
     query: { lang: queryLang },
   },
 }) => {
+
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+
+  let services: Array<service> = [
+    {
+      name: t('translation-notarization-service'),
+      type: "trans",
+      price : 20000,
+      strPrice:'',
+      index: 1
+    },
+    {
+      name: t('enter-support-service'),
+      type: "support",
+      price : 25000,
+      strPrice:'',
+      index: 2
+    },
+    {
+      name: t('enter-support-pro'),
+      type: "pro",
+      price : 30000,
+      strPrice:'',
+      index: 3
+    }
+  ];
+  
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
+
+  React.useEffect(() => {
+    API.getPlayerStatus()
+    .then((data)=>{
+      console.log(data);
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+          console.log(data.userstatus);
+          // const user = userstatus.find(status=>status.id);univcode
+          // const user = userstatus.find(us=>us.univ_code === univcode);
+          const user = data.userstatus.sort(function(a,b){
+            const atime = convertTime(a.updated_at);
+            const btime = convertTime(b.updated_at);
+            atime>btime?1:atime<btime?-1:0;
+          })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
+
+          if(typeof window !== "undefined"){
+            sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            sessionStorage.setItem('chooseUnivName',user.univ_name);
+            user.subjectname?sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+            user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+          }
+          // if(user.step === STEP_STRING.STEP_TWO){
+          //   Router.push("/solution/2")
+          // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+          //   Router.push("/solution/3")
+          // }else if(user.step === STEP_STRING.STEP_FOUR){
+          //   Router.push("/solution/4")
+          // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
+          //   Router.push("/solution/5")
+          // }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);  
+
   if(typeof window !== "undefined"){
-    const { t, lang, changeLang } = useTranslate(i18nResource);
     let sessionData = getSesstionData();
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
     const [accountTransferName, setAccountTransferName]= useState("");

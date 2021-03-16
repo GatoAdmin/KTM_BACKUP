@@ -3,6 +3,9 @@ import {
   DocumentItem,
   DocumentTypeIconContainer
 } from './DocumentShortItem.style';
+import {
+  StringDot
+} from '@components/SolutionPage/Common/Common.style';
 
 import WritePictogram from '@assets/svg/write_pictogram.svg';
 import SearchPictogram from '@assets/svg/search_pictogram.svg';
@@ -37,7 +40,7 @@ const DocumentShortItem: React.FC<DocumentShortItemProps> = ({
         <DocumentTypeIconContainer>
           <Pictogram />
         </DocumentTypeIconContainer>
-      {children}
+      <StringDot>{children}</StringDot>
     </DocumentItem>
   );
 }

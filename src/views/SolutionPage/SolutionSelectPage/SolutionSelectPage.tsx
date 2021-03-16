@@ -43,7 +43,7 @@ interface tap {
 const getChosseUnivCode =()=>{
   let data = null;
   if(typeof window !=="undefined"){
-    data = window.sessionStorage.getItem('chooseUniv')|"SMU_UNI";
+    data = sessionStorage.getItem('chooseUnivCode');//|"KMU_UNI";
   }
   return data;
 }
@@ -107,11 +107,14 @@ const convertTime = (timeStr: string)=>{
 
 const SolutionSelectPage: NextPage = ({
   router: {
-    query: { lang: queryLang },
+    query: { lang: queryLang, univ: queryUniv },
   },
 }) => {
   const { t, lang, changeLang } = useTranslate(i18nResource);
- 
+  const getUnivInfo=async()=>{
+    const data = await getSelectUnivInfo(queryLang);
+    return data;
+  }
   React.useEffect(() => {
     if (queryLang !== undefined) {
       changeLang(queryLang);
@@ -119,36 +122,66 @@ const SolutionSelectPage: NextPage = ({
   }, [queryLang]);
 
   React.useEffect(() => {
+    if (queryUniv !== undefined) {
+      sessionStorage.setItem('chooseUnivCode',queryUniv);
+    }
+  }, [queryUniv]);
+
+  React.useEffect(() => {
     API.getPlayerStatus()
     .then((data)=>{
       console.log(data);
       if (data.status !== 'success') {
         console.log(data);
-      } else { 
+      } else { //통신 성공
           console.log(data.userstatus);
-          // const user = userstatus.find(status=>status.id);univcode
-          // const user = userstatus.find(us=>us.univ_code === univcode);
-          const user = data.userstatus.sort(function(a,b){
-            const atime = convertTime(a.updated_at);
-            const btime = convertTime(b.updated_at);
-            atime>btime?1:atime<btime?-1:0;
-          })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
-
-          if(typeof window !== "undefined"){
-            window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
-            window.sessionStorage.setItem('chooseUnivName',user.univ_name);
-            user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
-            user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+          const univ_code = getChosseUnivCode();
+          console.log(univ_code);
+          if(univ_code!==null){//선택된 univ_code가 있는지 체크한다.
+            if(data.userstatus.some(us=>us.univ_code === univ_code)){
+              const user = data.userstatus.find(us=>us.univ_code === univ_code);
+              if(typeof window !== "undefined"){
+                sessionStorage.setItem('chooseUnivCode',user.univ_code);
+                sessionStorage.setItem('chooseUnivName',user.univ_name);
+                user.subjectname?sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+                user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+              }
+              if(user.step === STEP_STRING.STEP_TWO){
+                Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
+              }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
+                Router.push(`/solution/3${queryLang?`?lang=${queryLang}`:''}`)
+              }else if(user.step === STEP_STRING.STEP_FOUR){
+                Router.push(`/solution/4${queryLang?`?lang=${queryLang}`:''}`)
+              }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
+                Router.push(`/solution/5${queryLang?`?lang=${queryLang}`:''}`)
+              }
+            }else{
+              sessionStorage.setItem('chooseUnivCode', univ_code);
+            }
+          }else{//선택된 univ_code 이 없는 경우
+            const user = data.userstatus.sort(function(a,b){
+              const atime = convertTime(a.updated_at);
+              const btime = convertTime(b.updated_at);
+              atime>btime?1:atime<btime?-1:0;
+            })[0];
+  
+            if(typeof window !== "undefined"){
+              sessionStorage.setItem('chooseUnivCode',user.univ_code);
+              sessionStorage.setItem('chooseUnivName',user.univ_name);
+              user.subjectname?sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+              user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+            }
+            
+            // if(user.step === STEP_STRING.STEP_TWO){
+            //   Router.push("/solution/2")
+            // }else if(user.step === STEP_STRING.STEP_THREE_INIT||user.step === STEP_STRING.STEP_THREE_PENDING){
+            //   Router.push("/solution/3")
+            // }else if(user.step === STEP_STRING.STEP_FOUR){
+            //   Router.push("/solution/4")
+            // }else if(user.step === STEP_STRING.STEP_FIVE||user.step === STEP_STRING.STEP_SIX){
+            //   Router.push("/solution/5")
+            // }
           }
-          // if(user.step === STEP_STRING.STEP_TWO){
-          //   Router.push("/solution/2")
-          // }else if(user.step === STEP_STRING.STEP_THREE_INIT||STEP_STRING.STEP_THREE_PENDING){
-          //   Router.push("/solution/3")
-          // }else if(user.step === STEP_STRING.STEP_FOUR){
-          //   Router.push("/solution/4")
-          // }else if(user.step === STEP_STRING.STEP_FIVE||STEP_STRING.STEP_SIX){
-          //   Router.push("/solution/5")
-          // }
       }
     })
     .catch((err) => {
@@ -162,7 +195,7 @@ const SolutionSelectPage: NextPage = ({
     let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
     const [viewTap,setViewTaps] = React.useState({type:viewType}); 
   
-    const [loading, resolved, error] = usePromise(getSelectUnivInfo, []);
+    const [loading, resolved, error] = usePromise(getUnivInfo, []);
     if (loading) return <div></div>; 
     if (error) window.alert('API 오류');
     if (!resolved) return null;
@@ -205,13 +238,14 @@ const SolutionSelectPage: NextPage = ({
     if(typeof window !== "undefined"){
       sid = window.sessionStorage.getItem('sid');
     }
-    const parms = {
+    const params = {
       univ_code : selectValue.univ_code,
       info_type : univ_info.category,
       subjecttitle:selectValue.major_type,
       subjectname:selectValue.major_str,
     };
-    const key= `/?action=set_player_status&params=${JSON.stringify(parms)}&sid=${sid}`;
+    const key= `/?action=set_player_status&params=${JSON.stringify(params)}&sid=${sid}`;
+    console.log(key);
 
     API.sendPlayerInfo(key).then(
       data=>{
@@ -219,18 +253,19 @@ const SolutionSelectPage: NextPage = ({
           const {update_userstatus, userdocument} = data;
           window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
           window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));
+          return true;
         }else{
           window.alert(t('warn-2'));
           return false;
         }
       }
     )
-    return true;
+    return false;
   };
   const onClickNextStep=(isFinal:boolean)=>{
     if(isFinal){
         if(sendPlayerInfo()){
-          Router.push('/solution/2');
+          Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
         }
     }else{
       window.alert(t('warn-1'));
@@ -269,7 +304,7 @@ const SolutionSelectPage: NextPage = ({
             ?selectValue!==null&&typeof selectValue.enter_type==="string"
               ?<RadioButtonContainer>
                   {major[viewTap.type].map((name:string,index:number) => (
-                    <RadioButton id={`${viewTap.type}_${index}`} key={index} group="major" value={name} checked={selectValue?.major_str===name} onChange={handleSelectEnter}>
+                    <RadioButton id={`${viewTap.type}_${index}`} key={index} group="major_str" value={name} checked={selectValue?.major_str===name} onChange={handleSelectEnter}>
                           {name}
                       </RadioButton>
                   ))}

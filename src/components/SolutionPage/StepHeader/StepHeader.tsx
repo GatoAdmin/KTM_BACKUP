@@ -66,16 +66,19 @@ const onClickSelectUniv=()=>{
   }
 };
 
-export const getSelectUnivInfo= async ()=>{
+export const getSelectUnivInfo= async (lang:string)=>{
   try{
     if(getLoginCheck()){//
-      // const univ_code = window.sessionStorage.getItem('chooseUniv');
-      const univ_code = "SMU_UNI";
-      if(univ_code===null){
-        return null;
-      }else{
-        const univInfo = await API.getUnivData(univ_code);
-        return univInfo;
+      if(typeof window !== "undefined"){
+        const univ_code = sessionStorage.getItem('chooseUnivCode');
+       // const univ_code = "SMU_UNI";//KMU_UNI
+          console.log(univ_code)
+        if(typeof univ_code!=="undefined"&&univ_code!=="undefined"&&univ_code!==null){
+          const univInfo = await API.getUnivData(univ_code,lang);
+          return univInfo;
+        }else{
+          return null;
+        }
       }
     }
     else{
@@ -110,7 +113,7 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
             newSelectValue = value;
           }
           console.log(newSelectValue)
-          if(name ==="major"){
+          if(name ==="major_str"){
             let strIds = id.split('_');
             setSelectValue({
               ...selectValue,
@@ -146,7 +149,11 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
 }
 
 const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, lang, changeLang}) => {  
-  const [loading, resolved, error] = usePromise(getSelectUnivInfo, []);
+  const getUnivInfo=async()=>{
+    const data = await getSelectUnivInfo(lang);
+    return data;
+  }
+  const [loading, resolved, error] = usePromise(getUnivInfo, []);
   if (loading) return <div></div>; 
   if (error) window.alert('API 오류');
   if (!resolved) return null;

@@ -52,7 +52,7 @@ const dropdownIcon = {
   } as const;
 
   const arrayKeeper = {
-    '번역 공증 영사': {//Translation and notarization[
+    '영사서류': {//Translation and notarization[
         'DOC_POST_REQUEST': 
             ['download',
             'transferCompleted'],
@@ -80,7 +80,7 @@ const dropdownIcon = {
         'END': 
             ['download'],
     },
-    '업로드 서류':{
+    '업로드서류':{
         'DOC_UPLOAD_REQUEST': 
             ['download',
             'upload'],
@@ -94,7 +94,7 @@ const dropdownIcon = {
             ['download',
             'transferCompleted']
     },
-    '원서 접수 서류':{
+    '원서서류':{
         'DOC_UPLOAD_REQUEST': 
             ['download',
             'upload'],

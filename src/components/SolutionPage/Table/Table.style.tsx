@@ -5,6 +5,8 @@ import { defaultFont } from '@util/style/font';
 interface ColumnProps{
     width?: number;
     textAlign?: string;
+    fontSize?: number;
+    oneLine?:boolean;
 }
 
 interface RowProps{
@@ -76,6 +78,16 @@ export const Column = styled.div<ColumnProps>`
         ?css`text-align:${props.textAlign}`
         :null
         )};  
+    ${(props)=>(props.fontSize
+      ?css`
+        font-size: ${props.fontSize}px;
+        line-height: ${props.fontSize*1.4}px;
+      `:null
+      )}
+    ${(props)=>(props.oneLine
+      ?css` white-space: nowrap;  `
+      :null
+      )}
 `;
 
 export const WarningColumn = styled.div<ColumnProps>`

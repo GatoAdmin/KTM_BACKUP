@@ -32,13 +32,20 @@ export default {
     const response = await axios.get(`/?action=get_player_status&params={}&sid=${sid}`);
     return response.data;
   },
-  getUnivData :  async (univ_code:string) => {
+  getUnivData :  async (univ_code:string,lang:string) => {
     const sid = sessionStorage.getItem('sid');
-    const response = await axios.get(`/?action=oneclick_univ&params={"univ_code":"${univ_code}"}&sid=${sid}`);
+    let params:{univ_code:string; lang?:string;} = {
+      univ_code: univ_code
+    }
+    if(lang&&lang!=="ko"){
+      params.lang = lang;
+    }
+    const response = await axios.get(`/?action=oneclick_univ&params=${JSON.stringify(params)}&sid=${sid}`);
     return response.data;
   },
   sendPlayerInfo: async (url:string) => {
     const response = await axios.get(url);
+    console.log(response.data)
      return response.data;
   },
   getPlayerPayrank: async () => {
@@ -49,7 +56,9 @@ export default {
   },
   getPlayerDocument: async () => {
     const sid = sessionStorage.getItem('sid');
-    const response = await axios.get(`/?action=get_player_document&params={}&sid=${sid}`);
+    const univ_code = sessionStorage.getItem('chooseUnivCode');
+    const univ_info = sessionStorage.getItem('chooseUnivInfoType');
+    const response = await axios.get(`/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}"}&sid=${sid}`);
     return response.data;
   },
   getUniversityList: async () => {

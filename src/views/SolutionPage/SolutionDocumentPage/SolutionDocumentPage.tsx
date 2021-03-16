@@ -282,10 +282,11 @@ const SolutionDocumentPage: NextPage = ({
           })[0];//TODO: id 혹은 univcode를 선택하여 새로 접속한 경우 추가 조치 필요
 
           if(typeof window !== "undefined"){
-            window.sessionStorage.setItem('chooseUnivCode',user.univ_code);
-            window.sessionStorage.setItem('chooseUnivName',user.univ_name);
-            user.subjectname?window.sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
-            user.pay_rank?window.sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+            sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            sessionStorage.setItem('chooseUnivName',user.univ_name);
+            sessionStorage.setItem('chooseUnivInfoType',user.info_type);
+            user.subjectname?sessionStorage.setItem('chooseSubjectname',user.subjectname):null;
+            user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
           }
           // if(user.step === STEP_STRING.STEP_TWO){
           //   Router.push("/solution/2")

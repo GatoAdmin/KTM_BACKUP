@@ -32,6 +32,13 @@ export default {
     const response = await axios.get(`/?action=get_player_status&params={}&sid=${sid}`);
     return response.data;
   },
+  getUserInfo:  async () => {
+    const sid = sessionStorage.getItem('sid');
+    const response = await axios.get(`/?action=get_user_info&params={}&sid=${sid}`);
+    
+    console.log(response.data)
+    return response.data;
+  },
   getUnivData :  async (univ_code:string,lang:string) => {
     const sid = sessionStorage.getItem('sid');
     let params:{univ_code:string; lang?:string;} = {
@@ -50,7 +57,7 @@ export default {
   },
   getPlayerPayrank: async () => {
     const sid = sessionStorage.getItem('sid');
-    const status_id = sessionStorage.getItem('user_status_id');
+    const status_id = sessionStorage.getItem('userStatusId');
     const response = await axios.get(`/?action=get_player_payrank&params={"status_id":"${status_id}"}&sid=${sid}`);
     return response.data;
   },

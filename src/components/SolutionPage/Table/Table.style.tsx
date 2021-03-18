@@ -103,6 +103,16 @@ export const WarningColumn = styled.div<ColumnProps>`
         ?css`text-align:${props.textAlign}`
         :null
         )};  
+    ${(props)=>(props.fontSize
+      ?css`
+        font-size: ${props.fontSize}px;
+        line-height: ${props.fontSize*1.4}px;
+      `:null
+      )}
+    ${(props)=>(props.oneLine
+      ?css` white-space: nowrap;  `
+      :null
+      )}
 `;
 
 export const FlexColumn = styled.div<ColumnProps>`
@@ -118,6 +128,16 @@ export const FlexColumn = styled.div<ColumnProps>`
         ?css`text-align:${props.textAlign}`
         :null
         )};  
+    ${(props)=>(props.fontSize
+      ?css`
+        font-size: ${props.fontSize}px;
+        line-height: ${props.fontSize*1.4}px;
+      `:null
+      )}
+    ${(props)=>(props.oneLine
+      ?css` white-space: nowrap;  `
+      :null
+      )}
 `;
 export const HeaderRow = styled.div`
   display: flex;
@@ -130,15 +150,35 @@ export const HeaderRow = styled.div`
 `;
 
 
-export const HeaderColumn = styled.div`
+export const HeaderColumn = styled.div<ColumnProps>`
     font-weight: bold;
-    font-size: 16px;
-    line-height: 22px;
     min-width: 213px;
     padding: 17px;
+    ${(props)=>(props.width
+      ?css`width:${props.width*61}px`
+      :null
+      )};
+
+    ${(props)=>(props.textAlign
+        ?css`text-align:${props.textAlign}`
+        :null
+        )};      
+    ${(props)=>(props.fontSize
+      ?css`
+        font-size: ${props.fontSize}px;
+        line-height: ${props.fontSize*1.4}px;
+      `:css`
+        font-size: 16px;
+        line-height: 22px;
+      `
+      )}
+    ${(props)=>(props.oneLine
+      ?css` white-space: nowrap;  `
+      :null
+      )}
 `;
 
-export const HeaderFlexColumn = styled.div`
+export const HeaderFlexColumn = styled.div<ColumnProps>`
     display:flex;
     font-weight: bold;
     font-size: 16px;

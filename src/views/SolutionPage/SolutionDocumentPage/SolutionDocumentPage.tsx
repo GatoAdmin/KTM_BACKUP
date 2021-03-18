@@ -356,7 +356,7 @@ const SolutionDocumentPage: NextPage = ({
             </LoadingPopup>
           )}          
           <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={4} major_str={selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} plan_str={selectValue?typeof selectValue.plan_str==="string"?selectValue.plan_str:null:null} t={t}  lang={lang} changeLang={changeLang} />
+          <StepHeader step={4} major_str={selectValue?selectValue.major_str:null} plan_str={selectValue?selectValue.plan_str:null} t={t} lang={lang} changeLang={changeLang} />
           <HelpImage lang={queryLang}/>
           <TopNonBlock>
             <Table>

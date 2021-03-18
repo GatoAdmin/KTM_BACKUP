@@ -58,14 +58,6 @@ export const getLoginCheck=()=>{
   return false;
 };
 
-const onClickSelectUniv=()=>{
-  if(getLoginCheck()){
-  }else{
-    alert("로그인이 필요합니다.");
-    Router.push('/login');
-  }
-};
-
 export const getSelectUnivInfo= async (lang:string)=>{
   try{
     if(getLoginCheck()){//
@@ -153,6 +145,16 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, la
     const data = await getSelectUnivInfo(lang);
     return data;
   }
+  const onClickSelectUniv=()=>{
+    if(getLoginCheck()){
+      //TODO:나중에 url 옮겨줄것
+      // Router.push('/login');
+    }else{
+      alert(t('warn-0'));
+      Router.push('/login');
+    }
+  };
+  
   const [loading, resolved, error] = usePromise(getUnivInfo, []);
   if (loading) return <div></div>; 
   if (error) window.alert('API 오류');
@@ -215,7 +217,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, la
                 :null
               }
               {plan_str
-                ?<PlanItem type={plan_str}/>
+                ?<PlanItem type={plan_str} t={t} lang={lang} changeLang={changeLang}/>
                 :null
               }
             </UnivNameContainer>

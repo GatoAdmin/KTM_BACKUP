@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {BlurScreen, PanelContainer,Title,AgreementContainer,CloseButton,FirstStep, TwoStep,ThreeStep} from './Agreement.style';
+import {BlurScreen, PanelContainer,Title,AgreementContainer,ButtonContainer,CloseButton,FirstStep, TwoStep,ThreeStep} from './Agreement.style';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '../../../assets/i18n/SolutionPage/solutionAgreement.json';
 
@@ -17,7 +17,7 @@ const Panel: React.FC<PanelProps> = ({
     const { t, lang, changeLang } = useTranslate(i18nResource);
     
     return (
-        <BlurScreen onClick={onClose}>
+        <BlurScreen>
           <PanelContainer>
               <Title>{t('agreementTitle')}</Title>
               <AgreementContainer>
@@ -31,8 +31,10 @@ const Panel: React.FC<PanelProps> = ({
                     return <TwoStep>{line}</TwoStep>;
                     })}
               </AgreementContainer>
-              {/* <CloseButton onClick={onAgrre}>동의</CloseButton>
-              <CloseButton onClick={onClose}>닫기</CloseButton> */}
+              <ButtonContainer>
+                {/* <CloseButton onClick={onAgrre}>동의</CloseButton> */}
+                <CloseButton onClick={onClose}>닫기</CloseButton>
+              </ButtonContainer>
           </PanelContainer>
         </BlurScreen>);
 };

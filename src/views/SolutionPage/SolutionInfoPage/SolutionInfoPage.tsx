@@ -1,8 +1,10 @@
 import React, {useState, useReducer} from 'react';
 import axios from 'axios';
+import API from '@util/api';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import i18nArrayResource from '@assets/i18n/registerPage.json';
+import usePromise from '@util/hooks/usePromise';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
@@ -11,7 +13,7 @@ import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioCheckbox from '@components/SolutionPage/RadioCheckbox/RadioCheckbox';
 import Input from '@components/SolutionPage/Input/Input';
 import Select from '@components/SolutionPage/Select/Select';
-import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
+import LineParser from '@components/SolutionPage/LineParser/LineParser';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import {
   Block,
@@ -293,187 +295,201 @@ const SolutionInfoPage: NextPage = ({
     query: { lang: queryLang },
   },
 })  => {
-  if(typeof window !== "undefined"){
-    const ArrayT = useTranslate(i18nArrayResource);
-    const { t, lang, changeLang } = useTranslate(i18nResource);
-    // const playerPrevData = usePrevPlayerData();
-    const playerData = usePlayerData();
-    const [readOnly, setReadOnly] = useState(false);
-    const [formData, setFormData] = useState({
-      kor_first_name: undefined,
-      kor_last_name: undefined,
-      eng_first_name: undefined,
-      eng_last_name: undefined,
-      sex: undefined,
-      email: undefined,
-      passport_no: undefined,
-      home_address: undefined,
-      phone_no:undefined,
-      nationality: undefined,
-      birth_date: undefined,
-      is_visited_korea: undefined,
-      have_residence_license: undefined,
-      language_skill: undefined,
-      residence_no: undefined,
-      father_name:undefined,
-      father_nationality:undefined,
-      father_phone_no:undefined,
-      father_job:undefined,
-      mother_name:undefined,
-      mother_nationality:undefined,
-      mother_phone_no:undefined,
-      mother_job:undefined,
-      high_school_name:undefined,
-      high_school_address:undefined
-    });
-
-    React.useEffect(() => {
-      setLoading(true);
-      if (typeof playerData === 'undefined') return;   
-      const tempData = Object.assign(formData, playerData.userinfo);
-      setFormData(tempData);
-      setLoading(false);
-    }, [playerData]);
-    
-    React.useEffect(() => {
-      let sid = ""; 
-      if(typeof window !== "undefined"){
-        sid = window.sessionStorage.getItem('sid');
+  const ArrayT = useTranslate(i18nArrayResource);
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+  let playerData:any = undefined;
+  React.useEffect(() => {
+    API.getPlayerStatus()
+    .then((data)=>{
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+        const univ_code = getChosseUnivCode();
+        const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
+        if(typeof window !== "undefined"){
+          sessionStorage.setItem('chooseUnivCode',user.univ_code);
+          sessionStorage.setItem('chooseUnivName',user.univ_name);
+          sessionStorage.setItem('chooseSubjectname',user.subjectname);
+          sessionStorage.setItem('choosePayRank',user.pay_rank);
+        }
+        if(user.step === STEP_STRING.STEP_THREE_PENDING){
+          setReadOnly(true);
+        }
+        // TODO: 스테이터스 확인 후 url 변경
       }
-      const univcode = getChosseUnivCode();
-      axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);
+  
+  const handleSubmit = (type:"save"|"send") => {
+    //e: React.FormEvent<HTMLFormElement>
+    // e.preventDefault();
+
+    setLoading(true);
+
+    let sid = ""; 
+    if(typeof window !== "undefined"){
+      sid = window.sessionStorage.getItem('sid');
+    }
+    const univcode = getChosseUnivCode();
+    
+    let objectFormData = JSON.parse(JSON.stringify(formData));
+    delete objectFormData.id;
+    delete objectFormData.user_id;
+    const tempYear = objectFormData.birth_date.substr(0,4);
+    const tempMonth = objectFormData.birth_date.substr(4,2);
+    const tempDay = objectFormData.birth_date.substr(6,2);
+    objectFormData.birth_date = tempYear+"-"+tempMonth+"-"+tempDay;
+    let jsonFormData = {};
+    Object.keys(objectFormData).forEach((key) =>{
+      if(objectFormData[key]==="undefined"){
+        objectFormData[key]= "";
+      }
+      return Object.assign(jsonFormData,{[key]:objectFormData[key]});
+    });
+    jsonFormData.univ_code = univcode;
+    if(type==="send"){
+      jsonFormData.is_done = true;
+    }else if(type==="save"){
+      jsonFormData.is_done = false;
+    }
+    
+    axios({
+      method: 'get',
+      url: `/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`,
+      withCredentials : true
+    })
       .then((res) => {
         const {
-          data: { status, userstatus },
+          data: { status, update_userinfo },
         } = res;
         if (status !== 'success') {
+          console.log(res.data);
           setErrMsg((prev) => ({ ...prev, [status]: true }));
         } else {
-          console.log(userstatus);
-          const user = userstatus.find(status=>status.univ_code === univcode);
-            if(user.step === STEP_STRING.STEP_THREE_PENDING){
-              setReadOnly(true);
-            }
+          let tempData = Object.assign(formData, update_userinfo);
+          tempData.birth_date = update_userinfo.birth_date.replaceAll('-','');
+          setFormData(tempData);
+          setLoading(false);
+          if(type==="send"){
+            setReadOnly(true);
+          }else{
+            alert(t('saved'));
+          }
+          // Router.push({
+          //   pathname: '/login',
+          //   query: { lang },
+          // });
         }
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-    }, []);
-    
-    const [errMsg, setErrMsg] = React.useState({
-      ERROR_NOT_EXIST_USERNAME: false,
-      ERROR_NOT_EXIST_LAST_NAME: false,
-      ERROR_LAST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_FIRST_NAME: false,
-      ERROR_FIRST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_EMAIL: false,
-      ERROR_EXIST_EMAIL: false,
-      ERROR_NOT_EXIST_PASSWORD: false,
-      ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
-      ERROR_NOT_EXIST_NATIONALITY: false,
-      ERROR_NOT_EXIST_BIRTH_DATE: false,
-      ERROR_NOT_EXIST_TOPIK_LEVEL: false,
-      ERROR_NOT_EXIST_IDENTITY: false,
-      ERROR_NOT_PROPER_PASSWORD: false,
-      ERROR_PASSWORD_CONFIRM_FAIL: false,
-      ERROR_NOT_VALID_EMAIL: false,
-    });
-    const [loading, setLoading] = React.useState<boolean>(false);
+  };
 
-    const handleSubmit = (type:"save"|"send") => {
-      //e: React.FormEvent<HTMLFormElement>
-      // e.preventDefault();
-  
-      setLoading(true);
+  const handleFormContent = (e?: React.ChangeEvent<HTMLInputElement>, t?: string, v?: string | number) => {
+    if (e !== undefined) {
+      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    } else if (t !== undefined) {
+      setFormData((prev) => ({ ...prev, [t]: v }));
+    }
+  };
 
-      let sid = ""; 
-      if(typeof window !== "undefined"){
-        sid = window.sessionStorage.getItem('sid');
-      }
-      const univcode = getChosseUnivCode();
-      
-      let objectFormData = JSON.parse(JSON.stringify(formData));
-      delete objectFormData.id;
-      delete objectFormData.user_id;
-      const tempYear = objectFormData.birth_date.substr(0,4);
-      const tempMonth = objectFormData.birth_date.substr(4,2);
-      const tempDay = objectFormData.birth_date.substr(6,2);
-      objectFormData.birth_date = tempYear+"-"+tempMonth+"-"+tempDay;
-      let jsonFormData = {};
-      Object.keys(objectFormData).forEach((key) =>{
-        if(objectFormData[key]==="undefined"){
-          objectFormData[key]= "";
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      ArrayT.changeLang(queryLang);
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
+
+  const getSesstionData =()=>{
+    let data = null;
+    if(typeof window !=="undefined"){
+      const univ_code = getChosseUnivCode();
+      let sessionData = sessionStorage.getItem('select_enter_value');
+      if(sessionData&&sessionData!==""){
+        sessionData=JSON.parse(sessionData);
+        sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
+        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
+        sessionData.major_str = sessionStorage.getItem('chooseSubjectname');
+        if(sessionStorage.getItem('choosePayRank')!==null&&sessionStorage.getItem('choosePayRank')!==''){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
+        }       
+      }else{
+        sessionData = {
+          univ_code:sessionStorage.getItem('chooseUnivCode'),
+          univ_name:sessionStorage.getItem('chooseUnivName'),
+          major_str:sessionStorage.getItem('chooseSubjectname')
+        }; 
+        if(sessionStorage.getItem('choosePayRank')!==null){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
         }
-        return Object.assign(jsonFormData,{[key]:objectFormData[key]});
-      });
-      jsonFormData.univ_code = univcode;
-      if(type==="send"){
-        jsonFormData.is_done = true;
-      }else if(type==="save"){
-        jsonFormData.is_done = false;
       }
-      
-      axios({
-        method: 'get',
-        url: `/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`,
-        withCredentials : true
-      })
-        .then((res) => {
-          const {
-            data: { status, update_userinfo },
-          } = res;
-          if (status !== 'success') {
-            console.log(res.data);
-            setErrMsg((prev) => ({ ...prev, [status]: true }));
-          } else {
-            let tempData = Object.assign(formData, update_userinfo);
-            tempData.birth_date = update_userinfo.birth_date.replaceAll('-','');
-            setFormData(tempData);
-            setLoading(false);
-            if(type==="send"){
-              setReadOnly(true);
-            }else{
-              alert(t('saved'));
-            }
-            // Router.push({
-            //   pathname: '/login',
-            //   query: { lang },
-            // });
-          }
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-  
-    const handleFormContent = (e?: React.ChangeEvent<HTMLInputElement>, t?: string, v?: string | number) => {
-      if (e !== undefined) {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-      } else if (t !== undefined) {
-        setFormData((prev) => ({ ...prev, [t]: v }));
+      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
+        data = sessionData;
       }
-    };
-  
-    React.useEffect(() => {
-      if (queryLang !== undefined) {
-        ArrayT.changeLang(queryLang);
-        changeLang(queryLang);
-      }
-    }, [queryLang]);
-  
-    React.useEffect(() => {
-      if (loading) {
-        const errObj = { ...errMsg };
-        Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
-        setErrMsg(errObj);
-      }
-    }, [loading]);
-  
+    }
+    return data;
+  }  
+
+  const getPlayerData =async()=>{
+    const data = await API.getUserInfo();
+    return data;
+  }
+
+  const [readOnly, setReadOnly] = useState(false);
+  const [formData, setFormData] = useState({
+    kor_first_name: undefined,
+    kor_last_name: undefined,
+    eng_first_name: undefined,
+    eng_last_name: undefined,
+    sex: undefined,
+    email: undefined,
+    passport_no: undefined,
+    home_address: undefined,
+    phone_no:undefined,
+    nationality: undefined,
+    birth_date: undefined,
+    is_visited_korea: undefined,
+    have_residence_license: undefined,
+    language_skill: undefined,
+    residence_no: undefined,
+    father_name:undefined,
+    father_nationality:undefined,
+    father_phone_no:undefined,
+    father_job:undefined,
+    mother_name:undefined,
+    mother_nationality:undefined,
+    mother_phone_no:undefined,
+    mother_job:undefined,
+    high_school_name:undefined,
+    high_school_address:undefined
+  });
+
+  React.useEffect(() => {
+    if (typeof playerData !== 'undefined'){
+      const tempData = Object.assign(formData, playerData.userinfo);
+      setFormData(tempData);
+    }   
+  }, [playerData]);
+
+  if(typeof window !== "undefined"){
+    // const playerPrevData = usePrevPlayerData();
     let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
     
+    const [loading, resolved, error] = usePromise(getPlayerData, []);
+    if (loading) return <div></div>; 
+    if (error) window.alert('API 오류');
+    if (!resolved) return null;
+    const {userinfo} = resolved;
+    playerData = userinfo[0];
+
     const isFinal = () =>{
       const isRequire = requireData.map(dataName =>{
         if(formData[dataName] === undefined||formData[dataName] === ""){
@@ -495,10 +511,10 @@ const SolutionInfoPage: NextPage = ({
             </LoadingPopup>
           )}          
           <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={3} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+          <StepHeader step={3} major_str={selectValue?selectValue.major_str:null} plan_str={selectValue?selectValue.plan_str:null} t={t} lang={lang} changeLang={changeLang}/>
           <Block>
             <Bold22>{t('create-person-information')}</Bold22>
-            <SmallNotice>*{t('display-items-must-be-entered')}</SmallNotice>
+            <SmallNotice>{t('display-items-must-be-entered')}</SmallNotice>
             <Form onSubmit={(e)=>handleSubmit(e)}>
               <Table>
                 <Row>
@@ -553,14 +569,14 @@ const SolutionInfoPage: NextPage = ({
                   </Column>
                 </Row>   
                 <Row>
-                  <RequireHeaderColumn>{t('staying-in-korea')}</RequireHeaderColumn>
+                  <RequireHeaderColumn><LineParser str={t('staying-in-korea')}/></RequireHeaderColumn>
                   <FlexColumn width={12} >
                     <RadioCheckbox id="stay_yes" group="is_visited_korea" value="true" onChange={handleFormContent} checked={formData.is_visited_korea===true||formData.is_visited_korea==="true"}>{t('yes')}</RadioCheckbox>
                     <RadioCheckbox id="stay_no" group="is_visited_korea" value="false" onChange={handleFormContent} checked={formData.is_visited_korea===false||formData.is_visited_korea==="false"}>{t('no')}</RadioCheckbox>
                   </FlexColumn>
                 </Row>
                 <Row>
-                  <RequireHeaderColumn>{t('certificate-residence-card-issued')}</RequireHeaderColumn>
+                  <RequireHeaderColumn><LineParser str={t('certificate-residence-card-issued')}/></RequireHeaderColumn>
                   <FlexColumn width={12} >
                     <RadioCheckbox id="issue_yes" group="have_residence_license" value="true" onChange={handleFormContent} checked={formData.have_residence_license===true||formData.have_residence_license==="true"}>{t('yes')}</RadioCheckbox>
                     <RadioCheckbox id="issue_no" group="have_residence_license" value="false" onChange={handleFormContent} checked={formData.have_residence_license===false||formData.have_residence_license==="false"}>{t('no')}</RadioCheckbox>

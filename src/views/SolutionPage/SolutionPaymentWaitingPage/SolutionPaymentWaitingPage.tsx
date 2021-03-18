@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import API from '@util/api';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
+import usePromise from '@util/hooks/usePromise';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSWRInfinite, responseInterface } from 'swr';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
@@ -11,29 +13,18 @@ import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/Solut
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import Input from '@components/SolutionPage/Input/Input';
-import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
+import LineParser from '@components/SolutionPage/LineParser/LineParser';
 import {
   Block,
-  FooterBlock,
-  ReadyButton,
-  GreyText,
   Bold22,
-  Bold18,
   FooterNoticeContainer,
   RadioButtonPaymentContainer,
-  UncheckedRadioIcon,
-  CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
-import {
-  MessengerIcon,
-  IconContainer
-} from '@views/SolutionPage/SolutionPaymentWaitingPage/SolutionPaymentWaitingPage.style';
 
 import {
   Table,
   Row,
   Column,
-  HeaderRow,
   HeaderColumn,
   TopBottomNonPaddingColumn
 } from '@components/SolutionPage/Table/Table.style';
@@ -46,30 +37,6 @@ interface service {
   strPrice: string;
   index: number;
 }
-
-let services: Array<service> = [
-  {
-    name: '번역 공증 서비스',
-    type: "trans",
-    price : 20000,
-    strPrice:'',
-    index: 1
-  },
-  {
-    name: '입학지원 서비스',
-    type: "support",
-    price : 25000,
-    strPrice:'',
-    index: 2
-  },
-  {
-    name: '입학지원 PRO',
-    type: "pro",
-    price : 30000,
-    strPrice:'',
-    index: 3
-  }
-];
 
 const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {const {
@@ -114,46 +81,14 @@ const sendPlayerInfo = (plan:string) => {
   return true;
 };
 
-const onClickNextStep=(isFinal:boolean, selectValue)=>{
-  if(isFinal){
-    if(selectValue.pay_method ==="account_transfer"){
-
-    }else if(selectValue.pay_method ==="card_paypal"){
-      sendPlayerInfo(selectValue.plan);
-    }
-  }else if(selectValue.pay_method ==="account_transfer"){
-    window.alert("입금자명을 입력하세요");
-  }
-}
-
 const getChosseUnivCode =()=>{
     let data = null;
     if(typeof window !=="undefined"){
-      data = "SMU_UNI";//window.sessionStorage.getItem('chooseUniv');
+      data = sessionStorage.getItem('chooseUnivCode');
     }
     return data;
 }
 
-const getSesstionData =()=>{
-    let data = null;
-    if(typeof window !=="undefined"){
-      const univ_code = getChosseUnivCode();
-      let sessionData = sessionStorage.getItem('select_enter_value');
-      if(sessionData&&sessionData!==""){
-        sessionData=JSON.parse(sessionData);
-        sessionData.univ_code = sessionStorage.getItem('chooseUniv');
-        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
-        sessionData.major = sessionStorage.getItem('chooseSubjectname');
-        sessionData.plan = sessionStorage.getItem('choosePayRank');
-      }else{
-        sessionData = null;
-      }
-      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
-        data = sessionData;
-      }
-    }
-    return data;
-  }
 
 const fetchPlayerStatusInfo = (url: string) => axios.get(url,{withCredentials : true})
   .then((res) => {const {
@@ -201,92 +136,186 @@ const SolutionPaymentPage: NextPage = ({
     query: { lang: queryLang },
   },
 }) => {
+
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+
+  let services: Array<service> = [
+    {
+      name: t('translation-notarization-service'),
+      type: "trans",
+      price : 20000,
+      strPrice:'',
+      index: 1
+    },
+    {
+      name: t('enter-support-service'),
+      type: "support",
+      price : 25000,
+      strPrice:'',
+      index: 2
+    },
+    {
+      name: t('enter-support-pro'),
+      type: "pro",
+      price : 30000,
+      strPrice:'',
+      index: 3
+    }
+  ];
+  
+  React.useEffect(() => {
+    API.getPlayerStatus()
+    .then((data)=>{
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+        const univ_code = getChosseUnivCode();
+        const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
+        if(typeof window !== "undefined"){
+          sessionStorage.setItem('chooseUnivCode',user.univ_code);
+          sessionStorage.setItem('chooseUnivName',user.univ_name);
+          sessionStorage.setItem('chooseSubjectname',user.subjectname);
+          sessionStorage.setItem('choosePayRank',user.pay_rank);
+        }
+        // TODO: 스테이터스 확인 후 url 변경
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);  
+
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
+    
+  const getSesstionData =()=>{
+    let data = null;
+    if(typeof window !=="undefined"){
+      const univ_code = getChosseUnivCode();
+      let sessionData = sessionStorage.getItem('select_enter_value');
+      if(sessionData&&sessionData!==""){
+        sessionData=JSON.parse(sessionData);
+        sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
+        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
+        sessionData.major_str = sessionStorage.getItem('chooseSubjectname');
+        if(sessionStorage.getItem('choosePayRank')!==null&&sessionStorage.getItem('choosePayRank')!==''){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
+        }       
+      }else{
+        sessionData = {
+          univ_code:sessionStorage.getItem('chooseUnivCode'),
+          univ_name:sessionStorage.getItem('chooseUnivName'),
+          major_str:sessionStorage.getItem('chooseSubjectname')
+        }; 
+        if(sessionStorage.getItem('choosePayRank')!==null){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
+        }
+      }
+      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
+        data = sessionData;
+      }
+    }
+    return data;
+  }  
+
+
   if(typeof window !== "undefined"){
-    const { t, lang, changeLang } = useTranslate(i18nResource);
+    const getPlayerData =async()=>{
+      const data = await API.getPlayerStatus();
+      return data;
+    }
+
     let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
-    const accountTransferName = window.sessionStorage.getItem("pay_payer_name");
-    
-    let playerData = usePlayerData();
-    
-    const selectUnivName = window.sessionStorage.getItem("chooseUnivName"); 
-    const plan = services.find(service=>service.type===selectValue.plan).name;
+    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
+    const accountTransferName = sessionStorage.getItem("pay_payer_name");
+    const selectUnivName = sessionStorage.getItem("chooseUnivName"); 
+    const plan = services.find(service=>service.type===selectValue.plan_str).name;
     const priceUnit = "KRW"; 
 
+    const [loading, resolved, error] = usePromise(getPlayerData, []);
+    if (loading) return <div></div>; 
+    if (error) window.alert('API 오류');
+    if (!resolved) return null;
+    const {userstatus_list} = resolved;
+    const univ_code =  getChosseUnivCode()
+    const playerData = userstatus_list.find(us=>us.univ_code ===univ_code);
+
     if(playerData !== undefined){
-      const statusId = sessionStorage.getItem("user_status_id");
-      playerData = playerData.userstatus.find(status=>status.id === Number.parseInt(statusId));
+      // const statusId = sessionStorage.getItem("user_status_id");
+      // playerData = playerData.userstatus.find(status=>status.id === Number.parseInt(statusId));
 
       return (
         <DefaultLayout>
           <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={2} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+          <StepHeader step={2} major_str={selectValue?selectValue.major_str:null} plan_str={selectValue?selectValue.plan_str:null} t={t} lang={lang} changeLang={changeLang}/>
   
           <Block>
-            <Bold22>결제 수단</Bold22>
+            <Bold22>{t('payment-method')}</Bold22>
             <RadioButtonPaymentContainer>
-                <RadioButton id="account_transfer" group="pay_method" value="account_transfer" checked={selectValue?.pay_method==="account_transfer"} onChange={handleSelectEnter}>계좌이체</RadioButton>
-                <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={selectValue?.pay_method==="card_paypal"} onChange={handleSelectEnter}>카드결제(페이팔)</RadioButton>
+                <RadioButton id="account_transfer" group="pay_method" value="account_transfer" checked={selectValue?.pay_method==="account_transfer"} onChange={handleSelectEnter}>{t('account-transfer')}</RadioButton>
+                <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={selectValue?.pay_method==="card_paypal"} onChange={handleSelectEnter}>{t('card-payment-paypal')}</RadioButton>
              </RadioButtonPaymentContainer>
             <Table>
               <Row>
-                <HeaderColumn>선택 학교</HeaderColumn>
+                <HeaderColumn>{t('select-university')}</HeaderColumn>
                 <Column width={12}>{selectUnivName}</Column>
               </Row>
               <Row>
-                <HeaderColumn>선택 상품</HeaderColumn>
+                <HeaderColumn>{t('select-service')}</HeaderColumn>
                 <Column width={12} >{plan}</Column>
               </Row>
               <Row>
-                <HeaderColumn>서비스비</HeaderColumn>
+                <HeaderColumn>{t('service-fee')}</HeaderColumn>
                 <Column width={12} >{convertPrice(playerData.service_fee)} {priceUnit}</Column>
               </Row>
               {playerData.apply_fee!=="null"?
                 <Row>
-                  <HeaderColumn>원서접수비</HeaderColumn>
+                  <HeaderColumn>{t('application-fee')}</HeaderColumn>
                   <Column width={12} >{convertPrice(playerData.apply_fee)} {priceUnit}</Column>
                 </Row>
               :null}
               <Row>
-                <HeaderColumn>결제 금액 (VAT포함)</HeaderColumn>
+                <HeaderColumn>{t('total-payment-amount')}</HeaderColumn>
                 <Column width={12}>{convertPrice(playerData.pay_cost)} {priceUnit}</Column>
               </Row>
               {selectValue.pay_method==="account_transfer"?
                 <Row>
-                  <HeaderColumn>입금자명</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input readonly={true} value={accountTransferName} onChange={(e)=>setAccountTransferName(e.target.value)}/></TopBottomNonPaddingColumn>
+                  <HeaderColumn>{t('account-transfer-name')}</HeaderColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input readonly={true} value={accountTransferName}/></TopBottomNonPaddingColumn>
                 </Row>
               :null}
             </Table>
           </Block>
           
           <Block>
-            <Bold22>계좌이체 안내</Bold22>
+            <Bold22>{t('account-transfer-guidance')}</Bold22>
             <Table>
               <Row>
-                <HeaderColumn>입금 은행</HeaderColumn>
-                <Column width={12}>국민은행 (KOOKMIN BANK)</Column>
+                <HeaderColumn>{t('deposit-bank')}</HeaderColumn>
+                <Column width={12}>{t('deposit-bank-val')}</Column>
               </Row>
               <Row>
-                <HeaderColumn>은행 코드</HeaderColumn>
-                <Column width={12} >CZNBKRSE (해외에서 송금 시, 사용하는 코드)</Column>
+                <HeaderColumn>{t('bank-code')}</HeaderColumn>
+                <Column width={12} >{t('bank-code-val')}</Column>
               </Row>
               <Row>
-                <HeaderColumn>계좌번호</HeaderColumn>
-                <Column width={12}>479401-04-381337</Column>
+                <HeaderColumn>{t('bank-account-number')}</HeaderColumn>
+                <Column width={12}>{t('bank-account-number-val')}</Column>
               </Row>
                 <Row>
-                  <HeaderColumn>예금주</HeaderColumn>
-                  <Column width={12} >이기성 (카툼)</Column>
+                  <HeaderColumn>{t('depositor')}</HeaderColumn>
+                  <Column width={12} >{t('depositor-val')}</Column>
                 </Row>
             </Table>
           </Block>
           <Block>
             <FooterNoticeContainer>
-            입금 내역을 확인하고 있습니다.<br/>
-            입금이 확인되어야 입학솔루션 진행이 가능합니다.<br/>
-            입금 후,<IconContainer><MessengerIcon /></IconContainer>으로 입금 내역을 알려주시면 빠른 처리가 가능합니다. <br/>
-            <Bold22>이용해 주셔서 감사합니다.</Bold22>
+              <LineParser str={t('account-transfer-notice-text')}/>
             </FooterNoticeContainer>
           </Block>
         </DefaultLayout>

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { fontColor,mainColor600, whiteColor } from '@util/style/color';
+import { fontColor,mainColor600, whiteColor,greyColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import unchekedRadioSVG from '@assets/svg/uncheked_radio_icon.svg';
 import chekedRadioSVG from '@assets/svg/cheked_radio_icon.svg';
@@ -14,15 +14,15 @@ export const BlurScreen =  styled.div`
 `;
 
 export const PanelContainer = styled.div`
-    position: absolute;
+    position: relative;
     width: 1100px;
-    height: 700px;
+    height: 720px;
     top: 50px;
-    left: 400px;
     margin: auto;
     background: ${whiteColor};
     border-radius: 3px;
     z-index: 100;
+    padding: 10px;
 `;
 
 export const Title = styled.div`
@@ -42,9 +42,28 @@ export const AgreementContainer = styled.div`
     border-radius: 3px;
     overflow-y: scroll;
 `;
-
+export const ButtonContainer = styled.div`
+    display:flex;
+    justify-content: center;
+    align-items: center;
+`;
 export const CloseButton = styled.button`
     margin: auto;
+    min-width: 52px;
+    min-height: 19px;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    align-items: center;
+    text-align: center;
+    padding: 10px 22px; 
+    border: 1px solid ${mainColor600};
+    box-sizing: border-box;
+    border-radius: 100px;
+    cursor:pointer;
+    background:${greyColor};
+    border: 1px solid ${greyColor};
+    color: ${whiteColor};
 `;
 
 

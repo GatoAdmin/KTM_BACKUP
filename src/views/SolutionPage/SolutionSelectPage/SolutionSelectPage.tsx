@@ -32,6 +32,7 @@ import {
   Accent,
   CoverImage
 } from '@views/SolutionPage/SolutionSelectPage/SolutionSelectPage.style';
+import isLogin from '@util/auth/auth';
 
 interface tap {
   name: string;
@@ -145,7 +146,11 @@ const SolutionSelectPage: NextPage = ({
               if(user.step === STEP_STRING.STEP_TWO){
                 if(user.pay_rank===null){
                   Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
-                }else{
+                }
+                else if(user.pay_status==="READY"){
+                  Router.push(`/solution/2/paymentWating${queryLang?`?lang=${queryLang}`:''}`)
+                }
+                else{
                   Router.push(`/solution/2/payment${queryLang?`?lang=${queryLang}`:''}`)
                 }
               }else if(user.step === STEP_STRING.STEP_TWO_PENDING){
@@ -279,7 +284,11 @@ const SolutionSelectPage: NextPage = ({
     return (
       <DefaultLayout>
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-        <StepHeader step={1} major_str={ selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} t={t} lang={lang} changeLang={changeLang}/>
+        {isLogin()
+        ?<StepHeader step={1} major_str={ selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} t={t} lang={lang} changeLang={changeLang}/>
+        :<StepHeader step={1} major_str={null} t={t} lang={lang} changeLang={changeLang}/>
+        }
+        
         <Block>
           <BlockHeader>{t('select-enter-type')}</BlockHeader>
           {univ_info

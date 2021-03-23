@@ -65,10 +65,13 @@ export const Row = styled.div<RowProps>`
       
 
 `;
-
+//min-width: 61px;
 export const Column = styled.div<ColumnProps>`
-    min-width: 61px;
     padding: 17px;
+    
+    align-items: center;
+    align-self: center;
+    
     ${(props)=>(props.width
         ?css`width:${props.width*61}px`
         :null
@@ -119,13 +122,18 @@ export const FlexColumn = styled.div<ColumnProps>`
     display: flex;
     min-width: 150px;
     padding: 17px;
+
+    align-items: center;
+
     ${(props)=>(props.width
         ?css`width:${props.width*61}px`
         :null
         )};
 
     ${(props)=>(props.textAlign
-        ?css`text-align:${props.textAlign}`
+        ?css`
+          justify-content: ${props.textAlign};
+        `
         :null
         )};  
     ${(props)=>(props.fontSize

@@ -12,8 +12,14 @@ import moreViewOnSVG from '@assets/svg/more_view_icon_on.svg';
 interface ContainerProps {
     items : number;
     show: boolean;
+    lang?: string;
 }
-
+interface ItemProps {
+    lang?: string;
+}
+interface IconProps{
+    type?: string;
+}
 export const ReviewRejectIcon = styled(reviewRejectSVG).attrs({
     viewBox: '0 0 18 18'
 })`
@@ -71,7 +77,6 @@ export const DropdownItemContainer = styled.div<ContainerProps>`
     z-index: 50;
     top: 30px;
     right: 36px;
-    width: 120px;
     min-height: 40px;
     ${(props)=>(props.items
         ?css`height:${props.items*40}px`
@@ -84,6 +89,10 @@ export const DropdownItemContainer = styled.div<ContainerProps>`
         : css`
                 display: none;
             `)}
+    ${(props)=>(props.lang==="vn"
+        ?css`width: 152px;`
+        :css`width: 120px;`
+    )}
     background: ${whiteColor};
     border: 1px solid ${lightGreyColor};
     box-sizing: border-box;
@@ -92,8 +101,8 @@ export const DropdownItemContainer = styled.div<ContainerProps>`
 `; 
 
 
-export const DropdownItem = styled.div`
-    width: 88px;
+export const DropdownItem = styled.div<ItemProps>`
+    white-space: nowrap;
     height: 18px;
     display: flex;
     align-items: center;
@@ -103,6 +112,10 @@ export const DropdownItem = styled.div`
     font-weight: bold;
     font-size: 14px;
     line-height: 20px;
+    ${(props)=>(props.lang==="vn"
+        ?css`width: 120px;`
+        :css`width: 88px;`
+        )}
     :first-child{
         border-radius: 9px 9px 0px 0px;
     };
@@ -113,6 +126,7 @@ export const DropdownItem = styled.div`
     :only-child{
         border-radius: 9px 9px 9px 9px;
     };
+
     &+&{
         border-top: 1px solid ${lightGreyColor};
     };
@@ -122,8 +136,15 @@ export const DropdownItem = styled.div`
     }
 `; 
 
-export const IconContainer =  styled.div`
+export const IconContainer =  styled.div<IconProps>`
     width: 15px;
     height: 15px;
-    margin-right:10px;
+    ${(props)=>(props.type==="reviewCompleted"
+    ?css` margin-right:7px; `
+    :props.type==="reviewReject"
+    ?css` margin-right:7px; `
+    :props.type==="transferCompleted"
+    ?css` margin-right:7.5px; `
+    :css` margin-right:10px; `
+    )}
 `; 

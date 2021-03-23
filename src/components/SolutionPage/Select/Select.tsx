@@ -14,6 +14,7 @@ interface SelectProps {
   options: Array<string | number>;
   name: string;
   defaultValue?: string;
+  readOnly?:boolean;
   handleFormContent: (
     e?: React.ChangeEvent<HTMLInputElement> | undefined,
     t?: string | undefined,
@@ -77,16 +78,18 @@ const changeValue = (name: string, optionIndex: string | number) => {
 };
 
 const Select: React.VFC<SelectProps> = ({
-  options, placeholder, defaultValue, name, handleFormContent,
+  options, placeholder, defaultValue, name, handleFormContent, readOnly=false
 }) => {
   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visible, toggleVisible] = useVisible(containerRef);
   const getTriggerChangeOption = (optionValue: string | number, optionIndex: number) => () => {
-    const changedVal = changeValue(name, optionIndex);
-    handleFormContent(undefined, name, changedVal);
-    setInputValue(optionValue);
-    toggleVisible();
+    if(!readOnly){
+      const changedVal = changeValue(name, optionIndex);
+      handleFormContent(undefined, name, changedVal);
+      setInputValue(optionValue);
+      toggleVisible();
+    }
   };
 
   const getDefaultOptionConvert = (optionValue: string | number) => {

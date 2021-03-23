@@ -32,6 +32,7 @@ import {
 import {
     EmptyText
 } from '@components/SolutionPage/Common/Common.style';
+import isLogin from '@util/auth/auth';
 
 interface step {
   name: string;
@@ -60,21 +61,20 @@ export const getLoginCheck=()=>{
 
 export const getSelectUnivInfo= async (lang:string)=>{
   try{
-    if(getLoginCheck()){//
+    if(isLogin()){//
+      console.log(sessionStorage.getItem('chooseUnivCode'))
       if(typeof window !== "undefined"){
         const univ_code = sessionStorage.getItem('chooseUnivCode');
-       // const univ_code = "SMU_UNI";//KMU_UNI
-          console.log(univ_code)
         if(typeof univ_code!=="undefined"&&univ_code!=="undefined"&&univ_code!==null){
           const univInfo = await API.getUnivData(univ_code,lang);
           return univInfo;
         }else{
-          return null;
+          return {};
         }
       }
     }
     else{
-      return null;
+      return {};
     }
   }catch(error){
     console.log(error);
@@ -90,6 +90,12 @@ interface initialSelectEnter{
   major_type?:string;
   plan_str?: string;
   pay_method?: string;
+}
+
+interface service {
+  name: string;
+  type: string;
+  index: number;
 }
 
 export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
@@ -140,7 +146,7 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
   ];
 }
 
-const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, lang, changeLang}) => {  
+const StepHeader: React.VFC<StepProps> = ({ step = 1, t, lang, changeLang}) => {  
   const getUnivInfo=async()=>{
     const data = await getSelectUnivInfo(lang);
     return data;
@@ -155,14 +161,66 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, la
     }
   };
   
+  let services: Array<service> = [
+    {
+      name: t('translation-notarization-service'),
+      type: "trans",
+      index: 1
+    },
+    {
+      name: t('enter-support-service'),
+      type: "support",
+      index: 2
+    },
+    {
+      name: t('enter-support-pro'),
+      type: "pro",
+      index: 3
+    }
+  ];
+  
+  const getSesstionData =()=>{
+    let data = null;
+    if(typeof window !=="undefined"){
+      const univ_code = sessionStorage.getItem('chooseUnivCode');
+      let sessionData = sessionStorage.getItem('select_enter_value');
+      if(sessionData&&sessionData!==""){
+        sessionData=JSON.parse(sessionData);
+        sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
+        sessionData.univ_name=sessionStorage.getItem('chooseUnivName');
+        sessionData.major_str=sessionStorage.getItem('chooseSubjectname');
+        if(sessionStorage.getItem('choosePayRank')!==null){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
+        }
+      }else{
+        sessionData = {
+          univ_code:sessionStorage.getItem('chooseUnivCode'),
+          univ_name:sessionStorage.getItem('chooseUnivName'),
+          major_str:sessionStorage.getItem('chooseSubjectname')
+        };
+        if(sessionStorage.getItem('choosePayRank')!==null){
+          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
+        }
+      }
+      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
+        data = sessionData;
+      }
+    }
+    return data;
+  }
+  const sesstionData = getSesstionData();
+  let major_str = sesstionData?.major_str;
+  let plan_str = sesstionData?.plan_str;
+
   const [loading, resolved, error] = usePromise(getUnivInfo, []);
   if (loading) return <div></div>; 
   if (error) window.alert('API 오류');
   if (!resolved) return null;
-  let {univ_info, major, document} = resolved;
+  let info = resolved;
 
-  if(typeof window !== "undefined"){
-  let univInfo = univ_info;
+  let univInfo = info?.univ_info;
   const steps: Array<step> = [
     {
       name: `1. ${t('select-school')}`,
@@ -185,6 +243,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, la
       index: 5,
     },
   ];
+  
   return (
     <SolutionHeader>
       <StepContainer>
@@ -250,8 +309,6 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, major_str, plan_str, t, la
       </UnivContainer>
     </SolutionHeader>
 );
-  }
-  return <SolutionHeader></SolutionHeader>
 };
 
 export default StepHeader;

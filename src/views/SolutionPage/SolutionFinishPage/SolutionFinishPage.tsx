@@ -1,10 +1,9 @@
 import React, {useState, useReducer} from 'react';
-import axios from 'axios';
+import API from '@util/api';
+import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
-import Dummy from '@components/SolutionPage/dummy.json';
 import { GetServerSideProps, NextPage } from 'next';
-import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import StepHeader, {useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
@@ -12,7 +11,8 @@ import Alarm from '@components/SolutionPage/DocumentAlarm/Alarm';
 import Dropdown from '@components/SolutionPage/DocumentDropdown/Dropdown';
 import HelpTip from '@components/SolutionPage/DocumentHelpTip/HelpTip';
 import Checkbox from '@components/SolutionPage/BigCheckbox/BigCheckbox';
-import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
+import LineParser from '@components/SolutionPage/LineParser/LineParser';
+
 import {
   TopNonBlock,
   Block,
@@ -21,6 +21,7 @@ import {
   StringDot,
   BoldText,
   FooterNoticeContainer,
+  TextContainer
 } from '@components/SolutionPage/Common/Common.style';
 import {
   HelpImage
@@ -40,184 +41,12 @@ import {
 import RequireHeaderColumn from '@components/SolutionPage/Table/RequireHeaderColumn';
 import  Router,{withRouter} from 'next/router';
 
-const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
-const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
-
-interface service {
-  name: string;
-  type: string;
-  price : number;
-  strPrice: string;
-  index: number;
-}
-
-let services: Array<service> = [
-  {
-    name: '번역 공증 서비스',
-    type: "trans",
-    price : 20000,
-    strPrice:'',
-    index: 1
-  },
-  {
-    name: '입학지원 서비스',
-    type: "support",
-    price : 25000,
-    strPrice:'',
-    index: 2
-  },
-  {
-    name: '입학지원 PRO',
-    type: "pro",
-    price : 30000,
-    strPrice:'',
-    index: 3
-  }
-];
-
-const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {const {
-    userstatus
-  }: {
-    userstatus:{    
-        id: number;
-        user_id: number;
-        univ_code: string;
-        info_type: string;
-        subjecttitle: string;
-        subjectname: string;
-        pay_rank: string;
-        service_fee:string;
-        apply_fee:string;
-        pay_cost: string;
-        doc_cost:number;
-        pay_complete:boolean;
-      }
-    }  = res.data;
-
-    window.sessionStorage.setItem("user_status",JSON.stringify({userstatus}));
-    window.sessionStorage.setItem("user_status_id",String(userstatus.id));
-    return {userstatus};
-  });
-  
-const sendPlayerInfo = (plan:string) => {
-  let sid = ""; 
-  let statusId = "";
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-    statusId = window.sessionStorage.getItem("user_status_id");
-  }
-  const rank = services.find(service=>service.type===plan)?.index;
-  const parms = {
-    status_id: statusId,
-    rank: rank
-  };
-  const getKey = () => `/api/?action=set_player_payrank&params=${JSON.stringify(parms)}&sid=${sid}`;
-
-  const data = fetchSendPlayerInfo(getKey());
-  return true;
-};
-
-
 const getChosseUnivCode =()=>{
-    let data = null;
-    if(typeof window !=="undefined"){
-      data = "SMU_UNI";//window.sessionStorage.getItem('chooseUniv');
-    }
-    return data;
-}
-
-const getSesstionData =()=>{
-    let data = null;
-    if(typeof window !=="undefined"){
-      const univ_code = getChosseUnivCode();
-      let sessionData = sessionStorage.getItem('select_enter_value');
-      if(sessionData&&sessionData!==""){
-        sessionData = JSON.parse(sessionData);
-        sessionData.univ_code = sessionStorage.getItem('chooseUniv');
-        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
-        sessionData.major = sessionStorage.getItem('chooseSubjectname');
-        sessionData.plan = sessionStorage.getItem('choosePayRank');
-      }else{
-        sessionData = null;
-      }
-      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
-        data = sessionData;
-      }
-    }
-    return data;
+  let data = null;
+  if(typeof window !=="undefined"){
+    data = sessionStorage.getItem('chooseUnivCode');
   }
-
-// const fetchPlayerDocumentInfo = (url: string) => axios.get(url,{withCredentials : true})
-//   .then((res) => {
-//   let {
-//     userdocument
-//   }: {
-//     userdocument: Array<{
-//       id: number;
-//       user_id: number;
-//       univ_code: string;
-//       info_type: string;
-//       subjecttitle: string;
-//       status: string;
-//       refund_type: string;
-//       document_type: string;
-//       document_id: string;
-//       document:string;
-//       url: string;
-//       help_file: string;
-//       admin_reason: string;
-//       user_reason: string;
-//       status_id: string;
-//       language_skill: string;
-//       residence_no: string;
-//       alarm:string;
-//       }>
-//     }  = res.data;
-    
-//     console.log(res.data)
-//     return {userdocument: userdocument};
-//   });
-const fetchPlayerDocumentInfo = () => {
-  let {
-    userdocument
-  }: {
-    userdocument: Array<{
-      id: number;
-      user_id: number;
-      univ_code: string;
-      info_type: string;
-      subjecttitle: string;
-      status: string;
-      refund_type: string;
-      document_type: string;
-      document_id: string;
-      document:string;
-      url: string;
-      help_file: string;
-      reason: string;
-      status_id: string;
-      language_skill: string;
-      residence_no: string;
-      alarm:string;
-      }>
-    }  = Dummy;//res.data;
-    
-    return {userdocument: userdocument};
-  }
-
-const usePlayerDoucmentData = ()=>{
-  let sid = ""; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-  const getKey = () => `/api/?action=get_player_document&params=${JSON.stringify({})}&sid=${sid}`;
-  // let { data } = useSWRInfinite(
-  //   getKey,
-  //   (url) => fetchPlayerDocumentInfo(url)
-  // );
-  let data = fetchPlayerDocumentInfo();
-  return Array.isArray(data)?data[0]:data;
+  return data;
 }
 
 const zeroFill=(data:string|number, length:number)=>{
@@ -240,80 +69,84 @@ const getDateFormat=(dateString: string)=>{
   }
   return "";
 }
+
 const SolutionFinishPage: NextPage = ({
   router: {
     query: { lang: queryLang },
   },
 })  => {
-  if(typeof window !== "undefined"){
-    const { t, lang, changeLang } = useTranslate(i18nResource);
-    const documentData = usePlayerDoucmentData().userdocument; 
-    const [readOnly, setReadOnly] =  React.useState<boolean>(false);
-    
-    React.useEffect(() => {
-      let sid = ""; 
-      if(typeof window !== "undefined"){
-        sid = window.sessionStorage.getItem('sid');
-      }
-      const univcode = getChosseUnivCode();
-      axios.get(`/api/?action=get_player_status&params=${JSON.stringify({})}&sid=${sid}`,{withCredentials:true})
-      .then((res) => {
-        const {
-          data: { status, userstatus },
-        } = res;
-        if (status !== 'success') {
-          setErrMsg((prev) => ({ ...prev, [status]: true }));
-        } else {
-          console.log(userstatus);
-          const user = userstatus.find(us=>us.univ_code === univcode);
-            if(user.step === STEP_STRING.STEP_THREE_PENDING){
-              // setReadOnly(true);
+  const { t, lang, changeLang } = useTranslate(i18nResource);
+  const [readOnly, setReadOnly] =  React.useState<boolean>(false);
+  const [isConfirm, setConfirm] = React.useState<boolean>(false);
+  
+  React.useEffect(() => {
+    API.getPlayerStatus()
+    .then((data)=>{
+      if (data.status !== 'success') {
+        console.log(data);
+      } else { 
+          const univ_code = getChosseUnivCode();
+          console.log(univ_code)
+          if(data.userstatus_list.some(us=>us.univ_code === univ_code)){
+            const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
+            if(typeof window !== "undefined"){
+              sessionStorage.setItem('chooseUnivCode',user.univ_code);
+              sessionStorage.setItem('chooseUnivName',user.univ_name);
+              sessionStorage.setItem('chooseSubjectname',user.subjectname);
+              sessionStorage.setItem('choosePayRank',user.pay_rank);
+              sessionStorage.setItem('chooseUnivInfoType',user.info_type);
             }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }, []);
-    
-    const [errMsg, setErrMsg] = React.useState({
-      ERROR_NOT_EXIST_USERNAME: false,
-      ERROR_NOT_EXIST_LAST_NAME: false,
-      ERROR_LAST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_FIRST_NAME: false,
-      ERROR_FIRST_NAME_ONLY_ENGLISH: false,
-      ERROR_NOT_EXIST_EMAIL: false,
-      ERROR_EXIST_EMAIL: false,
-      ERROR_NOT_EXIST_PASSWORD: false,
-      ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
-      ERROR_NOT_EXIST_NATIONALITY: false,
-      ERROR_NOT_EXIST_BIRTH_DATE: false,
-      ERROR_NOT_EXIST_TOPIK_LEVEL: false,
-      ERROR_NOT_EXIST_IDENTITY: false,
-      ERROR_NOT_PROPER_PASSWORD: false,
-      ERROR_PASSWORD_CONFIRM_FAIL: false,
-      ERROR_NOT_VALID_EMAIL: false,
+            // if(user.step === STEP_STRING.STEP_TWO){
+            //   if(user.pay_rank===null){
+            //     Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
+            //   }
+            //   else if(user.pay_status==="READY"){
+            //     Router.push(`/solution/2/paymentWating${queryLang?`?lang=${queryLang}`:''}`)
+            //   }
+            //   else{
+            //     Router.push(`/solution/2/payment${queryLang?`?lang=${queryLang}`:''}`)
+            //   }
+            // }else if(user.step === STEP_STRING.STEP_TWO_PENDING){
+            //   Router.push(`/solution/2/paymentWating${queryLang?`?lang=${queryLang}`:''}`)
+            // }else if(user.step === STEP_STRING.STEP_THREE_INIT||user.step === STEP_STRING.STEP_THREE_PENDING){
+            //   Router.push(`/solution/3${queryLang?`?lang=${queryLang}`:''}`)
+            // }else if(user.step === STEP_STRING.STEP_FOUR){
+            //   Router.push(`/solution/4${queryLang?`?lang=${queryLang}`:''}`)
+            // }else 
+            if(user.step === STEP_STRING.STEP_FIVE_PENDING||user.step === STEP_STRING.STEP_SIX){
+              setReadOnly(true);
+              setConfirm(true);
+              // Router.push(`/solution/5${queryLang?`?lang=${queryLang}`:''}`)
+            }
+          }else{
+            sessionStorage.setItem('chooseUnivCode', univ_code);
+          }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
-    const [loading, setLoading] = React.useState<boolean>(false);
-    const [isConfirm, setConfirm] = React.useState<boolean>(false);
-    React.useEffect(() => {
-      if (queryLang !== undefined) {
-        changeLang(queryLang);
-      }
-    }, [queryLang]);
+  }, []);
   
-    React.useEffect(() => {
-      if (loading) {
-        const errObj = { ...errMsg };
-        Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
-        setErrMsg(errObj);
-      }
-    }, [loading]);
-  
-    let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:null});
-    
-    // let playerData = usePlayerData();
+  React.useEffect(() => {
+    if (queryLang !== undefined) {
+      changeLang(queryLang);
+    }
+  }, [queryLang]);
+
+  const usePlayerDoucmentData = async ()=>{
+    let data = await API.getPlayerDocument();
+    return Array.isArray(data)?data[0]:data;
+  }
+
+  const [loading, resolved, error] = usePromise(usePlayerDoucmentData, []);
+  if (loading) return <div></div>; 
+  if (error) window.alert('API 오류');
+  if (!resolved) return null;
+  const documentData =resolved.userdocument; 
+  console.log(resolved);
+
+  if(typeof window !== "undefined"){    
     const isFinal = () =>{
       return isConfirm;
     }
@@ -321,8 +154,18 @@ const SolutionFinishPage: NextPage = ({
     const onClickNextStep=(isFinal:boolean,t)=>{
       if(isFinal){
         if(window.confirm(t('do-you-complete-process'))){
-          setReadOnly(true);
-          // Router.push('/solution/5');
+          const sid = sessionStorage.getItem('sid');
+          const key = `/?action=user_check_solution_end&params={}&sid=${sid}`;
+          API.sendPlayerInfo(key).then(
+            data=>{
+              console.log(data)
+              if(data.status==='success'){
+                location.reload();
+                // Router.push(`/solution/5${queryLang?`?lang=${queryLang}`:''}`)
+              }
+            }
+          )
+          .catch(err=>console.log(err))
         }
       }else{
         return window.alert(t('please-agree-submit-document'));
@@ -332,30 +175,25 @@ const SolutionFinishPage: NextPage = ({
     if(documentData!==undefined){
       return (
         <DefaultLayout>
-          {loading && (
-            <LoadingPopup>
-              <Loading />
-            </LoadingPopup>
-          )}          
           <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={5} major={selectValue?typeof selectValue.major==="string"?selectValue.major:null:null} plan={selectValue?typeof selectValue.plan==="string"?selectValue.plan:null:null}/>
+          <StepHeader step={5} t={t} lang={lang} changeLang={changeLang}/>
           <TopNonBlock>
             <Table>
               <HeaderRow>
                 <Column width={6}>{t('document-name')}</Column>
-                <Column width={3}>{t('document-guide')}</Column>
-                <Column width={3}>{t('last-progress-date')}</Column>
-                <Column width={3}>{t('document-status')}</Column>
-                <Column width={1}></Column>
+                <Column width={2}><LineParser str={t('document-guide')} textAlign='center'/></Column>
+                <Column width={3}><LineParser str={t('last-progress-date')} textAlign='center'/></Column>
+                <Column width={3.4}>{t('document-status')}</Column>
+                <Column width={0.6}></Column>
               </HeaderRow>
               {/* 서류명칭 받아서 죽 생성시킬것 */}
               {documentData?.map((data, index)=>(
-                <Row key={data.document_id+index} alarm={data.alarm!==null?true:false}>
-                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null?<Alarm alarm={data.alarm}/>:null}</FlexColumn>
-                  <Column width={3}><HelpTip url={data.help_file}/></Column>
-                  <Column width={3}>{getDateFormat(data.update_datetime)}</Column>
-                  <Column width={3}>{t(data.status)}</Column>
-                  <Column width={1}><Dropdown userdocument={data}/></Column>
+                <Row key={data.document_id+index} alarm={data.alarm!==null&&data.alarm}>
+                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null&&data.alarm?<Alarm alarm={data.admin_reason}/>:null}</FlexColumn>
+                  <Column width={2}><HelpTip url={data.help_file} t={t} lang={queryLang}/></Column>
+                  <Column width={3}><TextContainer margingLeft={queryLang==="vn"?20:0}>{getDateFormat(data.update_datetime)}</TextContainer></Column>
+                  <Column width={3.4} oneLine={true}><LineParser str={t(data.status)}/></Column>
+                  <Column width={0.6}><Dropdown userdocument={data} t={t} lang={queryLang}/></Column>
                 </Row>
               ))}
             </Table>

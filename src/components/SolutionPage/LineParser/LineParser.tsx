@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {Accent,BoldText} from '@components/SolutionPage/Common/Common.style';
+import {Accent,BoldText, TextContainer} from '@components/SolutionPage/Common/Common.style';
 import {
     MessengerIcon,
     IconContainer
@@ -8,15 +8,16 @@ import {
 
 interface LineProps {
     str: string;
+    textAlign?:string;
 }
 
 const Parser: React.FC<LineProps> = ({
-  str
+  str,textAlign
 }) =>{
     if(str!==undefined){
         const str_array = str.split('<br>');
         return (
-            <div>
+            <TextContainer textAlign={textAlign?textAlign:'left'}>
                 {str_array.map((line,index) => {
                     let line_after:Array<any> = [];
                     let is_postprocessing = false;
@@ -51,7 +52,7 @@ const Parser: React.FC<LineProps> = ({
                         return <div key={line+index}>{line}</div>
                     }
                 })}
-            </div>);
+            </TextContainer>);
     }else{
         return <div></div>;
     }

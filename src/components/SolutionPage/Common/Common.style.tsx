@@ -11,6 +11,10 @@ interface ReadyButtonProps {
 interface TapItemProps {
     isViewTap : boolean;
 }
+interface TextProps {
+  textAlign?: string;
+  margingLeft?:number;
+}
 
 export const UncheckedRadioIcon = styled(unchekedRadioSVG)``;
 export const CheckedRadioIcon = styled(chekedRadioSVG)``;
@@ -188,6 +192,11 @@ export const SmallNotice = styled.div`
   color: ${mainColor600};
 `;
 
+export const SmallAccent = styled.div`
+  font-size: 12px;
+  line-height: 16x;
+  color: ${mainColor600};
+`; 
 export const Form = styled.form`
 
 `;
@@ -214,4 +223,17 @@ export const StringDot = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+export const TextContainer = styled.div<TextProps>`
+  max-width: max-content;
+    ${(props)=>props.textAlign
+      ?css`
+        text-align:${props.textAlign};
+      `:null
+    }
+    ${(props)=>props.margingLeft
+      ?css`
+        margin-left:${props.margingLeft}px;
+      `:null
+    }
 `;

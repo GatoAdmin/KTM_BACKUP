@@ -16,16 +16,17 @@ const Alarm: React.VFC<AlarmProps> = ({
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visible, toggleVisible] = useVisible(containerRef);
-  
+  console.log(alarm);
     return (
       <AlarmContainer ref={containerRef}>
          <AlarmIconContainer  onClick={toggleVisible}>
             <AlarmIcon/>
         </AlarmIconContainer>
         <AlarmTextContainer show={visible}>
-        {alarm.split('<br>').map((line, index) => {
-                    return <div key={index}>{line}</div>;
-                    })}
+        {alarm!==null?alarm.split('<br>').map((line, index) => {
+                    return <div key={line+index}>{line}</div>;
+                    })
+                    :null}
         </AlarmTextContainer>
       </AlarmContainer>
   );

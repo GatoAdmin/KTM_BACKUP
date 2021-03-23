@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '@util/api';
 import Aws from 'aws-sdk/dist/aws-sdk-react-native';
 import {
     DropdownItemContainer,
@@ -18,9 +18,7 @@ import {
 import ReviewRejectPanel from '@components/SolutionPage/DocumentPanel/ReviewRejectPanel';
 import UploadPanel from '@components/SolutionPage/DocumentPanel/UploadPanel';
 import useVisible from '@util/hooks/useVisible';
-
-import useTranslate from '@util/hooks/useTranslate';
-import i18nResource from '@assets/i18n/SolutionPage/solutionDocumentPage.json';
+import {DOCUMENT_TYPE_STRING} from '@components/SolutionPage/StepString';
 
 interface DropdownProps {
     userdocument:{
@@ -41,6 +39,8 @@ interface DropdownProps {
         status_id: number;
         alarm: string;
     };
+    lang?:string;
+    t;
 }
 
 const dropdownIcon = {
@@ -52,7 +52,7 @@ const dropdownIcon = {
   } as const;
 
   const arrayKeeper = {
-    '영사서류': {//Translation and notarization[
+    [DOCUMENT_TYPE_STRING.CONSULAR ]: {//Translation and notarization[
         'DOC_POST_REQUEST': 
             ['download',
             'transferCompleted'],
@@ -67,7 +67,7 @@ const dropdownIcon = {
         'END': 
             ['download'],
     },
-    '번역공증서류':{
+    [DOCUMENT_TYPE_STRING.TRANS_AND_NOTAR]:{
         'DOC_POST_REQUEST': 
             ['download',
             'transferCompleted'],
@@ -80,7 +80,7 @@ const dropdownIcon = {
         'END': 
             ['download'],
     },
-    '업로드서류':{
+    [DOCUMENT_TYPE_STRING.UPLOAD]:{
         'DOC_UPLOAD_REQUEST': 
             ['download',
             'upload'],
@@ -89,12 +89,12 @@ const dropdownIcon = {
         'END': 
             ['download'],
     },
-    '우편서류':{
+    [DOCUMENT_TYPE_STRING.POSTAL]:{
         'DOC_POST_REQUEST': 
             ['download',
             'transferCompleted']
     },
-    '원서서류':{
+    [DOCUMENT_TYPE_STRING.APPLICATION]:{
         'DOC_UPLOAD_REQUEST': 
             ['download',
             'upload'],
@@ -105,13 +105,10 @@ const dropdownIcon = {
     }
   };
 
-
-const uploadFile=()=>{
-    console.log("업로드");
-}
-
 const Dropdown: React.VFC<DropdownProps> = ({
-    userdocument
+    userdocument,
+    lang,
+    t
 }) => {
 //   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -121,7 +118,7 @@ const Dropdown: React.VFC<DropdownProps> = ({
   const {status,document_type,url, univ_code, user_id, document_id } = userdocument;
   const document_name = userdocument.document;
 //   const [visible, setVisible] =useState<boolean>(false);
-  const { t, lang, changeLang } = useTranslate(i18nResource);
+//   const { t, lang, chakngeLang } = useTranslate(i18nResource);
   const downloadFile=(urlString:string, name:string)=>{
   const s3config = {
     bucketName: process.env.REACT_APP_BUCKET_NAME,
@@ -165,19 +162,21 @@ const Dropdown: React.VFC<DropdownProps> = ({
                   sid = window.sessionStorage.getItem('sid');
                 }
                 let rUrl:string = '';
-                if(document_type === '우편서류'){
-                    rUrl=`/api/?action=user_doc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                if(document_type === DOCUMENT_TYPE_STRING.POSTAL){
+                    rUrl=`/?action=user_doc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
                 }else{
-                    rUrl=`/api/?action=user_doc_tnc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                    rUrl=`/?action=user_doc_tnc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
                 }
-                axios.get(rUrl)
-                .then(res=>{
-                    if(res.data.status==="success"){
+                console.log(rUrl)
+                API.requestDocumentAction(rUrl)
+                .then(data=>{
+                    console.log(data)
+                    if(data.status==="success"){
                         location.reload();
                     }
                 })
                 .catch(error => {
-                    console.log(error.response);//중간에 실패가 돌아올 경우, 에러를 패치해야함
+                    console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함
                 });
             }
         }else if(menu_type==="reviewCompleted"){
@@ -187,19 +186,21 @@ const Dropdown: React.VFC<DropdownProps> = ({
                   sid = window.sessionStorage.getItem('sid');
                 }
                 let rUrl:string = '';
-                if(document_type === '번역공증서류'){
-                    rUrl=`/api/?action=user_doc_tnc_end&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                if(document_type === DOCUMENT_TYPE_STRING.TRANS_AND_NOTAR){
+                    rUrl=`/?action=user_doc_tnc_end&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
                 }else{
-                    rUrl=`/api/?action=user_doc_tnc_consul&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                    rUrl=`/?action=user_doc_tnc_consul&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
                 }
-                axios.get(rUrl)
-                .then(res=>{
-                    if(res.data.status==="success"){
+                console.log(rUrl)
+                API.requestDocumentAction(rUrl)
+                .then(data=>{
+                    console.log(data)
+                    if(data.status==="success"){
                         location.reload();
                     }
                 })
                 .catch(error => {
-                    console.log(error.response);//중간에 실패가 돌아올 경우, 에러를 패치해야함
+                    console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함
                 });
             }
         }else if(menu_type==="upload"){
@@ -220,22 +221,22 @@ const Dropdown: React.VFC<DropdownProps> = ({
             <MoreViewOffIcon />
         </DropdownMoreIconContainer>
         {options!==undefined&&options.length>0 
-        ?<DropdownItemContainer items={options.length} show={visible}>
+        ?<DropdownItemContainer items={options.length} show={visible} lang={lang}>
             
-        {options.map((value, index) =>{
+        {options.map((value:string, index:number) =>{
             const Icon = dropdownIcon[value];
             return (  
-                <div key={index}>
-                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel document_id={document_id} onClose={()=>setVisibleReject(false)}/>:null}
-                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} user_id={user_id} univ_code={univ_code} document_id={document_id} document_type={document_type}/>:null}
+                <>
+                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel document_id={document_id} onClose={()=>setVisibleReject(false)} t={t}/>:null}
+                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} user_id={user_id} univ_code={univ_code} document_id={document_id} document_type={document_type} t={t}/>:null}
                 
-                    <DropdownItem key={value} onClick={e=>onClickDropdownItem(e,value)} >
-                        <IconContainer>
+                    <DropdownItem key={value+index} onClick={e=>onClickDropdownItem(e,value)} lang={lang}>
+                        <IconContainer type={value}>
                         <Icon/>
                         </IconContainer> 
                         {t(value)} 
                     </DropdownItem>
-                </div>
+                </>
             );
         } )}
         </DropdownItemContainer>

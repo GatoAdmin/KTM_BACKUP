@@ -29,18 +29,20 @@ export default {
   },
   getPlayerStatus:  async () => {
     const sid = sessionStorage.getItem('sid');
+    if (!isLogin()) return {};
     const response = await axios.get(`/?action=get_player_status&params={}&sid=${sid}`);
     return response.data;
   },
   getUserInfo:  async () => {
     const sid = sessionStorage.getItem('sid');
+    if (!isLogin()) return {};
     const response = await axios.get(`/?action=get_user_info&params={}&sid=${sid}`);
-    
-    console.log(response.data)
     return response.data;
   },
   getUnivData :  async (univ_code:string,lang:string) => {
     const sid = sessionStorage.getItem('sid');
+    if (!isLogin()) return {};
+    if(univ_code===undefined||univ_code===null)return {};
     let params:{univ_code:string; lang?:string;} = {
       univ_code: univ_code
     }
@@ -51,18 +53,25 @@ export default {
     return response.data;
   },
   sendPlayerInfo: async (url:string) => {
+    if (!isLogin()) return {};
     const response = await axios.get(url);
-    console.log(response.data)
+     return response.data;
+  },
+  requestDocumentAction: async (url:string) => {
+    if (!isLogin()) return {};
+    const response = await axios.get(url);
      return response.data;
   },
   getPlayerPayrank: async () => {
     const sid = sessionStorage.getItem('sid');
+    if (!isLogin()) return {};
     const status_id = sessionStorage.getItem('userStatusId');
     const response = await axios.get(`/?action=get_player_payrank&params={"status_id":"${status_id}"}&sid=${sid}`);
     return response.data;
   },
   getPlayerDocument: async () => {
     const sid = sessionStorage.getItem('sid');
+    if (!isLogin()) return {};
     const univ_code = sessionStorage.getItem('chooseUnivCode');
     const univ_info = sessionStorage.getItem('chooseUnivInfoType');
     const response = await axios.get(`/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}"}&sid=${sid}`);

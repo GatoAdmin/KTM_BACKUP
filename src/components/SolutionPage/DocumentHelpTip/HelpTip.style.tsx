@@ -1,9 +1,14 @@
 import styled, { css } from 'styled-components';
-import { fontColor,mainColor600, whiteColor } from '@util/style/color';
+import { fontColor,mainColor600, whiteColor,greyColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
-import unchekedRadioSVG from '@assets/svg/uncheked_radio_icon.svg';
-import chekedRadioSVG from '@assets/svg/cheked_radio_icon.svg';
+import closeSVG from '@assets/svg/close_icon.svg'
 
+export const CloseIcon = styled(closeSVG)``;
+export const IconContainer = styled.div`
+    position: fixed;
+    z-index: 10;
+    cursor: pointer;
+`;
 export const BlurScreen =  styled.div`
     position: fixed;
     width: 100%;
@@ -40,6 +45,13 @@ export const ImageContainer = styled.div`
     margin: auto;
 `;
 
+export const ButtonContainer = styled.div`
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+`;
+
 export const HelpTipContainer = styled.div`
     display: absolute;
     width: max-content;
@@ -52,10 +64,32 @@ export const Image = styled.img`
 
 export const CloseButton = styled.button`
     margin: auto;
+    min-width: 52px;
+    min-height: 19px;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    align-items: center;
+    text-align: center;
+    padding: 10px 22px; 
+    border: 1px solid ${mainColor600};
+    box-sizing: border-box;
+    border-radius: 100px;
+    cursor:pointer;
+    background:${greyColor};
+    border: 1px solid ${greyColor};
+    color: ${whiteColor};
 `;
 
-export const HelpText = styled.div`
+
+interface TextProps{
+    lang?:string;
+}
+export const HelpText = styled.div<TextProps>`
     color: ${mainColor600};
-    margin-left : 18px;
+    ${props=>props.lang==="vn"
+        ?css`margin-left : 29px;`
+        :css`margin-left : 18px;`
+    }
     cursor: pointer;
 `;

@@ -26,7 +26,8 @@ import {
   SmallNotice,
   FooterNoticeContainer,
   UncheckedRadioIcon,
-  CheckedRadioIcon
+  CheckedRadioIcon,
+  SmallAccent
 } from '@components/SolutionPage/Common/Common.style';
 import {
   CauseReturnContainer
@@ -81,59 +82,6 @@ let services: Array<service> = [
   }
 ];
 
-const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {const {
-    userstatus
-  }: {
-    userstatus:{    
-        id: number;
-        user_id: number;
-        univ_code: string;
-        info_type: string;
-        subjecttitle: string;
-        subjectname: string;
-        pay_rank: string;
-        service_fee:string;
-        apply_fee:string;
-        pay_cost: string;
-        doc_cost:number;
-        pay_complete:boolean;
-      }
-    }  = res.data;
-
-    window.sessionStorage.setItem("user_status",JSON.stringify({userstatus}));
-    window.sessionStorage.setItem("user_status_id",String(userstatus.id));
-    return {userstatus};
-  });
-  
-const sendPlayerInfo = (plan:string) => {
-  let sid = ""; 
-  let statusId = "";
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-    statusId = window.sessionStorage.getItem("user_status_id");
-  }
-  const rank = services.find(service=>service.type===plan)?.index;
-  const parms = {
-    status_id: statusId,
-    rank: rank
-  };
-  const getKey = () => `/api/?action=set_player_payrank&params=${JSON.stringify(parms)}&sid=${sid}`;
-
-  const data = fetchSendPlayerInfo(getKey());
-  return true;
-};
-
-const onClickNextStep=(isFinal:boolean, selectValue, t, afterFuntion:void)=>{
-  if(isFinal){
-    if(window.confirm(t('completed-information-entry'))){
-      afterFuntion;
-    }
-  }else{
-    return window.alert(t('enter-all-required-items'));
-  }
-}
-
 const getChosseUnivCode =()=>{
     let data = null;
     if(typeof window !=="undefined"){
@@ -142,66 +90,6 @@ const getChosseUnivCode =()=>{
     return data;
 }
 
-const getSesstionData =()=>{
-    let data = null;
-    if(typeof window !=="undefined"){
-      const univ_code = getChosseUnivCode();
-      let sessionData = sessionStorage.getItem('select_enter_value');
-      if(sessionData&&sessionData!==""){
-        sessionData = JSON.parse(sessionData);
-        sessionData.univ_code = sessionStorage.getItem('chooseUniv');
-        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
-        sessionData.major = sessionStorage.getItem('chooseSubjectname');
-        sessionData.plan = sessionStorage.getItem('choosePayRank');
-      }else{
-        sessionData = null;
-      }
-      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
-        data = sessionData;
-      }
-    }
-    return data;
-  }
-
-const fetchPlayerStatusInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {let {
-    userinfo
-  }: {
-    userinfo: Array<{
-      id: number;
-      kor_first_name: string;
-      kor_last_name: string;
-      eng_first_name: string;
-      eng_last_name: string;
-      sex: string;
-      email: string;
-      passport_no: string;
-      home_address: string;
-      phone_no:string;
-      nationality: string;
-      birth_date: string;
-      is_visited_korea: string;
-      have_residence_license: string;
-      language_skill: string;
-      residence_no: string;
-      father_name:string;
-      father_nationality:string;
-      father_phone_no:string;
-      father_job:string;
-      mother_name:string;
-      mother_nationality:string;
-      mother_phone_no:string;
-      mother_job:string;
-      high_school_name:string;
-      high_school_address:string;
-      }>
-    }  = res.data;
-    
-    userinfo[0].birth_date = userinfo[0].birth_date.replaceAll('-','');
-
-    return {userinfo: userinfo[0]};
-  });
-  
 const fetchPlayerPrevStatusInfo = (url: string) => axios.get(url,{withCredentials : true})
 .then((res) => {const {
   userinfo
@@ -232,19 +120,6 @@ const usePrevPlayerData = ()=>{
   );
   // const data = fetchPlayerStatusInfo(getKey());
 
-  return Array.isArray(data)?data[0]:data;
-}
-
-const usePlayerData = ()=>{
-  let sid = ""; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-  const getKey = () => `/api/?action=get_user_info&params=${JSON.stringify({})}&sid=${sid}`;
-  let { data } = useSWRInfinite(
-    getKey,
-    (url) => fetchPlayerStatusInfo(url)
-  );
   return Array.isArray(data)?data[0]:data;
 }
 
@@ -297,13 +172,15 @@ const SolutionInfoPage: NextPage = ({
 })  => {
   const ArrayT = useTranslate(i18nArrayResource);
   const { t, lang, changeLang } = useTranslate(i18nResource);
-  let playerData:any = undefined;
+  const [reject, setReject] = useState('');
+  const [readOnly, setReadOnly] = useState(false);
   React.useEffect(() => {
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
         console.log(data);
       } else { 
+        console.log(data);
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
         if(typeof window !== "undefined"){
@@ -315,6 +192,9 @@ const SolutionInfoPage: NextPage = ({
         if(user.step === STEP_STRING.STEP_THREE_PENDING){
           setReadOnly(true);
         }
+        if(user.rejected_reason!==""){
+          setReject(user.rejected_reason);
+        }
         // TODO: 스테이터스 확인 후 url 변경
       }
     })
@@ -324,11 +204,6 @@ const SolutionInfoPage: NextPage = ({
   }, []);
   
   const handleSubmit = (type:"save"|"send") => {
-    //e: React.FormEvent<HTMLFormElement>
-    // e.preventDefault();
-
-    setLoading(true);
-
     let sid = ""; 
     if(typeof window !== "undefined"){
       sid = window.sessionStorage.getItem('sid');
@@ -355,24 +230,18 @@ const SolutionInfoPage: NextPage = ({
     }else if(type==="save"){
       jsonFormData.is_done = false;
     }
-    
-    axios({
-      method: 'get',
-      url: `/api/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`,
-      withCredentials : true
-    })
-      .then((res) => {
-        const {
-          data: { status, update_userinfo },
-        } = res;
+    console.log(`/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`)
+    API.sendPlayerInfo(`/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`)
+    .then((data) => {
+        console.log(data);
+        const {status, update_userinfo}  = data;
         if (status !== 'success') {
-          console.log(res.data);
-          setErrMsg((prev) => ({ ...prev, [status]: true }));
+          console.log(data);
         } else {
           let tempData = Object.assign(formData, update_userinfo);
           tempData.birth_date = update_userinfo.birth_date.replaceAll('-','');
           setFormData(tempData);
-          setLoading(false);
+          
           if(type==="send"){
             setReadOnly(true);
           }else{
@@ -383,7 +252,6 @@ const SolutionInfoPage: NextPage = ({
           //   query: { lang },
           // });
         }
-        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -391,10 +259,12 @@ const SolutionInfoPage: NextPage = ({
   };
 
   const handleFormContent = (e?: React.ChangeEvent<HTMLInputElement>, t?: string, v?: string | number) => {
-    if (e !== undefined) {
-      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    } else if (t !== undefined) {
-      setFormData((prev) => ({ ...prev, [t]: v }));
+    if(!readOnly){
+      if (e !== undefined) {
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+      } else if (t !== undefined) {
+        setFormData((prev) => ({ ...prev, [t]: v }));
+      }
     }
   };
 
@@ -442,7 +312,6 @@ const SolutionInfoPage: NextPage = ({
     return data;
   }
 
-  const [readOnly, setReadOnly] = useState(false);
   const [formData, setFormData] = useState({
     kor_first_name: undefined,
     kor_last_name: undefined,
@@ -471,25 +340,40 @@ const SolutionInfoPage: NextPage = ({
     high_school_address:undefined
   });
 
-  React.useEffect(() => {
-    if (typeof playerData !== 'undefined'){
-      const tempData = Object.assign(formData, playerData.userinfo);
-      setFormData(tempData);
-    }   
-  }, [playerData]);
+  let [playerData, setPlayerData] = useState(null);
 
+  React.useLayoutEffect(() => {
+    getPlayerData()
+    .then(data=>{
+      console.log(data);
+      if(data.status!=='success'){
+        console.log(data);
+      }else{
+        data.userinfo[0].birth_date = data.userinfo[0].birth_date.replace(/-/g,'');
+        const tempData = Object.assign(formData, data.userinfo[0]);
+        setFormData(tempData);
+        setPlayerData(data.userinfo[0]);
+      }
+    })
+    .catch(err=>console.log(err));
+  }, []);
+  
   if(typeof window !== "undefined"){
     // const playerPrevData = usePrevPlayerData();
-    let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
+    let sessionData = getSesstionData();  
+  // const [selectValue]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
     
-    const [loading, resolved, error] = usePromise(getPlayerData, []);
-    if (loading) return <div></div>; 
-    if (error) window.alert('API 오류');
-    if (!resolved) return null;
-    const {userinfo} = resolved;
-    playerData = userinfo[0];
-
+  const onClickNextStep=(isFinal:boolean, afterFuntion:void)=>{
+    if(isFinal){
+      if(window.confirm(t('completed-information-entry'))){
+        afterFuntion;
+      }
+    }else{
+      return window.alert(t('enter-all-required-items'));
+    }
+  }
+    // setFormData(tempData);
+  
     const isFinal = () =>{
       const isRequire = requireData.map(dataName =>{
         if(formData[dataName] === undefined||formData[dataName] === ""){
@@ -502,16 +386,11 @@ const SolutionInfoPage: NextPage = ({
       }
       return true;
     }
-
+    
       return (
-        <DefaultLayout>
-          {loading && (
-            <LoadingPopup>
-              <Loading />
-            </LoadingPopup>
-          )}          
+        <DefaultLayout>  
           <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={3} major_str={selectValue?selectValue.major_str:null} plan_str={selectValue?selectValue.plan_str:null} t={t} lang={lang} changeLang={changeLang}/>
+          <StepHeader step={3} major_str={sessionData?sessionData.major_str:null} plan_str={sessionData?sessionData.plan_str:null} t={t} lang={lang} changeLang={changeLang}/>
           <Block>
             <Bold22>{t('create-person-information')}</Bold22>
             <SmallNotice>{t('display-items-must-be-entered')}</SmallNotice>
@@ -519,15 +398,15 @@ const SolutionInfoPage: NextPage = ({
               <Table>
                 <Row>
                   <HeaderColumn>{t('name-korean')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="kor_first_name" onChange={handleFormContent} value={formData.kor_first_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="kor_first_name" onChange={handleFormContent} value={formData.kor_first_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
                   <HeaderColumn>{t('last-name-korean')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="kor_last_name" onChange={handleFormContent} value={formData.kor_last_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="kor_last_name" onChange={handleFormContent} value={formData.kor_last_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('name-english')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="eng_first_name" onChange={handleFormContent} value={formData.eng_first_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-the-name')} name="eng_first_name" onChange={handleFormContent} value={formData.eng_first_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
                   <RequireHeaderColumn>{t('last-name-english')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="eng_last_name" onChange={handleFormContent} value={formData.eng_last_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={4}><Input placeholder={t('enter-last-name')} name="eng_last_name" onChange={handleFormContent} value={formData.eng_last_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('sex')}</RequireHeaderColumn>
@@ -538,11 +417,11 @@ const SolutionInfoPage: NextPage = ({
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('date-birth')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="birth_date" type="number" placeholder={`${t('enter-date-birth')} (ex.20001010)`}  onChange={handleFormContent} value={formData.birth_date} min={8} max={8}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="birth_date" type="number" placeholder={`${t('enter-date-birth')} (ex.20001010)`}  onChange={handleFormContent} value={formData.birth_date} min={8} max={8} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('passport-number')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="passport_no" placeholder={t('enter-passpor-number')} onChange={handleFormContent} value={formData.passport_no}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="passport_no" placeholder={t('enter-passpor-number')} onChange={handleFormContent} value={formData.passport_no} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <RequireHeaderColumn>{t('nationality')}</RequireHeaderColumn>
@@ -552,6 +431,7 @@ const SolutionInfoPage: NextPage = ({
                         options={countryArray(ArrayT.t)}
                         name="nationality"
                         defaultValue={formData.nationality}
+                        readOnly={readOnly}
                         handleFormContent={handleFormContent}
                       />
                   </Column>
@@ -564,6 +444,7 @@ const SolutionInfoPage: NextPage = ({
                       options={topikArray(ArrayT.t)}
                       name="topik_level"
                       defaultValue={formData.language_skill}
+                      readOnly={readOnly}
                       handleFormContent={handleFormContent}
                     />
                   </Column>
@@ -577,26 +458,27 @@ const SolutionInfoPage: NextPage = ({
                 </Row>
                 <Row>
                   <RequireHeaderColumn><LineParser str={t('certificate-residence-card-issued')}/></RequireHeaderColumn>
-                  <FlexColumn width={12} >
+                  <FlexColumn width={queryLang?queryLang==="vn"?9:12:12} >
                     <RadioCheckbox id="issue_yes" group="have_residence_license" value="true" onChange={handleFormContent} checked={formData.have_residence_license===true||formData.have_residence_license==="true"}>{t('yes')}</RadioCheckbox>
                     <RadioCheckbox id="issue_no" group="have_residence_license" value="false" onChange={handleFormContent} checked={formData.have_residence_license===false||formData.have_residence_license==="false"}>{t('no')}</RadioCheckbox>
-                  </FlexColumn>
+                  </FlexColumn>  
+                  <FlexColumn width={queryLang?queryLang==="vn"?3:0:0} textAlign='flex-end' oneLine={true}><SmallAccent>{t('CMT-explanation')}</SmallAccent></FlexColumn>                  
                 </Row>  
                 <Row>
                   <HeaderColumn>{t('residence-card-number')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="residence_no" placeholder={t('enter-residence-card-number')} onChange={handleFormContent} value={formData.residence_no}/></TopBottomNonPaddingColumn>
-                </Row>   
+                  <TopBottomNonPaddingColumn width={12}><Input name="residence_no" placeholder={t('enter-residence-card-number')} onChange={handleFormContent} value={formData.residence_no} readonly={readOnly}/></TopBottomNonPaddingColumn>
+                 </Row>   
                 <Row>
                   <HeaderColumn>{t('email')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="email" placeholder={t('enter-contactable-email')} onChange={handleFormContent} value={formData.email}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="email" placeholder={t('enter-contactable-email')} onChange={handleFormContent} value={formData.email} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>  
                 <Row>
                   <HeaderColumn>{t('home-address')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="home_address" placeholder={t('enter-home-address')} onChange={handleFormContent} value={formData.home_address}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="home_address" placeholder={t('enter-home-address')} onChange={handleFormContent} value={formData.home_address} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>  
                 <Row>
                   <HeaderColumn>{t('contact-phone-number')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="phone_no" placeholder={t('enter-contact-phone-number')} onChange={handleFormContent} value={formData.phone_no}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="phone_no" placeholder={t('enter-contact-phone-number')} onChange={handleFormContent} value={formData.phone_no} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>     
                 <Row readonly={true}>
                   <HeaderColumn>{t('family-relations')}</HeaderColumn>
@@ -605,34 +487,34 @@ const SolutionInfoPage: NextPage = ({
                 </Row> 
                 <Row>
                   <HeaderColumn>{t('full-name')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_name" placeholder={t('enter-full-name')} onChange={handleFormContent} value={formData.father_name}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_name" placeholder={t('enter-full-name')} onChange={handleFormContent} value={formData.mother_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_name" placeholder={t('enter-full-name')} onChange={handleFormContent} value={formData.father_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_name" placeholder={t('enter-full-name')} onChange={handleFormContent} value={formData.mother_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <HeaderColumn>{t('nationality')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent} value={formData.father_nationality}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent} value={formData.mother_nationality}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent} value={formData.father_nationality} readonly={readOnly}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_nationality" placeholder={t('enter-nationality')} onChange={handleFormContent} value={formData.mother_nationality} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <HeaderColumn>{t('cell-phone')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent} value={formData.father_phone_no}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent} value={formData.mother_phone_no}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent} value={formData.father_phone_no} readonly={readOnly}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_phone_no"  placeholder={t('enter-phone-number')} onChange={handleFormContent} value={formData.mother_phone_no} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row>
                   <HeaderColumn>{t('job')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="father_job"  placeholder={t('enter-job')} onChange={handleFormContent} value={formData.father_job}/></TopBottomNonPaddingColumn>
-                  <TopBottomNonPaddingColumn width={6}><Input name="mother_job"  placeholder={t('enter-job')} onChange={handleFormContent} value={formData.mother_job}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="father_job"  placeholder={t('enter-job')} onChange={handleFormContent} value={formData.father_job} readonly={readOnly}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={6}><Input name="mother_job"  placeholder={t('enter-job')} onChange={handleFormContent} value={formData.mother_job} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>
                 <Row readonly={true}>
                   <HeaderColumn>{t('final-educational-background')}</HeaderColumn>
                 </Row> 
                 <Row>
                   <RequireHeaderColumn>{t('high-school-name')}</RequireHeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_name" placeholder={t('enter-high-school-name')} onChange={handleFormContent} value={formData.high_school_name}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_name" placeholder={t('enter-high-school-name')} onChange={handleFormContent} value={formData.high_school_name} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>   
                 <Row>
                   <HeaderColumn>{t('high-school-address')}</HeaderColumn>
-                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_address" placeholder={t('enter-high-school-address')} onChange={handleFormContent} value={formData.high_school_address}/></TopBottomNonPaddingColumn>
+                  <TopBottomNonPaddingColumn width={12}><Input name="high_school_address" placeholder={t('enter-high-school-address')} onChange={handleFormContent} value={formData.high_school_address} readonly={readOnly}/></TopBottomNonPaddingColumn>
                 </Row>   
               </Table>
             </Form>
@@ -640,24 +522,21 @@ const SolutionInfoPage: NextPage = ({
           <FooterBlock>
           {readOnly?
             <FooterNoticeContainer>
-                입력하신 인적 정보를 확인하고 있습니다.<br/>
-                확인이 끝난 후, 다음 단계 작성이 가능합니다.<br/>
+              <LineParser str={t('checking-info-notice')}/>
             </FooterNoticeContainer>
           :<>
             <ReadyButton isReady={true} onClick={(e)=>handleSubmit("save")}>{t('save')}</ReadyButton>
-            <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),selectValue, t, handleSubmit("send"))}>{t('next-step')}</ReadyButton>
+            <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),handleSubmit("send"))}>{t('next-step')}</ReadyButton>
           </>}
           </FooterBlock>
-          {false?
+          {reject!==''?
           <Block>
             <Table>
               <Row>
                 <HeaderColumn>{t('cause-return')}</HeaderColumn>
                 <WarningColumn width={12}>
                   <CauseReturnContainer>
-                    정확한 고등학교 이름을 입력해 주세요. 현재 입력하신 고등학교 이름은 유효하지 않습니다.<br/>
-                     입력하신 외국인 등록 번호를 확인해주세요.<br/>
-                    거주하고 계신 집주소를 자세하게 다시 입력해주세요.<br/>
+                    <LineParser str={reject}/>
                     </CauseReturnContainer>
                 </WarningColumn>
               </Row>
@@ -667,6 +546,7 @@ const SolutionInfoPage: NextPage = ({
         </DefaultLayout>
       );
     }
+  
 //   }
   return <DefaultLayout></DefaultLayout>
 };

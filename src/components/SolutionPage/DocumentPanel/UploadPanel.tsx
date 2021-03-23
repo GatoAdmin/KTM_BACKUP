@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect, ChangeEvent} from 'react';
-import axios from 'axios';
+import API from '@util/api';
 import S3 from 'react-aws-s3';
-import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
+import {DOCUMENT_TYPE_STRING} from '@components/SolutionPage/StepString';
 import {
     UploadIcon,
     CloseIcon,
@@ -24,15 +24,12 @@ import {
     ReadyButton
 }from '@components/SolutionPage/Common/Common.style';
 
-import useVisible from '@util/hooks/useVisible';
-import useTranslate from '@util/hooks/useTranslate';
-import i18nResource from '../../../assets/i18n/SolutionPage/solutionDocumentPage.json';
-
 interface PanelProps {
     user_id:number;
     univ_code:string;
     document_id:string;
     document_type:string;
+    t:any;
     onClose: (event: React.MouseEvent) => void;
 }
 interface InputFileTypes {
@@ -40,43 +37,14 @@ interface InputFileTypes {
     object: File;
   }
 
-
 const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요. 향후 API 완료후 해볼것.
     user_id,
     univ_code,
     document_id,
     document_type,
+    t,
     onClose
 }) => {
-
-  const [errMsg, setErrMsg] = React.useState({
-    ERROR_NOT_EXIST_USERNAME: false,
-    ERROR_NOT_EXIST_LAST_NAME: false,
-    ERROR_LAST_NAME_ONLY_ENGLISH: false,
-    ERROR_NOT_EXIST_FIRST_NAME: false,
-    ERROR_FIRST_NAME_ONLY_ENGLISH: false,
-    ERROR_NOT_EXIST_EMAIL: false,
-    ERROR_EXIST_EMAIL: false,
-    ERROR_NOT_EXIST_PASSWORD: false,
-    ERROR_NOT_EXIST_PASSWORD_CONFIRM: false,
-    ERROR_NOT_EXIST_NATIONALITY: false,
-    ERROR_NOT_EXIST_BIRTH_DATE: false,
-    ERROR_NOT_EXIST_TOPIK_LEVEL: false,
-    ERROR_NOT_EXIST_IDENTITY: false,
-    ERROR_NOT_PROPER_PASSWORD: false,
-    ERROR_PASSWORD_CONFIRM_FAIL: false,
-    ERROR_NOT_VALID_EMAIL: false,
-  });
-  const [loading, setLoading] = React.useState<boolean>(false);
-  useEffect(() => {
-    if (loading) {
-      const errObj = { ...errMsg };
-      Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
-      setErrMsg(errObj);
-    }
-  }, [loading]);
-
-  const { t, lang, changeLang } = useTranslate(i18nResource);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [files, setFiles] = useState<InputFileTypes[]>([]);
 
@@ -199,7 +167,6 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
           .catch(error => {
             console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
             reject(error);
-            setLoading(false);
           });
     })
   },[files]);
@@ -227,7 +194,6 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
       if(files.length>0){
         // let doc_url_list:Array<string> = [];
         // let file_name_list:Array<string> = [];
-        setLoading(true);
         // const {doc_url_list, file_name_list } = await s3Upload();
         s3Upload().then(
           list =>{
@@ -241,43 +207,26 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
               doc_file_name:list.file_name_list
             };
             let rurl = '';
-            if(document_type==='업로드 서류'){
-              rurl = `/api/?action=user_doc_upload_request&params=${JSON.stringify(data)}&sid=${sid}`;
+            if(document_type===DOCUMENT_TYPE_STRING.UPLOAD){
+              rurl = `/?action=user_doc_upload_request&params=${JSON.stringify(data)}&sid=${sid}`;
             }else{
-              rurl = `/api/?action=user_doc_app_request&params=${JSON.stringify(data)}&sid=${sid}`;
+              rurl = `/?action=user_doc_app_request&params=${JSON.stringify(data)}&sid=${sid}`;
             }
             console.log(rurl)
-            axios.get(rurl)
-            .then(res=>{
-              console.log(res.data)
-              if(res.data.status==='success'){
+            API.requestDocumentAction(rurl)
+            .then(data=>{
+              console.log(data)
+              if(data.status==='success'){
                 alert(t('upload-completed-successfully'));
                 location.reload();
               }
-              setLoading(false);
             })
             .catch(error => {
               console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
-              setLoading(false);
             });
 
           }
         )
-        // await files.map((file:InputFileTypes)=>{
-        //   ReactS3Client
-        //   .uploadFile(file.object)
-        //   .then(data=>{
-        //     if(data.status===204){
-        //       console.log(data);
-        //       doc_url_list.push(`${user_id}/${univ_code}/${document_id}`);
-        //       file_name_list.push(`${file.object.name}`);
-        //     }
-        //   })
-        //   .catch(error => {
-        //     console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
-        //     setLoading(false);
-        //   });
-        // });
       }
      
     },
@@ -286,11 +235,6 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
   return (
         <BlurScreen>
           <PanelContainer>
-        {loading && (
-          <LoadingPopup>
-            <Loading />
-          </LoadingPopup>
-        )}       
                 <PanelTitle>{t('to-add-file')}</PanelTitle>
                 <FileInput type="file" id="fileUpload" multiple={true} onChange={onChangeFiles}/>
                 <UserDragableFieldContainer isDragging={isDragging} ref={dragRef}>

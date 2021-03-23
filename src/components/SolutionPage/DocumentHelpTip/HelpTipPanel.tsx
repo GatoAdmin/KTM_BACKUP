@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {BlurScreen, PanelContainer,Image,ImageContainer,CloseButton} from './HelpTip.style';
+import {BlurScreen, PanelContainer,Image,ImageContainer,IconContainer,CloseIcon} from './HelpTip.style';
 
 interface PanelProps {
   onClose: (event: React.MouseEvent) => void;
@@ -13,8 +13,11 @@ const Panel: React.FC<PanelProps> = ({
   children
 }) =>{    
     return (
-        <BlurScreen onClick={onClose}>
+        <BlurScreen >
           <PanelContainer>
+            <IconContainer>
+              <CloseIcon onClick={onClose}/>
+            </IconContainer>
             <ImageContainer>
               <Image src={url}/>
             </ImageContainer>

@@ -188,8 +188,8 @@ const SolutionFinishPage: NextPage = ({
               </HeaderRow>
               {/* 서류명칭 받아서 죽 생성시킬것 */}
               {documentData?.map((data, index)=>(
-                <Row key={data.document_id+index} alarm={data.alarm!==null&&data.alarm}>
-                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null&&data.alarm?<Alarm alarm={data.admin_reason}/>:null}</FlexColumn>
+                <Row key={data.document_id+index} alarm={data.admin_reason!==''}>
+                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.admin_reason!==''?<Alarm alarm={data.admin_reason}/>:null}</FlexColumn>
                   <Column width={2}><HelpTip url={data.help_file} t={t} lang={queryLang}/></Column>
                   <Column width={3}><TextContainer margingLeft={queryLang==="vn"?20:0}>{getDateFormat(data.update_datetime)}</TextContainer></Column>
                   <Column width={3.4} oneLine={true}><LineParser str={t(data.status)}/></Column>

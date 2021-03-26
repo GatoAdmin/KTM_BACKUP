@@ -136,10 +136,11 @@ const SolutionAgreePage: NextPage = ({
       if(sessionData&&sessionData!==""){
         sessionData=JSON.parse(sessionData);
         sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
-        sessionData.univ_name=sessionStorage.getItem('chooseUnivName');
-        sessionData.major_str=sessionStorage.getItem('chooseSubjectname');
-        if(sessionStorage.getItem('choosePayRank')!==null){
-          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
+        sessionData.major_str = sessionStorage.getItem('chooseSubjectname');
+        const payRankStr =sessionStorage.getItem('choosePayRank');
+        if(payRankStr!==null&&payRankStr!==''){
+          const payRank = JSON.parse(payRankStr);
           sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
         }
       }else{
@@ -148,8 +149,9 @@ const SolutionAgreePage: NextPage = ({
           univ_name:sessionStorage.getItem('chooseUnivName'),
           major_str:sessionStorage.getItem('chooseSubjectname')
         };    
-        if(sessionStorage.getItem('choosePayRank')!==null){
-          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+        const payRankStr =sessionStorage.getItem('choosePayRank');
+        if(payRankStr!==null&&payRankStr!==''){
+          const payRank = JSON.parse(payRankStr);
           sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
         }
       }
@@ -283,7 +285,7 @@ const SolutionAgreePage: NextPage = ({
       <DefaultLayout>
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-        <StepHeader step={2} major_str={selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} plan_str={selectValue?typeof selectValue.plan_str==="string"?selectValue.plan_str:null:null} t={t} lang={lang} changeLang={changeLang}/>
+        <StepHeader step={2} t={t} lang={lang} changeLang={changeLang}/>
         <PriceInfoContainer>
           <PriceInfoHeaderRow>
             <PriceInfoHeaderColumn><Bold22><LineParser str={t('please-selection-payrank')}/></Bold22></PriceInfoHeaderColumn>

@@ -170,7 +170,26 @@ const SolutionDocumentPage: NextPage = ({
         return window.alert(t('all-document-status-should-be-ready'));
       }
     }
-
+    let testData = {
+      admin_reason: "베트남어도 제대로 되는지 테스트입니다. <br> Tiếng Việt cũng Viết được. Xem được. ",
+      alarm: null,
+      document: "외국인 등록증",
+      document_id: "115",
+      document_type: "업로드서류",
+      help_file: "https://katumm-bucket-seoul.s3.ap-northeast-2.amazonaws.com/media/32/SMU_UNI/115/helpfile.jpg",
+      id: 334,
+      info_type: "4년제",
+      is_essential: false,
+      refund_type: 1,
+      status: "DOC_UPLOAD_REQUEST",
+      status_id: 40,
+      subjecttitle: "인문",
+      univ_code: "SMU_UNI",
+      update_datetime: "2021-03-03T15:52:17",
+      url: "https://katumm-bucket-seoul.s3.ap-northeast-2.amazonaws.com/media/32/SMU_UNI/115/샘플 파일.docx",
+      user_id: 32,
+      user_reason: null
+    };
     if(documentData!==undefined){
       return (
         <DefaultLayout>
@@ -186,9 +205,17 @@ const SolutionDocumentPage: NextPage = ({
                 <Column width={3.4}>{t('document-status')}</Column>
                 <Column width={0.6}></Column>
               </HeaderRow>
+              {/* 테스트 */}
+                {/* <Row>
+                  <FlexColumn width={6}><StringDot>{testData.document}</StringDot>{testData.admin_reason!==''?<Alarm alarm={testData.admin_reason}/>:null}</FlexColumn>
+                  <Column width={2}><HelpTip url={testData.help_file} t={t} lang={queryLang}/></Column>
+                  <Column width={3}><TextContainer margingLeft={queryLang==="vn"?20:0}>{getDateFormat(testData.update_datetime)}</TextContainer></Column>
+                  <Column width={3.4} oneLine={true}><LineParser str={t(testData.status)}/></Column>
+                  <Column width={0.6}><Dropdown userdocument={testData} t={t} lang={queryLang}/></Column>
+                </Row> */}
               {documentData?.map((data, index)=>(
-                <Row key={data.document_id+index} alarm={data.alarm!==null&&data.alarm}>
-                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.alarm!==null&&data.alarm?<Alarm alarm={data.admin_reason}/>:null}</FlexColumn>
+                <Row key={data.document_id+index} alarm={data.admin_reason!==''}>
+                  <FlexColumn width={6}><StringDot>{data.document}</StringDot>{data.admin_reason!==''?<Alarm alarm={data.admin_reason}/>:null}</FlexColumn>
                   <Column width={2}><HelpTip url={data.help_file} t={t} lang={queryLang}/></Column>
                   <Column width={3}><TextContainer margingLeft={queryLang==="vn"?20:0}>{getDateFormat(data.update_datetime)}</TextContainer></Column>
                   <Column width={3.4} oneLine={true}><LineParser str={t(data.status)}/></Column>

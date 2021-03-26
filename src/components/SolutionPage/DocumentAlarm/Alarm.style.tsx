@@ -20,7 +20,7 @@ export const AlarmTextContainer = styled.div<ContainerProps>`
 
     position: absolute;
     z-index: 50;
-    top: 0;
+    top: -${(self)=>(self.children.length<2?10:self.children.length*10)}px;
     left: 0;
     min-width: 50px;
     width: max-content;
@@ -32,7 +32,7 @@ export const AlarmTextContainer = styled.div<ContainerProps>`
     font-weight: bold;
     font-size: 12px;
     line-height: 17px;
-
+    
     ${(props) => (props.show
         ? css`
                 display: block;

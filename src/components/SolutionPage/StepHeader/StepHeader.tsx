@@ -189,8 +189,9 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, t, lang, changeLang}) => {
         sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
         sessionData.univ_name=sessionStorage.getItem('chooseUnivName');
         sessionData.major_str=sessionStorage.getItem('chooseSubjectname');
-        if(sessionStorage.getItem('choosePayRank')!==null){
-          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+        const payRankStr =sessionStorage.getItem('choosePayRank');
+        if(payRankStr!==null&&payRankStr!==''){
+          const payRank = JSON.parse(payRankStr);
           sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
         }
       }else{
@@ -199,8 +200,9 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, t, lang, changeLang}) => {
           univ_name:sessionStorage.getItem('chooseUnivName'),
           major_str:sessionStorage.getItem('chooseSubjectname')
         };
-        if(sessionStorage.getItem('choosePayRank')!==null){
-          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
+        const payRankStr =sessionStorage.getItem('choosePayRank');
+        if(payRankStr!==null&&payRankStr!==''){
+          const payRank = JSON.parse(payRankStr);
           sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
         }
       }

@@ -27,7 +27,7 @@ import {
 interface PanelProps {
     user_id:number;
     univ_code:string;
-    document_id:string;
+    document_id:number;
     document_type:string;
     t:any;
     onClose: (event: React.MouseEvent) => void;
@@ -157,8 +157,9 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
   const reactS3Upload = useCallback((file:File)=>{
     return new Promise(function(resolve, reject){
       ReactS3Client
-          .uploadFile(file)
+          .uploadFile(file,file.name)
           .then(data=>{
+            console.log(data);
             if(data.status===204){
               console.log(data);
               resolve({doc_url: `${user_id}/${univ_code}/${document_id}`, file_name:file.name})
@@ -207,6 +208,7 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
               doc_file_name:list.file_name_list
             };
             let rurl = '';
+            console.log(data)
             if(document_type===DOCUMENT_TYPE_STRING.UPLOAD){
               rurl = `/?action=user_doc_upload_request&params=${JSON.stringify(data)}&sid=${sid}`;
             }else{
@@ -218,7 +220,7 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
               console.log(data)
               if(data.status==='success'){
                 alert(t('upload-completed-successfully'));
-                location.reload();
+                // location.reload();
               }
             })
             .catch(error => {

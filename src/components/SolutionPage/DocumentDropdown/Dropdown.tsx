@@ -34,10 +34,12 @@ interface DropdownProps {
         document: string;
         url: string;
         help_file: string;
-        admin_reason: string;
-        user_reason: string;
+        admin_reason: string|null;
+        user_reason: string|null;
         status_id: number;
-        alarm: string;
+        alarm: boolean|null;
+        is_essential: boolean;
+        update_datetime: string,
     };
     lang?:string;
     t;
@@ -115,33 +117,42 @@ const Dropdown: React.VFC<DropdownProps> = ({
   const [visibleReject, setVisibleReject] = useState<boolean>(false);
   const [visibleUpload, setVisibleUpload] = useState<boolean>(false);
   const [visible, toggleVisible] = useVisible(containerRef);
-  const {status,document_type,url, univ_code, user_id, document_id } = userdocument;
+  const {status,document_type,url, univ_code, user_id, id } = userdocument;
   const document_name = userdocument.document;
 //   const [visible, setVisible] =useState<boolean>(false);
 //   const { t, lang, chakngeLang } = useTranslate(i18nResource);
-  const downloadFile=(urlString:string, name:string)=>{
-  const s3config = {
-    bucketName: process.env.REACT_APP_BUCKET_NAME,
-    region: process.env.REACT_APP_REGION,
-    accessKeyId: process.env.REACT_APP_ACCESS_ID,
-    secretAccessKey: process.env.REACT_APP_ACCESS_KEY
-    };
-  const s3 = new Aws.S3({params:{Bucket: process.env.REACT_APP_BUCKET_NAME}});
+    const downloadFile=(urlString:string, name:string)=>{
+    const s3config = {
+        bucketName: process.env.REACT_APP_BUCKET_NAME,
+        region: process.env.REACT_APP_REGION,
+        accessKeyId: process.env.REACT_APP_ACCESS_ID,
+        secretAccessKey: process.env.REACT_APP_ACCESS_KEY
+        };
+    const s3 = new Aws.S3({params:{Bucket: process.env.REACT_APP_BUCKET_NAME}});
 
-  s3.config.update(s3config)
+    s3.config.update(s3config)
     const arrayUrl =  urlString.split('/');
     const arrayUrlLength = arrayUrl.length;
     //TODO:url 형식이 정해지면 그에 따라서 바꿀것
-    const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key: `${arrayUrl[arrayUrlLength-5]}/${arrayUrl[arrayUrlLength-4]}/${arrayUrl[arrayUrlLength-3]}/${arrayUrl[arrayUrlLength-2]}/${arrayUrl[arrayUrlLength-1]}`}
+    //bucket: "katumm-bucket-seoul"
+    //key: "media/32/SMU_UNI/334/ixjXwSYnxCbVDkZF6g2Cdr.jpeg"
+    //location: "https://katumm-bucket-seoul.s3-ap-northeast-2.amazonaws.com/media/32/SMU_UNI/334/ixjXwSYnxCbVDkZF6g2Cdr.jpeg"
+    //status: 204
+    console.log(urlString)
+    const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key: `media/${arrayUrl[arrayUrlLength-4]}/${arrayUrl[arrayUrlLength-3]}/${arrayUrl[arrayUrlLength-2]}/${arrayUrl[arrayUrlLength-1]}`}
+    // const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key:'media/32/SMU_UNI/334/ixjXwSYnxCbVDkZF6g2Cdr.jpeg'}
+    // const params ={Bucket: process.env.REACT_APP_BUCKET_NAME,Key:'media/32/SMU_UNI/334/download.jpg'}
     s3.getObject(params, (err, data)=>{
         if (err){console.log(err)}
+        console.log(data);
         if(data){
             const blob = new Blob([data.Body], {type: data.ContentType});
-            const fileName = urlString.split('/');
+            const fileName = arrayUrl[arrayUrlLength-1];//'ixjXwSYnxCbVDkZF6g2Cdr.jpeg'
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `${fileName[fileName.length-1]}`//`${name}_${fileName[fileName.length-1]}`
+            // decodeURI(fileName[fileName.length-1]);
+            a.download = decodeURI(fileName)//`${fileName[fileName.length-1]}`//`${name}_${fileName[fileName.length-1]}`
             a.click()
             a.remove()
             window.URL.revokeObjectURL(url);
@@ -163,11 +174,10 @@ const Dropdown: React.VFC<DropdownProps> = ({
                 }
                 let rUrl:string = '';
                 if(document_type === DOCUMENT_TYPE_STRING.POSTAL){
-                    rUrl=`/?action=user_doc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                    rUrl=`/?action=user_doc_post_request&params=${JSON.stringify({document_id:id})}&sid=${sid}`;
                 }else{
-                    rUrl=`/?action=user_doc_tnc_post_request&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                    rUrl=`/?action=user_doc_tnc_post_request&params=${JSON.stringify({document_id:id})}&sid=${sid}`;
                 }
-                console.log(rUrl)
                 API.requestDocumentAction(rUrl)
                 .then(data=>{
                     console.log(data)
@@ -187,11 +197,10 @@ const Dropdown: React.VFC<DropdownProps> = ({
                 }
                 let rUrl:string = '';
                 if(document_type === DOCUMENT_TYPE_STRING.TRANS_AND_NOTAR){
-                    rUrl=`/?action=user_doc_tnc_end&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                    rUrl=`/?action=user_doc_tnc_end&params=${JSON.stringify({document_id:id})}&sid=${sid}`;
                 }else{
-                    rUrl=`/?action=user_doc_tnc_consul&params=${JSON.stringify({document_id:document_id})}&sid=${sid}`;
+                    rUrl=`/?action=user_doc_tnc_consul&params=${JSON.stringify({document_id:id})}&sid=${sid}`;
                 }
-                console.log(rUrl)
                 API.requestDocumentAction(rUrl)
                 .then(data=>{
                     console.log(data)
@@ -227,8 +236,8 @@ const Dropdown: React.VFC<DropdownProps> = ({
             const Icon = dropdownIcon[value];
             return (  
                 <>
-                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel document_id={document_id} onClose={()=>setVisibleReject(false)} t={t}/>:null}
-                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} user_id={user_id} univ_code={univ_code} document_id={document_id} document_type={document_type} t={t}/>:null}
+                    {value==="reviewReject"&&visibleReject?<ReviewRejectPanel document_id={id} onClose={()=>setVisibleReject(false)} t={t}/>:null}
+                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} user_id={user_id} univ_code={univ_code} document_id={id} document_type={document_type} t={t}/>:null}
                 
                     <DropdownItem key={value+index} onClick={e=>onClickDropdownItem(e,value)} lang={lang}>
                         <IconContainer type={value}>

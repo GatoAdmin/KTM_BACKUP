@@ -47,7 +47,7 @@ const Panel: React.VFC<PanelProps> = ({//TODO:API 확인 필요
          .then(data=>{ 
            console.log(data)
              if(data.status==="success"){
-                alert(t('request-review-return-completed-successfully'));
+                // alert(t('request-review-return-completed-successfully'));
                 location.reload();
              }
          })

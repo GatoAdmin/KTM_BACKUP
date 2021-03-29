@@ -276,7 +276,7 @@ const SolutionSelectPage: NextPage = ({
           Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
           return true;
         }else{
-          window.alert(t('warn-2'));
+          // window.alert(t('warn-2'));
           return false;
         }
       }

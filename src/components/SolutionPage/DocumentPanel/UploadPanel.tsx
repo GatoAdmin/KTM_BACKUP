@@ -219,8 +219,8 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
             .then(data=>{
               console.log(data)
               if(data.status==='success'){
-                alert(t('upload-completed-successfully'));
-                // location.reload();
+                // alert(t('upload-completed-successfully'));
+                location.reload();
               }
             })
             .catch(error => {

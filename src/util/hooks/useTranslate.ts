@@ -13,10 +13,12 @@ type I18nStaticResources = {
 function useTranslate(
   resource: I18nStaticResources,
 ): {t: (s: string) => string, lang: SupportedLang, changeLang: (s: string) => void} {
-  const [lang, setLang] = useState<SupportedLang>('ko');
+  let sessionLang = 'ko';
+  if(typeof window !== "undefined"){sessionLang = sessionStorage.getItem('lang');}
+  const [lang, setLang] = useState<SupportedLang>(sessionLang?sessionLang:'ko');
   const t = (searchString: string) => resource[lang][searchString];
 
-  return { t, lang, changeLang: (s: string) => setLang(s) };
+  return { t, lang, changeLang: (s: string) => {window.sessionStorage.setItem('lang',s); setLang(s);} };
 }
 
 export default useTranslate;

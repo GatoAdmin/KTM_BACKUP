@@ -12,6 +12,7 @@ interface TapItemProps {
     isViewTap : boolean;
 }
 interface TextProps {
+  width?:string;
   textAlign?: string;
   margingLeft?:number;
 }
@@ -225,7 +226,11 @@ export const StringDot = styled.div`
   text-overflow: ellipsis;
 `;
 export const TextContainer = styled.div<TextProps>`
-  max-width: max-content;
+    ${(props)=>props.width
+      ?css`width:${props.width};`
+      :css`max-width: max-content;`
+    }
+      
     ${(props)=>props.textAlign
       ?css`
         text-align:${props.textAlign};

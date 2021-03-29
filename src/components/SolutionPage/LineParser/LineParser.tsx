@@ -8,16 +8,17 @@ import {
 
 interface LineProps {
     str: string;
+    width?:string;
     textAlign?:string;
 }
 
 const Parser: React.FC<LineProps> = ({
-  str,textAlign
+  str,textAlign,width
 }) =>{
     if(str!==undefined){
         const str_array = str.split('<br>');
         return (
-            <TextContainer textAlign={textAlign?textAlign:'left'}>
+            <TextContainer textAlign={textAlign?textAlign:'left'} width={width?width:null}>
                 {str_array.map((line,index) => {
                     let line_after:Array<any> = [];
                     let is_postprocessing = false;

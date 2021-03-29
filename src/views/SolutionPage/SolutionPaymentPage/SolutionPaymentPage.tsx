@@ -7,7 +7,6 @@ import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style
 import i18nResource from '@assets/i18n/solutionPage.json';
 import usePromise from '@util/hooks/usePromise';
 import { GetServerSideProps, NextPage } from 'next';
-import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
@@ -19,15 +18,9 @@ import {
   Block,
   FooterBlock,
   ReadyButton,
-  GreyText,
   Bold22,
-  Bold18,
   RadioButtonPaymentContainer,
-  UncheckedRadioIcon,
-  CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
-// import {
-// } from '@views/SolutionPage/SolutionPaymentPage/SolutionPaymentPage.style';
 
 import {
   Table,
@@ -99,13 +92,23 @@ const SolutionPaymentPage: NextPage = ({
       } else { 
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
-        if(typeof window !== "undefined"){
-          sessionStorage.setItem('chooseUnivCode',user.univ_code);
-          sessionStorage.setItem('chooseUnivName',user.univ_name);
-          sessionStorage.setItem('chooseSubjectname',user.subjectname);
-          sessionStorage.setItem('choosePayRank',user.pay_rank);
+        if(user!==null && typeof user!=="undefined"){
+          if(typeof window !== "undefined"){
+            sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            sessionStorage.setItem('chooseUnivName',user.univ_name);
+            sessionStorage.setItem('chooseSubjectname',user.subjectname);
+            sessionStorage.setItem('choosePayRank',user.pay_rank);
+          }
+          if(user.step === STEP_STRING.STEP_TWO){
+            if(user.pay_rank===null||user.pay_status==="READY"){
+              Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
+            }
+          }else {
+            Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
+          }
+        }else {
+          Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
         }
-        // TODO: 스테이터스 확인 후 url 변경
       }
     })
     .catch((err) => {
@@ -151,6 +154,24 @@ const SolutionPaymentPage: NextPage = ({
     return data;
   }
   
+  React.useEffect(() => {
+    const scriptJquery = document.createElement('script');
+    const scriptIamport = document.createElement('script');
+
+    scriptJquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
+    scriptJquery.async = true;
+
+    scriptIamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.8.js";
+    scriptIamport.async = true;
+
+    document.body.appendChild(scriptJquery);
+    document.body.appendChild(scriptIamport);
+
+    return () => {
+      document.body.removeChild(scriptIamport);
+      document.body.removeChild(scriptJquery);
+    }
+  }, []);
   if(typeof window !== "undefined"){    
     const getPlayerData =async()=>{
       const data = await API.getPlayerStatus();
@@ -160,7 +181,6 @@ const SolutionPaymentPage: NextPage = ({
     const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
     const [accountTransferName, setAccountTransferName]= useState("");
     
-    // let playerData = usePlayerData();
     const isFinal = () =>{
       if(selectValue!==null&&typeof selectValue.pay_method==="string"){
         if(selectValue.pay_method==="card_paypal"){
@@ -171,6 +191,7 @@ const SolutionPaymentPage: NextPage = ({
       }
       return false;
     }
+
     const selectUnivName = sessionStorage.getItem("chooseUnivName"); 
     const plan = services.find(service=>service.type===selectValue.plan_str).name;
     const priceUnit = "KRW"; 
@@ -179,21 +200,23 @@ const SolutionPaymentPage: NextPage = ({
     if (error) window.alert('API 오류');
     if (!resolved) return null;
     const {userstatus_list} = resolved;
-    const univ_code =  getChosseUnivCode()
+    const univ_code =  getChosseUnivCode();
     const playerData = userstatus_list.find(us=>us.univ_code ===univ_code);
-    console.log(playerData)
 
     const onClickNextStep=(isFinal:boolean, accountTransferName:string)=>{
       if(isFinal){
         if(selectValue.pay_method ==="account_transfer"){
           console.log(accountTransferName);
           sessionStorage.setItem("pay_payer_name",accountTransferName);
-          //TODO:계좌이체 등 결제관련 API 붙이기
-          Router.push(`/solution/2/paymentWaiting${queryLang?`?lang=${queryLang}`:''}`);
+          API.sendAccountTransfer(playerData.id, accountTransferName)
+          .then( data=>{
+            if(data.status==="success"){
+              Router.push(`/solution/2/paymentWaiting${queryLang?`?lang=${queryLang}`:''}`);
+            }
+          });
         }else if(selectValue.pay_method ==="card_paypal"){
           const data={pg:'paypal',amount:playerData.pay_cost}
-           Payment(data);
-           // sendPlayerInfo(selectValue.plan_str);
+           Payment(data, playerData, queryLang);
         }
       }else if(selectValue.pay_method ==="account_transfer"){
         window.alert(t('warn-4'));

@@ -45,82 +45,17 @@ import {
   WarningColumn
 } from '@components/SolutionPage/Table/Table.style';
 import RequireHeaderColumn from '@components/SolutionPage/Table/RequireHeaderColumn';
-import { Router,withRouter} from 'next/router';
+import Router,{ withRouter} from 'next/router';
 
 const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
 const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
 
-interface service {
-  name: string;
-  type: string;
-  price : number;
-  strPrice: string;
-  index: number;
-}
-
-let services: Array<service> = [
-  {
-    name: '번역 공증 서비스',
-    type: "trans",
-    price : 20000,
-    strPrice:'',
-    index: 1
-  },
-  {
-    name: '입학지원 서비스',
-    type: "support",
-    price : 25000,
-    strPrice:'',
-    index: 2
-  },
-  {
-    name: '입학지원 PRO',
-    type: "pro",
-    price : 30000,
-    strPrice:'',
-    index: 3
-  }
-];
-
 const getChosseUnivCode =()=>{
     let data = null;
     if(typeof window !=="undefined"){
-      data = "SMU_UNI";//window.sessionStorage.getItem('chooseUniv');
+      data = sessionStorage.getItem('chooseUnivCode');
     }
     return data;
-}
-
-const fetchPlayerPrevStatusInfo = (url: string) => axios.get(url,{withCredentials : true})
-.then((res) => {const {
-  userinfo
-}: {
-  userinfo:{
-    eng_first_name: string;
-    eng_last_name: string;
-    sex: string;
-    email: string;
-    nationality: string;
-    language_skill: string;
-    }
-  }  = res.data;
-
-  return {userinfo: userinfo};
-});
-
-const usePrevPlayerData = ()=>{
-  let sid = ""; 
-  if(typeof window !== "undefined"){
-    sid = window.sessionStorage.getItem('sid');
-  }
-
-  const getKey = () => `/api/?action=get_prev_user_info&params=${JSON.stringify({})}&sid=${sid}`;
-  let { data } = useSWRInfinite(
-    getKey,
-    (url) => fetchPlayerPrevStatusInfo(url)
-  );
-  // const data = fetchPlayerStatusInfo(getKey());
-
-  return Array.isArray(data)?data[0]:data;
 }
 
 const requireData: Array<string> = [
@@ -174,28 +109,35 @@ const SolutionInfoPage: NextPage = ({
   const { t, lang, changeLang } = useTranslate(i18nResource);
   const [reject, setReject] = useState('');
   const [readOnly, setReadOnly] = useState(false);
+
   React.useEffect(() => {
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
         console.log(data);
       } else { 
-        console.log(data);
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
-        if(typeof window !== "undefined"){
-          sessionStorage.setItem('chooseUnivCode',user.univ_code);
-          sessionStorage.setItem('chooseUnivName',user.univ_name);
-          sessionStorage.setItem('chooseSubjectname',user.subjectname);
-          sessionStorage.setItem('choosePayRank',user.pay_rank);
+        if(user!==null && typeof user!=="undefined"){
+          if(typeof window !== "undefined"){
+            sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            sessionStorage.setItem('chooseUnivName',user.univ_name);
+            sessionStorage.setItem('chooseSubjectname',user.subjectname);
+            sessionStorage.setItem('choosePayRank',user.pay_rank);
+          }
+          
+          if(user.step === STEP_STRING.STEP_THREE_PENDING){
+            setReadOnly(true);
+          }else if(user.step !== STEP_STRING.STEP_THREE_INIT){
+            Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
+          }
+          if(user.rejected_reason!==""){
+            setReject(user.rejected_reason);
+          }
+          
+        }else {
+          Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
         }
-        if(user.step === STEP_STRING.STEP_THREE_PENDING){
-          setReadOnly(true);
-        }
-        if(user.rejected_reason!==""){
-          setReject(user.rejected_reason);
-        }
-        // TODO: 스테이터스 확인 후 url 변경
       }
     })
     .catch((err) => {
@@ -230,7 +172,6 @@ const SolutionInfoPage: NextPage = ({
     }else if(type==="save"){
       jsonFormData.is_done = false;
     }
-    console.log(`/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`)
     API.sendPlayerInfo(`/?action=set_user_info&params=${JSON.stringify(jsonFormData)}&sid=${sid}`)
     .then((data) => {
         console.log(data);
@@ -275,38 +216,6 @@ const SolutionInfoPage: NextPage = ({
     }
   }, [queryLang]);
 
-  const getSesstionData =()=>{
-    let data = null;
-    if(typeof window !=="undefined"){
-      const univ_code = getChosseUnivCode();
-      let sessionData = sessionStorage.getItem('select_enter_value');
-      if(sessionData&&sessionData!==""){
-        sessionData=JSON.parse(sessionData);
-        sessionData.univ_code = sessionStorage.getItem('chooseUnivCode');
-        sessionData.univ_name = sessionStorage.getItem('chooseUnivName');
-        sessionData.major_str = sessionStorage.getItem('chooseSubjectname');
-        if(sessionStorage.getItem('choosePayRank')!==null&&sessionStorage.getItem('choosePayRank')!==''){
-          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
-          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
-        }       
-      }else{
-        sessionData = {
-          univ_code:sessionStorage.getItem('chooseUnivCode'),
-          univ_name:sessionStorage.getItem('chooseUnivName'),
-          major_str:sessionStorage.getItem('chooseSubjectname')
-        }; 
-        if(sessionStorage.getItem('choosePayRank')!==null){
-          const payRank = JSON.parse(sessionStorage.getItem('choosePayRank'));
-          sessionData.plan_str = services.find(service=>service.index === payRank)?.type;
-        }
-      }
-      if(univ_code &&sessionData&& univ_code===sessionData.univ_code){
-        data = sessionData;
-      }
-    }
-    return data;
-  }  
-
   const getPlayerData =async()=>{
     const data = await API.getUserInfo();
     return data;
@@ -342,7 +251,7 @@ const SolutionInfoPage: NextPage = ({
 
   let [playerData, setPlayerData] = useState(null);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     getPlayerData()
     .then(data=>{
       console.log(data);
@@ -359,9 +268,6 @@ const SolutionInfoPage: NextPage = ({
   }, []);
   
   if(typeof window !== "undefined"){
-    // const playerPrevData = usePrevPlayerData();
-    let sessionData = getSesstionData();  
-  // const [selectValue]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
     
   const onClickNextStep=(isFinal:boolean, afterFuntion:void)=>{
     if(isFinal){
@@ -372,8 +278,6 @@ const SolutionInfoPage: NextPage = ({
       return window.alert(t('enter-all-required-items'));
     }
   }
-    // setFormData(tempData);
-  
     const isFinal = () =>{
       const isRequire = requireData.map(dataName =>{
         if(formData[dataName] === undefined||formData[dataName] === ""){
@@ -390,7 +294,7 @@ const SolutionInfoPage: NextPage = ({
       return (
         <DefaultLayout>  
           <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
-          <StepHeader step={3} major_str={sessionData?sessionData.major_str:null} plan_str={sessionData?sessionData.plan_str:null} t={t} lang={lang} changeLang={changeLang}/>
+          <StepHeader step={3} t={t} lang={lang} changeLang={changeLang}/>
           <Block>
             <Bold22>{t('create-person-information')}</Bold22>
             <SmallNotice>{t('display-items-must-be-entered')}</SmallNotice>
@@ -522,7 +426,7 @@ const SolutionInfoPage: NextPage = ({
           <FooterBlock>
           {readOnly?
             <FooterNoticeContainer>
-              <LineParser str={t('checking-info-notice')}/>
+              <LineParser str={t('checking-info-notice')} width="100%" textAlign="center"/>
             </FooterNoticeContainer>
           :<>
             <ReadyButton isReady={true} onClick={(e)=>handleSubmit("save")}>{t('save')}</ReadyButton>

@@ -40,8 +40,8 @@ export default {
     return response.data;
   },
   getUnivData :  async (univ_code:string,lang:string) => {
-    const sid = sessionStorage.getItem('sid');
     if (!isLogin()) return {};
+    const sid = sessionStorage.getItem('sid');
     if(univ_code===undefined||univ_code===null)return {};
     let params:{univ_code:string; lang?:string;} = {
       univ_code: univ_code
@@ -55,6 +55,30 @@ export default {
   sendPlayerInfo: async (url:string) => {
     if (!isLogin()) return {};
     const response = await axios.get(url);
+     return response.data;
+  },
+  sendAccountTransfer: async (status_id:number, name:string) => {
+    if (!isLogin()) return {};
+    const sid = sessionStorage.getItem('sid');
+    const params = {
+      status_id:status_id,
+      deposit_name:name,
+    }
+    console.log(`/?action=pay_account_num&params=${JSON.stringify(params)}&sid=${sid}`);
+    const response = await axios.get(`/?action=pay_account_num&params=${JSON.stringify(params)}&sid=${sid}`);
+     return response.data;
+  },
+  sendSuccessPayment: async (status_id:number, imp_uid:string, merchant_uid:string) => {
+    if (!isLogin()) return {};
+    const sid = sessionStorage.getItem('sid');
+    const params = {
+      status_id:status_id,
+      imp_uid:imp_uid,
+      merchant_uid:merchant_uid
+    }
+    
+    console.log(`/?action=pay_check_status&params=${JSON.stringify(params)}&sid=${sid}`);
+    const response = await axios.get(`/?action=pay_check_status&params=${JSON.stringify(params)}&sid=${sid}`);
      return response.data;
   },
   requestDocumentAction: async (url:string) => {

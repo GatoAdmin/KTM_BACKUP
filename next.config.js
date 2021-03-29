@@ -8,7 +8,10 @@ module.exports = {
     REACT_APP_BUCKET_NAME: process.env.REACT_APP_BUCKET_NAME,
     REACT_APP_REGION: process.env.REACT_APP_REGION,
     REACT_APP_S3_URL: process.env.REACT_APP_S3_URL,
-    CLIENT_HOST: process.env.CLIENT_HOST
+    CLIENT_HOST: process.env.CLIENT_HOST,
+    IAMPORT_USER_CODE: process.env.IAMPORT_USER_CODE,
+    IAMPORT_REST_API_KEY: process.env.IAMPORT_REST_API_KEY,
+    IAMPORT_REST_API_SECRET: process.env.IAMPORT_REST_API_SECRET
   },
   webpack(config) {
     config.module.rules.push({

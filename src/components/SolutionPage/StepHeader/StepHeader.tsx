@@ -218,7 +218,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, t, lang, changeLang}) => {
 
   const [loading, resolved, error] = usePromise(getUnivInfo, []);
   if (loading) return <div></div>; 
-  if (error) window.alert('API 오류');
+  if (error) location.reload();//window.alert('API 오류');
   if (!resolved) return null;
   let info = resolved;
 

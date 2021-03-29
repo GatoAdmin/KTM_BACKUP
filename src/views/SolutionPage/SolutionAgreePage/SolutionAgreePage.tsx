@@ -17,6 +17,7 @@ import Agreement from '@components/SolutionPage/Agreement/Agreement';
 import LineParser from '@components/SolutionPage/LineParser/LineParser';
 import PriceInfoHeader from '@components/SolutionPage/PriceInfoHeader/PriceInfoHeader';
 import ReadyRadioButton from '@components/SolutionPage/ReadyRadioButton/ReadyRadioButton';
+import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import {STEP_STRING} from '@components/SolutionPage/StepString';
 import {
   Block,
@@ -171,19 +172,29 @@ const SolutionAgreePage: NextPage = ({
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
-        console.log(data);
+        console.log(data);//TODO:에러 대응
       } else { 
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
 
-        if(typeof window !== "undefined"){
-          sessionStorage.setItem('userStatusId',user.id);
-          sessionStorage.setItem('chooseUnivCode',user.univ_code);
-          sessionStorage.setItem('chooseUnivName',user.univ_name);
-          sessionStorage.setItem('chooseSubjectname',user.subjectname);
-          user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+        if(user!==null && typeof user!=="undefined"){
+          if(typeof window !== "undefined"){
+            sessionStorage.setItem('userStatusId',user.id);
+            sessionStorage.setItem('chooseUnivCode',user.univ_code);
+            sessionStorage.setItem('chooseUnivName',user.univ_name);
+            sessionStorage.setItem('chooseSubjectname',user.subjectname);
+            user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
+          }
+          if(user.step === STEP_STRING.STEP_TWO){
+            if(user.pay_rank!==null||user.pay_status==="READY"){
+              Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
+            }
+          }else {
+            Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
+          }
+        }else {
+          Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
         }
-        // TODO: 스테이터스 확인 후 url 변경
       }
     })
     .catch((err) => {
@@ -212,7 +223,7 @@ const SolutionAgreePage: NextPage = ({
     
     const [loading, resolved, error] = usePromise(usePriceData, []);
     if (loading) return <div></div>; 
-    if (error) window.alert('API 오류');
+    if (error) location.reload();//window.alert('API 오류');
     if (!resolved) return null;
     const priceData = resolved;
     
@@ -283,6 +294,11 @@ const SolutionAgreePage: NextPage = ({
   
     return (
       <DefaultLayout>
+        {loading && (
+          <LoadingPopup>
+            <Loading />
+          </LoadingPopup>
+        )}
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
         <StepHeader step={2} t={t} lang={lang} changeLang={changeLang}/>

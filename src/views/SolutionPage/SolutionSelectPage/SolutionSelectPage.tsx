@@ -5,8 +5,8 @@ import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import { GetServerSideProps, NextPage } from 'next';
+import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import Router, { withRouter } from 'next/router';
-import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import StepHeader, { getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
@@ -148,7 +148,7 @@ const SolutionSelectPage: NextPage = ({
                   Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
                 }
                 else if(user.pay_status==="READY"){
-                  Router.push(`/solution/2/paymentWating${queryLang?`?lang=${queryLang}`:''}`)
+                  Router.push(`/solution/2/paymentWaiting${queryLang?`?lang=${queryLang}`:''}`)
                 }
                 else{
                   Router.push(`/solution/2/payment${queryLang?`?lang=${queryLang}`:''}`)
@@ -180,7 +180,16 @@ const SolutionSelectPage: NextPage = ({
             }
             
             if(user.step === STEP_STRING.STEP_TWO){
-              Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
+              if(user.pay_rank===null){
+                Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
+              }
+              else if(user.pay_status==="READY"){
+                Router.push(`/solution/2/paymentWaiting${queryLang?`?lang=${queryLang}`:''}`)
+              }
+              else{
+                Router.push(`/solution/2/payment${queryLang?`?lang=${queryLang}`:''}`)
+              }
+              // Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
             }else if(user.step === STEP_STRING.STEP_THREE_INIT||user.step === STEP_STRING.STEP_THREE_PENDING){
               Router.push(`/solution/3${queryLang?`?lang=${queryLang}`:''}`)
             }else if(user.step === STEP_STRING.STEP_FOUR){
@@ -283,12 +292,13 @@ const SolutionSelectPage: NextPage = ({
   }
     return (
       <DefaultLayout>
+        {loading && (
+          <LoadingPopup>
+            <Loading />
+          </LoadingPopup>
+        )}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
-        {isLogin()
-        ?<StepHeader step={1} major_str={ selectValue?typeof selectValue.major_str==="string"?selectValue.major_str:null:null} t={t} lang={lang} changeLang={changeLang}/>
-        :<StepHeader step={1} major_str={null} t={t} lang={lang} changeLang={changeLang}/>
-        }
-        
+        <StepHeader step={1} t={t} lang={lang} changeLang={changeLang}/>
         <Block>
           <BlockHeader>{t('select-enter-type')}</BlockHeader>
           {univ_info

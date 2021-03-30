@@ -64,7 +64,6 @@ export default {
       status_id:status_id,
       deposit_name:name,
     }
-    console.log(`/?action=pay_account_num&params=${JSON.stringify(params)}&sid=${sid}`);
     const response = await axios.get(`/?action=pay_account_num&params=${JSON.stringify(params)}&sid=${sid}`);
      return response.data;
   },
@@ -76,8 +75,6 @@ export default {
       imp_uid:imp_uid,
       merchant_uid:merchant_uid
     }
-    
-    console.log(`/?action=pay_check_status&params=${JSON.stringify(params)}&sid=${sid}`);
     const response = await axios.get(`/?action=pay_check_status&params=${JSON.stringify(params)}&sid=${sid}`);
      return response.data;
   },

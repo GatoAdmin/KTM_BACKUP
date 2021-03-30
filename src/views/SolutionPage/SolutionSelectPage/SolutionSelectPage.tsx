@@ -227,7 +227,6 @@ const SolutionSelectPage: NextPage = ({
           Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
           return true;
         }else{
-          // window.alert(t('warn-2'));
           return false;
         }
       }
@@ -241,6 +240,7 @@ const SolutionSelectPage: NextPage = ({
       window.alert(t('warn-1'));
     }
   }
+  //주석처리한 곳은 편입학 선택 버튼
     return (
       <DefaultLayout>
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />

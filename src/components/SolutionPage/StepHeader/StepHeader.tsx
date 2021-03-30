@@ -1,15 +1,8 @@
 import React from 'react';
-import Link from 'next/link';
 import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
-import axios from 'axios';
-import { GetServerSideProps, NextPage } from 'next';
-import { useSWRInfinite, responseInterface } from 'swr';
-import Router, { withRouter } from 'next/router';
-import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
-import UnivScholarshipTable, { ScholarshipType } from '@components/RecommendPage/UnivScholarshipTable/UnivTuitionTable';
+import Router from 'next/router';
 import PlanItem from '@components/SolutionPage/PlanItem/PlanItem';
-import DummyData from '@components/SolutionPage/dummy.json';
 import {
     UnivLogo,
     UnivItem,
@@ -48,21 +41,9 @@ interface StepProps {
     changeLang: (s: string) => void;
 }
 
-export const getLoginCheck=()=>{
-  if(typeof window !== "undefined"){
-    const sid = window.sessionStorage.getItem('sid');
-    if(sid === null){
-      return false;
-    }
-    return true;
-  }
-  return false;
-};
-
 export const getSelectUnivInfo= async (lang:string)=>{
   try{
-    if(isLogin()){//
-      console.log(sessionStorage.getItem('chooseUnivCode'))
+    if(isLogin()){
       if(typeof window !== "undefined"){
         const univ_code = sessionStorage.getItem('chooseUnivCode');
         if(typeof univ_code!=="undefined"&&univ_code!=="undefined"&&univ_code!==null){
@@ -77,7 +58,7 @@ export const getSelectUnivInfo= async (lang:string)=>{
       return {};
     }
   }catch(error){
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -152,7 +133,7 @@ const StepHeader: React.VFC<StepProps> = ({ step = 1, t, lang, changeLang}) => {
     return data;
   }
   const onClickSelectUniv=()=>{
-    if(getLoginCheck()){
+    if(isLogin()){
       //TODO:나중에 url 옮겨줄것
       // Router.push('/login');
     }else{

@@ -123,8 +123,6 @@ const SolutionSelectPage: NextPage = ({
               const btime = new Date(b.updated_at);
               atime>btime?1:atime<btime?-1:0;
             })[0];
-  
-            console.log(user)
             if(typeof window !== "undefined"){
               sessionStorage.setItem('chooseUnivCode',user.univ_code);
               sessionStorage.setItem('chooseUnivName',user.univ_name);

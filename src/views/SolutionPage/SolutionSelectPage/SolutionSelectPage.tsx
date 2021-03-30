@@ -96,7 +96,7 @@ const SolutionSelectPage: NextPage = ({
                 user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
               }
               if(user.step === STEP_STRING.STEP_TWO){
-                if(user.pay_rank===null){
+                if(user.pay_rank===null||user.pay_rank===""){
                   Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
                 }
                 else if(user.pay_status==="READY"){
@@ -124,6 +124,7 @@ const SolutionSelectPage: NextPage = ({
               atime>btime?1:atime<btime?-1:0;
             })[0];
   
+            console.log(user)
             if(typeof window !== "undefined"){
               sessionStorage.setItem('chooseUnivCode',user.univ_code);
               sessionStorage.setItem('chooseUnivName',user.univ_name);
@@ -132,7 +133,7 @@ const SolutionSelectPage: NextPage = ({
             }
             
             if(user.step === STEP_STRING.STEP_TWO){
-              if(user.pay_rank===null){
+              if(user.pay_rank===null||user.pay_rank===""){
                 Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
               }
               else if(user.pay_status==="READY"){

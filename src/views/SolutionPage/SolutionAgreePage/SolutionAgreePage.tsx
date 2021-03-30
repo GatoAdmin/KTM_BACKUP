@@ -154,7 +154,7 @@ const SolutionAgreePage: NextPage = ({
             user.pay_rank?sessionStorage.setItem('choosePayRank',user.pay_rank):null;
           }
           if(user.step === STEP_STRING.STEP_TWO){
-            if(user.pay_rank!==null||user.pay_status==="READY"){
+            if((user.pay_rank!==null&&user.pay_rank!=="")||user.pay_status==="READY"){
               Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
             }
           }else {

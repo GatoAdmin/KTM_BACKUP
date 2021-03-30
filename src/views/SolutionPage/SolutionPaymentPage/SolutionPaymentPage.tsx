@@ -98,7 +98,7 @@ const SolutionPaymentPage: NextPage = ({
             sessionStorage.setItem('choosePayRank',user.pay_rank);
           }
           if(user.step === STEP_STRING.STEP_TWO){
-            if(user.pay_rank===null||user.pay_status==="READY"){
+            if(user.pay_rank===null||user.pay_rank===""||user.pay_status==="READY"){
               Router.push(`/solution${queryLang?`?lang=${queryLang}`:''}`)
             }
           }else {
@@ -192,7 +192,7 @@ const SolutionPaymentPage: NextPage = ({
     }
 
     const selectUnivName = sessionStorage.getItem("chooseUnivName"); 
-    const plan = services.find(service=>service.type===selectValue.plan_str).name;
+    const plan = services.find(service=>service.type===selectValue.plan_str)?.name;
     const priceUnit = "KRW"; 
     const [loading, resolved, error] = usePromise(getPlayerData, []);
     if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 

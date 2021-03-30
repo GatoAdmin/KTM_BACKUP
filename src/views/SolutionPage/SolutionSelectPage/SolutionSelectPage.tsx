@@ -1,10 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import Router, { withRouter } from 'next/router';
 import Header from '@components/Shared/Header/Header';
@@ -29,10 +28,8 @@ import {
 } from '@components/SolutionPage/Common/Common.style';
 import {
   ImageContainer,
-  Accent,
   CoverImage
 } from '@views/SolutionPage/SolutionSelectPage/SolutionSelectPage.style';
-import isLogin from '@util/auth/auth';
 
 interface tap {
   name: string;
@@ -40,11 +37,10 @@ interface tap {
   index : number;
 }
 
-
 const getChosseUnivCode =()=>{
   let data = null;
   if(typeof window !=="undefined"){
-    data = sessionStorage.getItem('chooseUnivCode');//|"KMU_UNI";
+    data = sessionStorage.getItem('chooseUnivCode');
   }
   return data;
 }
@@ -65,49 +61,6 @@ const getSesstionData =()=>{
   return data;
 }
 
-// const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
-//   .then((res) => {const {
-//     update_userstatus,
-//     userdocument
-//   }: {
-//     update_userstatus:{
-//         id: number;
-//         user_id: number;
-//         univ_code: string;
-//         info_type: string;
-//         subjecttitle: string;
-//         subjectname: string;
-//         pay_rank: string;
-//         pay_cost: string;
-//         doc_cost:number;
-//         pay_complete:boolean;
-//       },
-//       userdocument:{
-//         essential: Array<{
-//           name : string;
-//           pictogram :string;
-//         }>;
-//         noessential: Array<{
-//           name : string;
-//           pictogram :string;
-//         }>;
-//       }
-//     }  = res.data;
-//     console.log(res.data)
-//     window.sessionStorage.setItem("user_status",JSON.stringify({update_userstatus, userdocument}));
-//     window.sessionStorage.setItem("user_status_id",String(update_userstatus.id));
-//     return {update_userstatus, userdocument};
-//   });
-  
-
-
-const convertTime = (timeStr: string)=>{
-  const date = timeStr.replace(' / ','T');
-  return new Date(date);
-}
-const getLeastTime=(admin:string,user:string)=>{
-  return admin>user?admin:admin<user?user:admin;
-}
 const SolutionSelectPage: NextPage = ({
   router: {
     query: { lang: queryLang, univ: queryUniv },
@@ -129,9 +82,8 @@ const SolutionSelectPage: NextPage = ({
   React.useEffect(() => {
     API.getPlayerStatus()
     .then((data)=>{
-      console.log(data);
       if (data.status !== 'success') {
-        console.log(data);
+        console.error(data.status);
       } else { //통신 성공
           const univ_code = getChosseUnivCode();
           if(univ_code!==null){//선택된 univ_code가 있는지 체크한다.
@@ -167,8 +119,8 @@ const SolutionSelectPage: NextPage = ({
             }
           }else{//선택된 univ_code 이 없는 경우
             const user = data.userstatus_list.sort(function(a,b){
-              const atime = getLeastTime(a.admin_end_check_datetime,a.user_end_check_datetime);//convertTime(a.updated_at);
-              const btime = getLeastTime(b.admin_end_check_datetime,b.user_end_check_datetime);//convertTime(b.updated_at);
+              const atime = new Date(a.updated_at);
+              const btime = new Date(b.updated_at);
               atime>btime?1:atime<btime?-1:0;
             })[0];
   
@@ -189,7 +141,6 @@ const SolutionSelectPage: NextPage = ({
               else{
                 Router.push(`/solution/2/payment${queryLang?`?lang=${queryLang}`:''}`)
               }
-              // Router.push(`/solution/2${queryLang?`?lang=${queryLang}`:''}`)
             }else if(user.step === STEP_STRING.STEP_THREE_INIT||user.step === STEP_STRING.STEP_THREE_PENDING){
               Router.push(`/solution/3${queryLang?`?lang=${queryLang}`:''}`)
             }else if(user.step === STEP_STRING.STEP_FOUR){
@@ -201,7 +152,7 @@ const SolutionSelectPage: NextPage = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }, []);
 
@@ -216,11 +167,11 @@ const SolutionSelectPage: NextPage = ({
     const [viewTap,setViewTaps] = React.useState({type:viewType}); 
   
     const [loading, resolved, error] = usePromise(getUnivInfo, []);
-    if (loading) return <div></div>; 
-    if (error) window.alert('API 오류');
+    if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
+    if (error) location.reload();
     if (!resolved) return null;
     const {univ_info, major, document} = resolved;
-    console.log(univ_info)
+    
     const taps: Array<tap> = [
       {
         name: t('academic-type'),
@@ -292,11 +243,6 @@ const SolutionSelectPage: NextPage = ({
   }
     return (
       <DefaultLayout>
-        {loading && (
-          <LoadingPopup>
-            <Loading />
-          </LoadingPopup>
-        )}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
         <StepHeader step={1} t={t} lang={lang} changeLang={changeLang}/>
         <Block>

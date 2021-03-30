@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import API from '@util/api';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import usePromise from '@util/hooks/usePromise';
-import { GetServerSideProps, NextPage } from 'next';
-import { useSWRInfinite, responseInterface } from 'swr';
+import {  NextPage } from 'next';
 import Header from '@components/Shared/Header/Header';
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
@@ -86,7 +84,7 @@ const SolutionPaymentPage: NextPage = ({
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
-        console.log(data);
+        console.error(data.status);
       } else { 
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
@@ -96,6 +94,7 @@ const SolutionPaymentPage: NextPage = ({
             sessionStorage.setItem('chooseUnivName',user.univ_name);
             sessionStorage.setItem('chooseSubjectname',user.subjectname);
             sessionStorage.setItem('choosePayRank',user.pay_rank);
+            sessionStorage.setItem('pay_payer_name',user.deposit_name);
           }
           if(user.step === STEP_STRING.STEP_TWO){
             if(user.pay_status==="READY"){
@@ -112,7 +111,7 @@ const SolutionPaymentPage: NextPage = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }, []);  
 
@@ -162,14 +161,13 @@ const SolutionPaymentPage: NextPage = ({
     }
 
     let sessionData = getSesstionData();
-    const [selectValue, handleSelectEnter]= useSelecterEnter(sessionData?sessionData:{univ_code:getChosseUnivCode(),enter_type:"new_enter"});
     const accountTransferName = sessionStorage.getItem("pay_payer_name");
     const selectUnivName = sessionStorage.getItem("chooseUnivName"); 
-    const plan = services.find(service=>service.type===selectValue.plan_str).name;
+    const plan = services.find(service=>service.type===sessionData.plan_str).name;
     const priceUnit = "KRW"; 
 
     const [loading, resolved, error] = usePromise(getPlayerData, []);
-    if (loading) return <div></div>; 
+    if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
     if (error) location.reload();
     if (!resolved) return null;
     const {userstatus_list} = resolved;
@@ -177,13 +175,9 @@ const SolutionPaymentPage: NextPage = ({
     const playerData = userstatus_list.find(us=>us.univ_code ===univ_code);
 
     if(playerData !== undefined){
+      //주석처리 해놓은 곳은 페이팔 선택 버튼
       return (
         <DefaultLayout>
-        {loading && (
-          <LoadingPopup>
-            <Loading />
-          </LoadingPopup>
-        )}
           <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
           <StepHeader step={2} t={t} lang={lang} changeLang={changeLang}/>
   
@@ -191,7 +185,7 @@ const SolutionPaymentPage: NextPage = ({
             <Bold22>{t('payment-method')}</Bold22>
             <RadioButtonPaymentContainer>
                 <RadioButton id="account_transfer" group="pay_method" value="account_transfer" checked={payment_method==="account_transfer"}>{t('account-transfer')}</RadioButton>
-                <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={payment_method==="card_paypal"} >{t('card-payment-paypal')}</RadioButton>
+                {/* <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={payment_method==="card_paypal"} >{t('card-payment-paypal')}</RadioButton> */}
              </RadioButtonPaymentContainer>
             <Table>
               <Row>
@@ -216,7 +210,7 @@ const SolutionPaymentPage: NextPage = ({
                 <HeaderColumn>{t('total-payment-amount')}</HeaderColumn>
                 <Column width={12}>{convertPrice(playerData.pay_cost)} {priceUnit}</Column>
               </Row>
-              {selectValue.pay_method==="account_transfer"?
+              {payment_method==="account_transfer"?
                 <Row>
                   <HeaderColumn>{t('account-transfer-name')}</HeaderColumn>
                   <TopBottomNonPaddingColumn width={12}><Input readonly={true} value={accountTransferName}/></TopBottomNonPaddingColumn>

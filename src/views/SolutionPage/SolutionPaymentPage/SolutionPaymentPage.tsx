@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import API from '@util/api';
 import {Payment} from '@components/Shared/Iamport'
 import useTranslate from '@util/hooks/useTranslate';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import usePromise from '@util/hooks/usePromise';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import Header from '@components/Shared/Header/Header';
-import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
+import StepHeader, {useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import Input from '@components/SolutionPage/Input/Input';
@@ -26,7 +25,6 @@ import {
   Table,
   Row,
   Column,
-  HeaderRow,
   HeaderColumn,
   TopBottomNonPaddingColumn
 } from '@components/SolutionPage/Table/Table.style';
@@ -88,7 +86,7 @@ const SolutionPaymentPage: NextPage = ({
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
-        console.log(data);
+        console.error(data.status);
       } else { 
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
@@ -112,7 +110,7 @@ const SolutionPaymentPage: NextPage = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }, []);  
 
@@ -154,7 +152,7 @@ const SolutionPaymentPage: NextPage = ({
     return data;
   }
   
-  React.useEffect(() => {
+  React.useEffect(() => {//아임포트 결제 스크립트 붙이는 부분
     const scriptJquery = document.createElement('script');
     const scriptIamport = document.createElement('script');
 
@@ -172,6 +170,7 @@ const SolutionPaymentPage: NextPage = ({
       document.body.removeChild(scriptJquery);
     }
   }, []);
+  
   if(typeof window !== "undefined"){    
     const getPlayerData =async()=>{
       const data = await API.getPlayerStatus();
@@ -196,17 +195,16 @@ const SolutionPaymentPage: NextPage = ({
     const plan = services.find(service=>service.type===selectValue.plan_str).name;
     const priceUnit = "KRW"; 
     const [loading, resolved, error] = usePromise(getPlayerData, []);
-    if (loading) return <div></div>; 
-    if (error) window.alert('API 오류');
+    if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
+    if (error) location.reload();
     if (!resolved) return null;
     const {userstatus_list} = resolved;
     const univ_code =  getChosseUnivCode();
     const playerData = userstatus_list.find(us=>us.univ_code ===univ_code);
 
-    const onClickNextStep=(isFinal:boolean, accountTransferName:string)=>{
+    const onClickNextStep=(isFinal:boolean)=>{//페이팔 선택 버튼을 활성화했다면 여기도 같이 풀어줘야함
       if(isFinal){
         if(selectValue.pay_method ==="account_transfer"){
-          console.log(accountTransferName);
           sessionStorage.setItem("pay_payer_name",accountTransferName);
           API.sendAccountTransfer(playerData.id, accountTransferName)
           .then( data=>{
@@ -214,29 +212,29 @@ const SolutionPaymentPage: NextPage = ({
               Router.push(`/solution/2/paymentWaiting${queryLang?`?lang=${queryLang}`:''}`);
             }
           });
-        }else if(selectValue.pay_method ==="card_paypal"){
+        }
+        /*
+        //페이팔 선택시 결제 부분
+        //페이팔 선택 버튼을 활성화했다면 여기도 같이 풀어줘야함
+        else if(selectValue.pay_method ==="card_paypal"){
           const data={pg:'paypal',amount:playerData.pay_cost}
            Payment(data, playerData, queryLang);
-        }
+        } 
+        */
       }else if(selectValue.pay_method ==="account_transfer"){
         window.alert(t('warn-4'));
       }
     }
-
+    //주석처리를 해놓은 곳은 페이팔 선택 버튼
     return (
       <DefaultLayout>
-        {loading && (
-          <LoadingPopup>
-            <Loading />
-          </LoadingPopup>
-        )}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
         <StepHeader step={2} t={t} lang={queryLang} changeLang={changeLang}/>
         <Block>
           <Bold22>{t('payment-method')}</Bold22>
           <RadioButtonPaymentContainer>
               <RadioButton id="account_transfer" group="pay_method" value="account_transfer" checked={selectValue?.pay_method==="account_transfer"} onChange={handleSelectEnter}>{t('account-transfer')}</RadioButton>
-              <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={selectValue?.pay_method==="card_paypal"} onChange={handleSelectEnter}>{t('card-payment-paypal')}</RadioButton>
+              {/* <RadioButton id="card_paypal" group="pay_method" value="card_paypal" checked={selectValue?.pay_method==="card_paypal"} onChange={handleSelectEnter}>{t('card-payment-paypal')}</RadioButton> */}
             </RadioButtonPaymentContainer>
           <Table>
             <Row>

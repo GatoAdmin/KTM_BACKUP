@@ -77,7 +77,7 @@ const SolutionFinishPage: NextPage = ({
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
-        console.log(data);
+        console.error(data.status);
       } else { 
           const univ_code = getChosseUnivCode();
           const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
@@ -102,7 +102,7 @@ const SolutionFinishPage: NextPage = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }, []);
   
@@ -118,11 +118,10 @@ const SolutionFinishPage: NextPage = ({
   }
 
   const [loading, resolved, error] = usePromise(usePlayerDoucmentData, []);
-  if (loading) return <div></div>; 
+  if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
   if (error) location.reload();
   if (!resolved) return null;
   const documentData =resolved.userdocument; 
-  console.log(resolved);
 
   if(typeof window !== "undefined"){    
     const isFinal = () =>{
@@ -137,13 +136,14 @@ const SolutionFinishPage: NextPage = ({
           const key = `/?action=user_check_solution_end&params=${JSON.stringify({status_id:status_id})}&sid=${sid}`;
           API.sendPlayerInfo(key).then(
             data=>{
-              console.log(data)
               if(data.status==='success'){
                 location.reload();
+              }else{
+                console.error(data.status)
               }
             }
           )
-          .catch(err=>console.log(err))
+          .catch(err=>console.error(err))
         }
       }else{
         return window.alert(t('please-agree-submit-document'));
@@ -153,11 +153,6 @@ const SolutionFinishPage: NextPage = ({
     if(documentData!==undefined){
       return (
         <DefaultLayout>
-          {loading && (
-            <LoadingPopup>
-              <Loading />
-            </LoadingPopup>
-          )}
           <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
           <StepHeader step={5} t={t} lang={lang} changeLang={changeLang}/>
           <TopNonBlock>

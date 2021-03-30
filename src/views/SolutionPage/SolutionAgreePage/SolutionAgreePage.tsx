@@ -4,14 +4,11 @@ import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import Router,{withRouter} from 'next/router';
-import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
-import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import StepHeader, {getSelectUnivInfo, useSelecterEnter} from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
-import RadioButton from '@components/SolutionPage/RadioButton/RadioButton';
 import LabelClickCheckbox from '@components/SolutionPage/LabelClickCheckbox/LabelClickCheckbox';
 import Agreement from '@components/SolutionPage/Agreement/Agreement';
 import LineParser from '@components/SolutionPage/LineParser/LineParser';
@@ -26,9 +23,7 @@ import {
   GreyText,
   Bold22,
   Bold18,
-  Bold16,
   UncheckedRadioIcon,
-  RadioButtonContainer,
   CheckedRadioIcon
 } from '@components/SolutionPage/Common/Common.style';
 import {
@@ -48,7 +43,6 @@ import {
   Row,
   Column,
   HeaderRow,
-  HeaderColumn
 } from '@components/SolutionPage/Table/Table.style';
 
 interface service {
@@ -59,32 +53,6 @@ interface service {
   index: number;
 }
 
-
-const fetchSendPlayerInfo = (url: string) => axios.get(url,{withCredentials : true})
-  .then((res) => {const {
-    userstatus
-  }: {
-    userstatus:{    
-        id: number;
-        user_id: number;
-        univ_code: string;
-        info_type: string;
-        subjecttitle: string;
-        subjectname: string;
-        pay_rank: string;
-        service_fee:string;
-        apply_fee:string;
-        pay_cost: string;
-        doc_cost:number;
-        pay_complete:boolean;
-      }
-    }  = res.data;
-
-    window.sessionStorage.setItem("user_status",JSON.stringify({userstatus}));
-    window.sessionStorage.setItem("user_status_id",String(userstatus.id));
-    return {userstatus};
-  });
-  
 const getChosseUnivCode =()=>{
     let data = null;
     if(typeof window !=="undefined"){
@@ -172,7 +140,7 @@ const SolutionAgreePage: NextPage = ({
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
-        console.log(data);//TODO:에러 대응
+        console.error(data.status);
       } else { 
         const univ_code = getChosseUnivCode();
         const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
@@ -198,7 +166,7 @@ const SolutionAgreePage: NextPage = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }, []);  
 
@@ -222,8 +190,8 @@ const SolutionAgreePage: NextPage = ({
     }
     
     const [loading, resolved, error] = usePromise(usePriceData, []);
-    if (loading) return <div></div>; 
-    if (error) location.reload();//window.alert('API 오류');
+    if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
+    if (error) location.reload();
     if (!resolved) return null;
     const priceData = resolved;
     
@@ -258,7 +226,7 @@ const SolutionAgreePage: NextPage = ({
     API.sendPlayerInfo(key).then(
       data=>{
         if(data.status!=="success"){
-          console.log(data);
+          console.error(data.status);
         }else{
           Router.push(`/solution/2/payment${queryLang?`?lang=${queryLang}`:''}`)
         }
@@ -294,11 +262,6 @@ const SolutionAgreePage: NextPage = ({
   
     return (
       <DefaultLayout>
-        {loading && (
-          <LoadingPopup>
-            <Loading />
-          </LoadingPopup>
-        )}
         {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
         <StepHeader step={2} t={t} lang={lang} changeLang={changeLang}/>

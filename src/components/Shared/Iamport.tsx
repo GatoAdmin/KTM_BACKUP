@@ -24,7 +24,6 @@ export function Payment( data, playerData, lang?) {
       console.log(res);
       window.alert(res.error_msg);
     }
-    // navigation.replace('PaymentResult', response);
   }
 
   /* [필수입력] 결제에 필요한 데이터를 입력합니다. */
@@ -33,15 +32,9 @@ export function Payment( data, playerData, lang?) {
     pay_method: 'card',
     popup : true,
     name: `${playerData.univ_code}_${playerData.subjectname}_${playerData.pay_rank}`,
-    currency : 'USD',
-    merchant_uid: `mid_${playerData.user_id}_${playerData.univ_code}_${playerData.subjectname}_${playerData.pay_rank}_${new Date().getTime()}`, //TODO: 서버에 들어가는 아이디로 해두어야 한다
-    // buyer_name: process.env.IAMPORT_BUYER_NAME,
-    // buyer_tel: process.env.IAMPORT_BUYER_TEL,
+    currency : 'USD',//통화 설정
+    merchant_uid: `mid_${playerData.user_id}_${playerData.univ_code}_${playerData.subjectname}_${playerData.pay_rank}_${new Date().getTime()}`, //서버에 들어가는 아이디로 해두어야 한다
     buyer_email: playerData.email,
-    // buyer_addr: process.env.IAMPORT_BUYER_ADDR,
-    // buyer_postcode: process.env.IAMPORT_BUYER_POSTCODE,
-    // app_scheme: process.env.IAMPORT_APP_SCHEME,
-    // [Deprecated v1.0.3]: m_redirect_url
   };
 
   

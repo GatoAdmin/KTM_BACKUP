@@ -1,12 +1,11 @@
-import React, {useState, useReducer} from 'react';
+import React from 'react';
 import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/solutionPage.json';
 import { Loading, LoadingPopup } from '@views/UserPage/LoginPage/LoginPage.style';
-import i18nArrayResource from '@assets/i18n/registerPage.json';
 import LineParser from '@components/SolutionPage/LineParser/LineParser';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import Header from '@components/Shared/Header/Header';
 import StepHeader from '@components/SolutionPage/StepHeader/StepHeader';
 import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
@@ -61,22 +60,21 @@ const getDateFormat=(dateString: string)=>{
   }
   return "";
 }
+
 const SolutionDocumentPage: NextPage = ({
   router: {
     query: { lang: queryLang },
   },
 })  => {
-  const ArrayT = useTranslate(i18nArrayResource);
   const { t, lang, changeLang } = useTranslate(i18nResource);
   
   React.useEffect(() => {
     API.getPlayerStatus()
     .then((data)=>{
       if (data.status !== 'success') {
-        console.log(data);
+        console.error(data.status);
       } else { 
           const univ_code = getChosseUnivCode();
-          console.log(univ_code)
           const user = data.userstatus_list.find(us=>us.univ_code === univ_code);
           if(user!==null && typeof user!=="undefined"){
             if(typeof window !== "undefined"){
@@ -96,13 +94,12 @@ const SolutionDocumentPage: NextPage = ({
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }, []);
   
   React.useEffect(() => {
     if (queryLang !== undefined) {
-      ArrayT.changeLang(queryLang);
       changeLang(queryLang);
     }
   }, [queryLang]);
@@ -114,13 +111,12 @@ const SolutionDocumentPage: NextPage = ({
 
   if(typeof window !== "undefined"){
     const [loading, resolved, error] = usePromise(usePlayerDoucmentData, []);
-    if (loading) return <div></div>; 
+    if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
     if (error) location.reload();
     if (!resolved) return null;
     const documentData =resolved.userdocument; 
     
     const isFinal = () =>{
-     //모든 서류의 서류 상태가 ‘준비 완료’ 상태가 되어야 버튼이 활성화 됨
       let isFinal = true;
       if(documentData!==undefined&&documentData.length>0){
         documentData.map(document=>{
@@ -143,13 +139,14 @@ const SolutionDocumentPage: NextPage = ({
         API.sendPlayerInfo(key)
         .then(
           data=>{
-            console.log(data)
             if(data.status==='success'){
               Router.push(`/solution/5${queryLang?`?lang=${queryLang}`:''}`)
+            }else{
+              console.error(data)
             }
           }
         )
-        .catch(err=>console.log(err))
+        .catch(err=>console.error(err))
       }else{
         return window.alert(t('all-document-status-should-be-ready'));
       }
@@ -158,11 +155,6 @@ const SolutionDocumentPage: NextPage = ({
     if(documentData!==undefined){
       return (
         <DefaultLayout>
-          {loading && (
-            <LoadingPopup>
-              <Loading />
-            </LoadingPopup>
-          )}
           <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
           <StepHeader step={4} t={t} lang={lang} changeLang={changeLang}/>
           <HelpImage lang={lang}/>

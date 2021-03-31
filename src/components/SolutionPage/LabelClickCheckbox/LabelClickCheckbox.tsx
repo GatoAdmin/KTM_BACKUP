@@ -2,8 +2,11 @@ import React from 'react';
 import {
   CheckboxContainer,
   CheckboxLabel,
+  CheckboxInput,
+  CheckboxIconContainer,
+  CheckedIcon,
+  UnCheckedIcon
 } from './LabelClickCheckbox.style';
-import Checkbox from '@components/Shared/Checkbox/Checkbox';
 
 interface LabelClickCheckboxProps {
   id: string | number;
@@ -22,7 +25,13 @@ const LabelClickCheckbox: React.FC<LabelClickCheckboxProps> = ({
   children,
 }) => (
   <CheckboxContainer>
-    <Checkbox id={String(id)} value={value} checked={checked} onChange={onChange} />
+    <CheckboxInput id={String(id)} value={value} checked={checked} onChange={onChange} />
+    <CheckboxLabel htmlFor={String(id)}>
+      <CheckboxIconContainer>
+        <CheckedIcon />
+        <UnCheckedIcon />
+      </CheckboxIconContainer>
+    </CheckboxLabel>
     <CheckboxLabel onClick={onClick}>
       {children}
     </CheckboxLabel>

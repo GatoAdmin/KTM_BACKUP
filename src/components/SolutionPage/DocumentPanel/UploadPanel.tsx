@@ -25,7 +25,7 @@ import {
 }from '@components/SolutionPage/Common/Common.style';
 
 interface PanelProps {
-    user_id:number;
+    status_id:number;
     univ_code:string;
     document_id:number;
     document_type:string;
@@ -37,8 +37,8 @@ interface InputFileTypes {
     object: File;
   }
 
-const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요. 향후 API 완료후 해볼것.
-    user_id,
+const Panel: React.VFC<PanelProps> = ({
+    status_id,
     univ_code,
     document_id,
     document_type,
@@ -145,13 +145,11 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
   const s3config = {
     bucketName: process.env.REACT_APP_BUCKET_NAME,
     region: process.env.REACT_APP_REGION,
-    dirName:`media/${user_id}/${univ_code}/${document_id}`,
+    dirName:`media/${status_id}/${univ_code}/${document_id}`,
     accessKeyId: process.env.REACT_APP_ACCESS_ID,
     secretAccessKey: process.env.REACT_APP_ACCESS_KEY,
     s3Url : process.env.REACT_APP_S3_URL
   };
-  //https://katumm-bucket-seoul.s3-ap-northeast-2.amazonaws.com/media/19/SMU_UNI/000/7544zaPETfPUYeSvUEnwVh.jpeg
-  //업로드 성공사례
   const ReactS3Client = new S3(s3config);
 
   const reactS3Upload = useCallback((file:File)=>{
@@ -159,14 +157,14 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
       ReactS3Client
           .uploadFile(file,file.name)
           .then(data=>{
-            console.log(data);
             if(data.status===204){
-              console.log(data);
-              resolve({doc_url: `${user_id}/${univ_code}/${document_id}`, file_name:file.name})
+              resolve({doc_url: `media/${status_id}/${univ_code}/${document_id}`, file_name:file.name})
+            }else{
+              console.error(data);
             }
           })
           .catch(error => {
-            console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
+            console.error(error);
             reject(error);
           });
     })
@@ -193,9 +191,6 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
   async (e: ChangeEvent<HTMLInputElement> | any) => { 
       e.preventDefault();
       if(files.length>0){
-        // let doc_url_list:Array<string> = [];
-        // let file_name_list:Array<string> = [];
-        // const {doc_url_list, file_name_list } = await s3Upload();
         s3Upload().then(
           list =>{
             let sid = ""; 
@@ -208,23 +203,21 @@ const Panel: React.VFC<PanelProps> = ({//TODO:업로드 함수 테스트 필요.
               doc_file_name:list.file_name_list
             };
             let rurl = '';
-            console.log(data)
             if(document_type===DOCUMENT_TYPE_STRING.UPLOAD){
               rurl = `/?action=user_doc_upload_request&params=${JSON.stringify(data)}&sid=${sid}`;
             }else{
               rurl = `/?action=user_doc_app_request&params=${JSON.stringify(data)}&sid=${sid}`;
             }
-            console.log(rurl)
             API.requestDocumentAction(rurl)
             .then(data=>{
-              console.log(data)
               if(data.status==='success'){
-                // alert(t('upload-completed-successfully'));
                 location.reload();
-              }
+              }else{
+                console.error(data.status);
+            }
             })
             .catch(error => {
-              console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함.
+              console.error(error);
             });
 
           }

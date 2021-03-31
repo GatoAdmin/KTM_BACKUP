@@ -105,12 +105,12 @@ const SolutionDocumentPage: NextPage = ({
   }, [queryLang]);
 
   const usePlayerDoucmentData = async ()=>{
-    let data = await API.getPlayerDocument();
+    let data = await API.getPlayerDocument(lang);
     return Array.isArray(data)?data[0]:data;
   }
 
   if(typeof window !== "undefined"){
-    const [loading, resolved, error] = usePromise(usePlayerDoucmentData, []);
+    const [loading, resolved, error] = usePromise(usePlayerDoucmentData, [lang]);
     if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
     if (error) location.reload();
     if (!resolved) return null;
@@ -151,7 +151,6 @@ const SolutionDocumentPage: NextPage = ({
         return window.alert(t('all-document-status-should-be-ready'));
       }
     }
-    
     if(documentData!==undefined){
       return (
         <DefaultLayout>

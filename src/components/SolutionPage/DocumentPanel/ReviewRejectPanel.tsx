@@ -15,7 +15,7 @@ import {
 import useVisible from '@util/hooks/useVisible';
 
 interface PanelProps {
-    document_id:string;
+    document_id:number;
     t:any;
     onClose: (event: React.MouseEvent) => void;
 }
@@ -42,17 +42,16 @@ const Panel: React.VFC<PanelProps> = ({//TODO:API 확인 필요
             reason:textareaRef.current.value
          };
          const key = `/?action=user_doc_tnc_reject_check&params=${JSON.stringify(data)}&sid=${sid}`;
-         console.log(key)
          API.requestDocumentAction(key)
          .then(data=>{ 
-           console.log(data)
              if(data.status==="success"){
-                // alert(t('request-review-return-completed-successfully'));
                 location.reload();
+             }else{
+              console.error(data.status);
              }
          })
         .catch(error => {
-          console.log(error.response);
+          console.error(error);
         });
       }
     },

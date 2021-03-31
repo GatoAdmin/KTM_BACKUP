@@ -15,6 +15,7 @@ interface SelectProps {
   name: string;
   defaultValue?: string;
   readOnly?:boolean;
+  t:any;
   handleFormContent: (
     e?: React.ChangeEvent<HTMLInputElement> | undefined,
     t?: string | undefined,
@@ -78,7 +79,7 @@ const changeValue = (name: string, optionIndex: string | number) => {
 };
 
 const Select: React.VFC<SelectProps> = ({
-  options, placeholder, defaultValue, name, handleFormContent, readOnly=false
+  options, placeholder, defaultValue, name, t, handleFormContent, readOnly=false
 }) => {
   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);

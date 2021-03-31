@@ -42,7 +42,7 @@ interface DropdownProps {
         update_datetime: string,
     };
     lang?:string;
-    t;
+    t:any;
 }
 
 const dropdownIcon = {
@@ -117,49 +117,39 @@ const Dropdown: React.VFC<DropdownProps> = ({
   const [visibleReject, setVisibleReject] = useState<boolean>(false);
   const [visibleUpload, setVisibleUpload] = useState<boolean>(false);
   const [visible, toggleVisible] = useVisible(containerRef);
-  const {status,document_type,url, univ_code, user_id, id } = userdocument;
+  const {status,document_type,url, univ_code, status_id, id } = userdocument;
   const document_name = userdocument.document;
-//   const [visible, setVisible] =useState<boolean>(false);
-//   const { t, lang, chakngeLang } = useTranslate(i18nResource);
-    const downloadFile=(urlString:string, name:string)=>{
-    const s3config = {
-        bucketName: process.env.REACT_APP_BUCKET_NAME,
-        region: process.env.REACT_APP_REGION,
-        accessKeyId: process.env.REACT_APP_ACCESS_ID,
-        secretAccessKey: process.env.REACT_APP_ACCESS_KEY
-        };
-    const s3 = new Aws.S3({params:{Bucket: process.env.REACT_APP_BUCKET_NAME}});
 
-    s3.config.update(s3config)
-    const arrayUrl =  urlString.split('/');
-    const arrayUrlLength = arrayUrl.length;
-    //TODO:url 형식이 정해지면 그에 따라서 바꿀것
-    //bucket: "katumm-bucket-seoul"
-    //key: "media/32/SMU_UNI/334/ixjXwSYnxCbVDkZF6g2Cdr.jpeg"
-    //location: "https://katumm-bucket-seoul.s3-ap-northeast-2.amazonaws.com/media/32/SMU_UNI/334/ixjXwSYnxCbVDkZF6g2Cdr.jpeg"
-    //status: 204
-    console.log(urlString)
-    const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key: `media/${arrayUrl[arrayUrlLength-4]}/${arrayUrl[arrayUrlLength-3]}/${arrayUrl[arrayUrlLength-2]}/${arrayUrl[arrayUrlLength-1]}`}
-    // const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key:'media/32/SMU_UNI/334/ixjXwSYnxCbVDkZF6g2Cdr.jpeg'}
-    // const params ={Bucket: process.env.REACT_APP_BUCKET_NAME,Key:'media/32/SMU_UNI/334/download.jpg'}
-    s3.getObject(params, (err, data)=>{
-        if (err){console.log(err)}
-        console.log(data);
-        if(data){
-            const blob = new Blob([data.Body], {type: data.ContentType});
-            const fileName = arrayUrl[arrayUrlLength-1];//'ixjXwSYnxCbVDkZF6g2Cdr.jpeg'
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            // decodeURI(fileName[fileName.length-1]);
-            a.download = decodeURI(fileName)//`${fileName[fileName.length-1]}`//`${name}_${fileName[fileName.length-1]}`
-            a.click()
-            a.remove()
-            window.URL.revokeObjectURL(url);
-        }
-    })
-    
-}
+    const downloadFile=(urlString:string, name:string)=>{
+        const s3config = {
+            bucketName: process.env.REACT_APP_BUCKET_NAME,
+            region: process.env.REACT_APP_REGION,
+            accessKeyId: process.env.REACT_APP_ACCESS_ID,
+            secretAccessKey: process.env.REACT_APP_ACCESS_KEY
+            };
+        const s3 = new Aws.S3({params:{Bucket: process.env.REACT_APP_BUCKET_NAME}});
+        s3.config.update(s3config)
+
+        const arrayUrl =  urlString.split('/');
+        const arrayUrlLength = arrayUrl.length;
+        
+        const params = {Bucket: process.env.REACT_APP_BUCKET_NAME, Key: `media/${arrayUrl[arrayUrlLength-4]}/${arrayUrl[arrayUrlLength-3]}/${arrayUrl[arrayUrlLength-2]}/${arrayUrl[arrayUrlLength-1]}`}
+        s3.getObject(params, (err, data)=>{
+            if (err){console.error(err)}
+            if(data){
+                const blob = new Blob([data.Body], {type: data.ContentType});
+                const fileName = arrayUrl[arrayUrlLength-1];
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = decodeURI(fileName);
+                a.click()
+                a.remove()
+                window.URL.revokeObjectURL(url);
+            }
+        })
+        
+    }
   const onClickDropdownItem=(e:MouseEvent, menu_type:string)=>{
         e.preventDefault();
         if(menu_type==="reviewReject"){
@@ -180,13 +170,14 @@ const Dropdown: React.VFC<DropdownProps> = ({
                 }
                 API.requestDocumentAction(rUrl)
                 .then(data=>{
-                    console.log(data)
                     if(data.status==="success"){
                         location.reload();
+                    }else{
+                        console.error(data.status);
                     }
                 })
                 .catch(error => {
-                    console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함
+                    console.error(error);
                 });
             }
         }else if(menu_type==="reviewCompleted"){
@@ -203,13 +194,14 @@ const Dropdown: React.VFC<DropdownProps> = ({
                 }
                 API.requestDocumentAction(rUrl)
                 .then(data=>{
-                    console.log(data)
                     if(data.status==="success"){
                         location.reload();
+                    }else{
+                        console.error(data.status);
                     }
                 })
                 .catch(error => {
-                    console.log(error);//중간에 실패가 돌아올 경우, 에러를 패치해야함
+                    console.error(error);
                 });
             }
         }else if(menu_type==="upload"){
@@ -237,7 +229,7 @@ const Dropdown: React.VFC<DropdownProps> = ({
             return (  
                 <>
                     {value==="reviewReject"&&visibleReject?<ReviewRejectPanel document_id={id} onClose={()=>setVisibleReject(false)} t={t}/>:null}
-                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} user_id={user_id} univ_code={univ_code} document_id={id} document_type={document_type} t={t}/>:null}
+                    {value==="upload"&&visibleUpload?<UploadPanel onClose={()=>setVisibleUpload(false)} status_id={status_id} univ_code={univ_code} document_id={id} document_type={document_type} t={t}/>:null}
                 
                     <DropdownItem key={value+index} onClick={e=>onClickDropdownItem(e,value)} lang={lang}>
                         <IconContainer type={value}>

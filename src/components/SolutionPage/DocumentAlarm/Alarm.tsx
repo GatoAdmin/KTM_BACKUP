@@ -16,7 +16,6 @@ const Alarm: React.VFC<AlarmProps> = ({
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [visible, toggleVisible] = useVisible(containerRef);
-  console.log(alarm);
     return (
       <AlarmContainer ref={containerRef}>
          <AlarmIconContainer  onClick={toggleVisible}>

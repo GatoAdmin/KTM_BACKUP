@@ -90,12 +90,12 @@ export default {
     const response = await axios.get(`/?action=get_player_payrank&params={"status_id":"${status_id}"}&sid=${sid}`);
     return response.data;
   },
-  getPlayerDocument: async () => {
+  getPlayerDocument: async (lang:string) => {
     const sid = sessionStorage.getItem('sid');
     if (!isLogin()) return {};
     const univ_code = sessionStorage.getItem('chooseUnivCode');
     const univ_info = sessionStorage.getItem('chooseUnivInfoType');
-    const response = await axios.get(`/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}"}&sid=${sid}`);
+    const response = await axios.get(`/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}","lang":"${lang!=="ko"?lang:""}"}&sid=${sid}`);
     return response.data;
   },
   getUniversityList: async () => {

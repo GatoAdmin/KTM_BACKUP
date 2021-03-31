@@ -76,7 +76,7 @@ export const DropdownItemContainer = styled.div<ContainerProps>`
     position: absolute;
     z-index: 50;
     top: 30px;
-    right: 36px;
+    right: 0px;
     min-height: 40px;
     ${(props)=>(props.items
         ?css`height:${props.items*40}px`

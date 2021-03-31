@@ -6,7 +6,7 @@ export const SubTitleContainer = styled.div`
 `;
 
 export const HelpImage = styled.img.attrs(props=>({
-  src: props.lang?`/images/${props.lang}/solution_document.png`:'/images/kr/solution_document.png',
+  src: props.lang?`/images/${props.lang}/solution_document.png`:'/images/ko/solution_document.png',
   alt: 'help_tip',
 }))`
   width: 1100px;

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import useTranslate from '@util/hooks/useTranslate';
@@ -262,25 +261,25 @@ const SolutionAgreePage: NextPage = ({
   
     return (
       <DefaultLayout>
-        {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)}/>:null}
+        {isOpenAgree?<Agreement onClose={()=>setIsOpenAgree(false)} t={t} />:null}
         <Header t={t} lang={lang} changeLang={changeLang} background="light" position="relative" />
         <StepHeader step={2} t={t} lang={lang} changeLang={changeLang}/>
         <PriceInfoContainer>
           <PriceInfoHeaderRow>
-            <PriceInfoHeaderColumn><Bold22><LineParser str={t('please-selection-payrank')}/></Bold22></PriceInfoHeaderColumn>
+            <PriceInfoHeaderColumn><Bold22><LineParser str={t('please-selection-payrank')} /></Bold22></PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#FF988C">
-                <LineParser str={t('translation-notarization-service-title')}/>
+                <LineParser str={t('translation-notarization-service-title')} textAlign="center"/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#2EC5CE">
-                <LineParser str={t('enter-support-service-title')}/>
+                <LineParser str={t('enter-support-service-title')} textAlign="center"/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
             <PriceInfoHeaderColumn>
               <PriceInfoHeader backgroundColor="#8C30F5">
-                <LineParser str={t('enter-support-pro-title')}/>
+                <LineParser str={t('enter-support-pro-title')} textAlign="center"/>
               </PriceInfoHeader>
             </PriceInfoHeaderColumn>
           </PriceInfoHeaderRow>
@@ -386,7 +385,7 @@ const SolutionAgreePage: NextPage = ({
             </Row>
             }
           </Table>
-          <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}>{t('agree-to-enter-solution-conditions')}</LabelClickCheckbox>
+          <LabelClickCheckbox id="is_agree" checked={isAgree} onClick={(e)=>setIsOpenAgree(true)} onChange={(e)=>setIsAgree(e.target.checked)}><LineParser str={t('agree-to-enter-solution-conditions')}/></LabelClickCheckbox>
         </Block>
         <FooterBlock>
           <ReadyButton isReady={isFinial()} onClick={(e)=>onClickNextStep(isFinial())}>{t('select-payment-method')}</ReadyButton>

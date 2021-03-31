@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {Accent,BoldText, TextContainer} from '@components/SolutionPage/Common/Common.style';
+import {Accent,BoldText, TextContainer,DecoUnderLine} from '@components/SolutionPage/Common/Common.style';
 import {
     MessengerIcon,
     IconContainer
@@ -42,6 +42,14 @@ const Parser: React.FC<LineProps> = ({
                         line_after = line.split('<MessengerIcon>').map((word,index)=>{
                             if(index%2===1){
                                 return <><IconContainer><MessengerIcon/></IconContainer>{word}</>
+                            }
+                            return word;
+                        })
+                        is_postprocessing = true;
+                    }else if(line.match('<DecoUnderLine>')){
+                        line_after = line.split('<DecoUnderLine>').map((word,index)=>{
+                            if(index%2===1){
+                                return <DecoUnderLine>{word}</DecoUnderLine>
                             }
                             return word;
                         })

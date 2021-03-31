@@ -80,7 +80,7 @@ interface service {
 }
 
 export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
-: [initialSelectEnter | null, (event: React.ChangeEvent<HTMLInputElement>) => void] =>{//,updateUrlQuery: UpdateUrlQueryFunction
+: [initialSelectEnter | null, (event: React.ChangeEvent<HTMLInputElement>) => void] =>{
   const [selectValue, setSelectValue] = React.useState<initialSelectEnter| null>(() => initialSelectEnter);    
   const handleSelectEnter = (event: React.ChangeEvent<HTMLInputElement>|undefined) => {
     let newSelectValue: string | null;
@@ -91,7 +91,6 @@ export const useSelecterEnter=(initialSelectEnter:initialSelectEnter|null)
           } else {
             newSelectValue = value;
           }
-          console.log(newSelectValue)
           if(name ==="major_str"){
             let strIds = id.split('_');
             setSelectValue({

@@ -159,6 +159,10 @@ export const DocumentShortContainer = styled.div`
 export const Accent = styled.span`
     color: ${mainColor600};
 `; 
+export const DecoUnderLine = styled.span`
+  text-decoration:underline;
+`;
+
 export const ColorBold = styled.div`
   font-weight: bold;
   font-size: 18px;

@@ -3,7 +3,7 @@ import {BlurScreen, PanelContainer,Title,AgreementContainer,ButtonContainer,Clos
 
 interface PanelProps {
   onClose: (event: React.MouseEvent) => void;
-  onAgrre: (event: React.MouseEvent) => void;
+  onAgrre?: (event: React.MouseEvent) => void;
   t:any;
 }
 
@@ -29,7 +29,6 @@ const Panel: React.FC<PanelProps> = ({
                     })}
               </AgreementContainer>
               <ButtonContainer>
-                {/* <CloseButton onClick={onAgrre}>동의</CloseButton> */}
                 <CloseButton onClick={onClose}>닫기</CloseButton>
               </ButtonContainer>
           </PanelContainer>

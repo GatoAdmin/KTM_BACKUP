@@ -15,7 +15,6 @@ interface SelectProps {
   name: string;
   defaultValue?: string;
   readOnly?:boolean;
-  t:any;
   handleFormContent: (
     e?: React.ChangeEvent<HTMLInputElement> | undefined,
     t?: string | undefined,
@@ -63,7 +62,7 @@ const arrayKeeper = {
     'GB',
   ],
   identity: [0, 1, 2, 3],
-  topik_level: [0, 1, 2, 3, 4, 5, 6],
+  language_skill: ["0", "1", "2", "3", "4", "5", "6"],
 };
 
 const changeValue = (name: string, optionIndex: string | number) => {
@@ -79,7 +78,7 @@ const changeValue = (name: string, optionIndex: string | number) => {
 };
 
 const Select: React.VFC<SelectProps> = ({
-  options, placeholder, defaultValue, name, t, handleFormContent, readOnly=false
+  options, placeholder, defaultValue, name, handleFormContent, readOnly=false
 }) => {
   const [inputValue, setInputValue] = React.useState<string | number>(placeholder);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -116,7 +115,7 @@ const Select: React.VFC<SelectProps> = ({
 
   return (
     <SelectContainer ref={containerRef}>
-      <SelectDisplay show={visible} onClick={toggleVisible}>{inputValue}</SelectDisplay>
+      <SelectDisplay show={visible} is_placeholder={placeholder===inputValue} onClick={toggleVisible}>{inputValue}</SelectDisplay>
       <OptionContainer show={visible}>
         {options.map((value, index) => (
           <Option key={value} onClick={getTriggerChangeOption(value, index)}>

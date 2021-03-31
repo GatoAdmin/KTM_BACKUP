@@ -113,11 +113,11 @@ const SolutionFinishPage: NextPage = ({
   }, [queryLang]);
 
   const usePlayerDoucmentData = async ()=>{
-    let data = await API.getPlayerDocument();
+    let data = await API.getPlayerDocument(lang);
     return Array.isArray(data)?data[0]:data;
   }
 
-  const [loading, resolved, error] = usePromise(usePlayerDoucmentData, []);
+  const [loading, resolved, error] = usePromise(usePlayerDoucmentData, [lang]);
   if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
   if (error) location.reload();
   if (!resolved) return null;

@@ -145,17 +145,21 @@ const SolutionInfoPage: NextPage = ({
     }
     const univcode = getChosseUnivCode();
     
-    let objectFormData = JSON.parse(JSON.stringify(formData));
+    let objectFormData = formData;//JSON.parse(JSON.stringify(formData));
     delete objectFormData.id;
     delete objectFormData.user_id;
-    const tempYear = objectFormData.birth_date.substr(0,4);
-    const tempMonth = objectFormData.birth_date.substr(4,2);
-    const tempDay = objectFormData.birth_date.substr(6,2);
-    objectFormData.birth_date = tempYear+"-"+tempMonth+"-"+tempDay;
+    if(objectFormData.birth_date!==undefined&&objectFormData.birth_date!==""){
+      const tempYear = objectFormData.birth_date.substr(0,4);
+      const tempMonth = objectFormData.birth_date.substr(4,2);
+      const tempDay = objectFormData.birth_date.substr(6,2);
+      objectFormData.birth_date = tempYear+"-"+tempMonth+"-"+tempDay;
+    }
     let jsonFormData = {};
     Object.keys(objectFormData).forEach((key) =>{
-      if(objectFormData[key]==="undefined"){
-        objectFormData[key]= "";
+      if(objectFormData[key]==="undefined"||objectFormData[key]===undefined||objectFormData[key]===""||objectFormData[key]===null){
+        return Object.assign(jsonFormData,{[key]:""});
+      }else if(objectFormData[key]==="true"||objectFormData[key]==="false"){
+        return Object.assign(jsonFormData,{[key]:JSON.parse(objectFormData[key])});
       }
       return Object.assign(jsonFormData,{[key]:objectFormData[key]});
     });
@@ -172,7 +176,9 @@ const SolutionInfoPage: NextPage = ({
           console.error(status);
         } else {
           let tempData = Object.assign(formData, update_userinfo);
-          tempData.birth_date = update_userinfo.birth_date.replaceAll('-','');
+          if(tempData.birth_date!==undefined&&tempData.birth_date!==""){
+            tempData.birth_date = update_userinfo.birth_date.replaceAll('-','');
+          }
           setFormData(tempData);
           
           if(type==="send"){
@@ -245,10 +251,14 @@ const SolutionInfoPage: NextPage = ({
       if(data.status!=='success'){
         console.error(data.status);
       }else{
-        data.userinfo[0].birth_date = data.userinfo[0].birth_date.replace(/-/g,'');
-        const tempData = Object.assign(formData, data.userinfo[0]);
-        setFormData(tempData);
-        setPlayerData(data.userinfo[0]);
+        if(data.userinfo[0]!==undefined){
+          if(data.userinfo[0].birth_date!==undefined&&data.userinfo[0].birth_date!==""&&data.userinfo[0].birth_date!==null){
+            data.userinfo[0].birth_date = data.userinfo[0].birth_date.replace(/-/g,'');
+          }
+          const tempData = Object.assign(formData, data.userinfo[0]);
+          setFormData(tempData);
+          setPlayerData(data.userinfo[0]);
+        }
       }
     })
     .catch(err=>console.error(err));
@@ -256,18 +266,20 @@ const SolutionInfoPage: NextPage = ({
   
   if(typeof window !== "undefined"){
     
-    const onClickNextStep=(isFinal:boolean, afterFuntion:void)=>{
+    const onClickNextStep=(isFinal:boolean)=>{
       if(isFinal){
-        if(window.confirm(t('completed-information-entry'))){
-          afterFuntion;
+        const check = window.confirm(t('completed-information-entry'));
+        if(check){
+          handleSubmit("send");
         }
       }else{
         return window.alert(t('enter-all-required-items'));
       }
     }
+
     const isFinal = () =>{
       const isRequire = requireData.map(dataName =>{
-        if(formData[dataName] === undefined||formData[dataName] === ""){
+        if(formData[dataName] === undefined||formData[dataName] === null||formData[dataName] === ""){
           return false;
         }
         return true;
@@ -333,7 +345,7 @@ const SolutionInfoPage: NextPage = ({
                   <Select
                     placeholder={t('choice-topik-level')}
                     options={topikArray(ArrayT.t)}
-                    name="topik_level"
+                    name="language_skill"
                     defaultValue={formData.language_skill}
                     readOnly={readOnly}
                     handleFormContent={handleFormContent}
@@ -417,7 +429,7 @@ const SolutionInfoPage: NextPage = ({
           </FooterNoticeContainer>
         :<>
           <ReadyButton isReady={true} onClick={(e)=>handleSubmit("save")}>{t('save')}</ReadyButton>
-          <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal(),handleSubmit("send"))}>{t('next-step')}</ReadyButton>
+          <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal())}>{t('next-step')}</ReadyButton>
         </>}
         </FooterBlock>
         {reject!==''?

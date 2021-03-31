@@ -111,7 +111,7 @@ const SolutionSelectPage: NextPage = ({
                 Router.push(`/solution/3${queryLang?`?lang=${queryLang}`:''}`)
               }else if(user.step === STEP_STRING.STEP_FOUR){
                 Router.push(`/solution/4${queryLang?`?lang=${queryLang}`:''}`)
-              }else if(user.step === STEP_STRING.STEP_FIVE||user.step === STEP_STRING.STEP_SIX){
+              }else if(user.step === STEP_STRING.STEP_FIVE||user.step === STEP_STRING.STEP_FIVE_PENDING||user.step === STEP_STRING.STEP_SIX){
                 Router.push(`/solution/5${queryLang?`?lang=${queryLang}`:''}`)
               }
             }else{
@@ -144,7 +144,7 @@ const SolutionSelectPage: NextPage = ({
               Router.push(`/solution/3${queryLang?`?lang=${queryLang}`:''}`)
             }else if(user.step === STEP_STRING.STEP_FOUR){
               Router.push(`/solution/4${queryLang?`?lang=${queryLang}`:''}`)
-            }else if(user.step === STEP_STRING.STEP_FIVE||user.step === STEP_STRING.STEP_SIX){
+            }else if(user.step === STEP_STRING.STEP_FIVE||user.step === STEP_STRING.STEP_FIVE_PENDING||user.step === STEP_STRING.STEP_SIX){
               Router.push(`/solution/5${queryLang?`?lang=${queryLang}`:''}`)
             }
           }
@@ -215,7 +215,6 @@ const SolutionSelectPage: NextPage = ({
       subjectname:selectValue.major_str,
     };
     const key= `/?action=set_player_status&params=${JSON.stringify(params)}&sid=${sid}`;
-    console.log(key);
 
     API.sendPlayerInfo(key).then(
       data=>{

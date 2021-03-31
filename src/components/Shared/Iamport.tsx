@@ -10,10 +10,8 @@ export function Payment( data, playerData, lang?) {
   
   function callback(res) {
     if(res.success){
-      console.log(res);
       API.sendSuccessPayment(playerData.id, res.imp_uid, res.merchant_uid)
       .then(data=>{
-        console.log(data);
         if(data.status==="success"){
           if(data.userstatus.step ===STEP_STRING.STEP_THREE_INIT){
             Router.push(`/solution/3${lang?`?lang=${lang}`:''}`)
@@ -21,7 +19,6 @@ export function Payment( data, playerData, lang?) {
         }
       });
     }else{
-      console.log(res);
       window.alert(res.error_msg);
     }
   }

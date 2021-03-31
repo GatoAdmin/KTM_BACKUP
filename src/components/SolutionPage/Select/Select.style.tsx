@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { greyColor, mainColor600, whiteColor } from '@util/style/color';
+import { fontColor, greyColor, mainColor600, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 export const SelectContainer = styled.div`
@@ -12,6 +12,7 @@ export const SelectContainer = styled.div`
 
 interface showProps {
   show: boolean;
+  is_placeholder?: boolean;
 }
 
 export const SelectDisplay = styled.div<showProps>`
@@ -20,7 +21,6 @@ export const SelectDisplay = styled.div<showProps>`
   border: 0;
   background: transparent;
   font: 16px/22px ${defaultFont};
-  color: ${greyColor};
   cursor: pointer;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -47,6 +47,14 @@ export const SelectDisplay = styled.div<showProps>`
             transform: rotate(135deg);
           `)}
   }
+  
+  ${(props) => (props.is_placeholder
+    ? css`
+          color: ${greyColor};
+        `
+    : css`
+          color: ${fontColor};
+        `)}
 `;
 
 export const OptionContainer = styled.div<showProps>`
@@ -88,7 +96,7 @@ export const Option = styled.div`
   height: 25px;
   margin-bottom: 6px;
   font: 16px/22px ${defaultFont};
-  color: ${greyColor};
+  color: ${fontColor};
   cursor: pointer;
 
   :hover{

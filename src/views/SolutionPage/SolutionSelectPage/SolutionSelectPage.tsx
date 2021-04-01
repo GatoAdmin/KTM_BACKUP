@@ -165,12 +165,12 @@ const SolutionSelectPage: NextPage = ({
     let viewType = selectValue?typeof selectValue.major_type==="string"?selectValue.major_type:"인문":"인문";
     const [viewTap,setViewTaps] = React.useState({type:viewType}); 
   
-    const [loading, resolved, error] = usePromise(getUnivInfo, []);
+    const [loading, resolved, error] = usePromise(getUnivInfo, [lang]);
     if (loading) return <DefaultLayout><LoadingPopup><Loading /></LoadingPopup></DefaultLayout>; 
     if (error) location.reload();
     if (!resolved) return null;
     const {univ_info, major, document} = resolved;
-    
+
     const taps: Array<tap> = [
       {
         name: t('academic-type'),

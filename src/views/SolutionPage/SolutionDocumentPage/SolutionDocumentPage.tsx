@@ -115,7 +115,7 @@ const SolutionDocumentPage: NextPage = ({
     if (error) location.reload();
     if (!resolved) return null;
     const documentData =resolved.userdocument; 
-    
+
     const isFinal = () =>{
       let isFinal = true;
       if(documentData!==undefined&&documentData.length>0){
@@ -175,6 +175,28 @@ const SolutionDocumentPage: NextPage = ({
                   <Column width={0.6}><Dropdown userdocument={data} t={t} lang={lang}/></Column>
                 </Row>
               ))}
+            </Table>
+          </TopNonBlock>
+          <FooterBlock>
+            <ReadyButton type="button" isReady={isFinal()} onClick={(e)=>onClickNextStep(isFinal())}>{t('next-step')}</ReadyButton>
+          </FooterBlock>
+        </DefaultLayout>
+      );
+    }else{
+      return (
+        <DefaultLayout>
+          <Header t={t}  lang={lang} changeLang={changeLang} background="light" position="relative" />
+          <StepHeader step={4} t={t} lang={lang} changeLang={changeLang}/>
+          <HelpImage lang={lang}/>
+          <TopNonBlock>
+            <Table>
+              <HeaderRow>
+                <Column width={6}>{t('document-name')}</Column>
+                <Column width={2}><LineParser str={t('document-guide')} textAlign='center'/></Column>
+                <Column width={3}><LineParser str={t('last-progress-date')} textAlign='center'/></Column>
+                <Column width={3.4}>{t('document-status')}</Column>
+                <Column width={0.6}></Column>
+              </HeaderRow>
             </Table>
           </TopNonBlock>
           <FooterBlock>

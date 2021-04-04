@@ -33,7 +33,8 @@ const UniversitySection: React.FC<UniversitySectionProps> = ({ t, lang }) => {
     getUniversityList();
   }, []);
 
-  const drawUniversity = universitys.map((university: UniversityInfo) => <UniversityCard data={university} lang={lang} />);
+  const cb = (university: UniversityInfo) => <UniversityCard data={university} lang={lang} />;
+  const drawUniversity = universitys.map(cb);
 
   return (
     <UniversitySectionContainer>

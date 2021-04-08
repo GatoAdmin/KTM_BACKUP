@@ -27,8 +27,7 @@ export const DetailContentContainer = styled.div`
   margin-top: 60px;
 `;
 
-export const DetailContent = styled.div`
-`;
+export const DetailContent = styled.div``;
 
 export const InfoSection = styled.section`
   display: flex;
@@ -111,6 +110,15 @@ export const LikeButton = styled.button<ILikeButton>`
   font: normal bold 12px/16px ${defaultFont};
   color: ${(props) => (props.pressed ? whiteColor : mainColor)};
   cursor: pointer;
+  outline: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    margin-left: 4px;
+  }
 `;
 
 export const InfoCardContainer = styled.div`
@@ -124,7 +132,6 @@ export const InfoCard = styled.div`
   padding: 16px;
   border: 1px solid ${lightGreyColor};
   border-radius: 9px;
-  
 `;
 
 export const InfoCardImageContainer = styled.div`
@@ -142,6 +149,17 @@ export const InfoCardDescription = styled.div`
   font: normal bold 14px/17px ${defaultFont};
   color: ${mainColor};
   text-align: center;
+`;
+
+export const NotifyDescription = styled.div`
+  width: 100%;
+  /* background-color: red; */
+  box-sizing: border-box;
+  padding: 0px 60px;
+  text-align: right;
+  font-size: 14px;
+  color: #9e9e9e;
+  margin-top: 8px;
 `;
 
 export const ContentSectionTitle = styled.h2`
@@ -226,11 +244,11 @@ export const DocumentEssential = styled.div`
   background: ${mainColor};
   font: normal bold 12px/17px ${defaultFont};
   color: ${whiteColor};
-  
+
   ::before {
-    content: "!";
+    content: '!';
   }
-  
+
   ::after {
     display: block;
     position: absolute;
@@ -239,8 +257,8 @@ export const DocumentEssential = styled.div`
     width: 8px;
     height: 8px;
     background: ${mainColor};
-    clip-path: polygon(0 0, 100% 0, 50%  100%);
-    content: "";
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    content: '';
   }
 `;
 
@@ -353,7 +371,7 @@ export const SideNavImageLink = styled.a`
     position: absolute;
     top: -5px;
     right: -5px;
-    content: "";
+    content: '';
   }
 `;
 

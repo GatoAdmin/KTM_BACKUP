@@ -197,6 +197,7 @@ export const QualificationImage = styled.div`
 
 export const QualificationDescription = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100px;

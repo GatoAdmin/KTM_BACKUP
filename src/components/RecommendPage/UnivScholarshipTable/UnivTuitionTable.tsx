@@ -1,12 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-  Table,
-  TableCol,
-  TableHeadCol,
-  TableRow,
-  TableTitle,
-} from '@components/Shared/Style/Table.style';
+import { Table, TableCol, TableHeadCol, TableRow, TableTitle } from '@components/Shared/Style/Table.style';
 import TypeSelect from '@components/RecommendPage/TypeSelect/TypeSelect';
 
 const UnivScholarshipSection = styled.section`
@@ -25,15 +19,12 @@ interface IProps {
   additionalInfo: string;
 }
 
-const UnivScholarshipTable: React.FC<IProps> = ({
-  tableData,
-}) => {
+const UnivScholarshipTable: React.FC<IProps> = ({ tableData }) => {
   const [type, setType] = React.useState<ScholarshipType>(scholarshipType[0]);
   const handleChangeSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     setType(target.value as ScholarshipType);
   };
-  console.log(type);
   const renderedData = tableData.filter((data) => data.scholarshiptype === type);
   return (
     <UnivScholarshipSection>

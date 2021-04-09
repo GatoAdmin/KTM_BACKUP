@@ -121,9 +121,10 @@ const fetchUnivDetailInfo = (univCode: string, lang?: string) =>
           homepage_link: string;
         }>;
         tuition: Array<{
-          subjecttitle: SubjectType;
-          subjectname: string;
-          tuition: number;
+          SubjectName: string;
+          VnSubjectName: string;
+          SubjectTitle: SubjectType;
+          Tuition: number;
         }>;
         scholarship: Array<{
           scholarshiptype: ScholarshipType;
@@ -168,9 +169,10 @@ const fetchUnivDetailInfo = (univCode: string, lang?: string) =>
           homepage: university[0].homepage_link,
         },
         tuition: tuition.map((tuitionInfo) => ({
-          name: tuitionInfo.subjectname,
-          type: tuitionInfo.subjecttitle,
-          tuition: formatKRW.format(tuitionInfo.tuition),
+          name: tuitionInfo.SubjectName,
+          vnName: tuitionInfo.VnSubjectName,
+          type: tuitionInfo.SubjectTitle,
+          tuition: formatKRW.format(tuitionInfo.Tuition),
         })),
         condition: supportcondition,
         document: supportdocument.map((documentInfo) => ({
@@ -270,16 +272,15 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                   <InfoCardImageContainer>
                     <InfoCardImage src={value.pictogram} />
                   </InfoCardImageContainer>
-                  {value.name.split('<br>').map((text, index) => (
-                    <InfoCardDescription key={index}>{text}</InfoCardDescription>
+                  {value.name.split('<br>').map((text) => (
+                    <InfoCardDescription key={text}>{text}</InfoCardDescription>
                   ))}
-                  {/* <InfoCardDescription>{value.name.replaceAll('<br>', '\r\n')}</InfoCardDescription> */}
                 </InfoCard>
               ))}
             </InfoCardContainer>
           </InfoSection>
           <NotifyDescription>* 본교의 외국인 모집요강과 공시자료를 기반으로 작성하였습니다.</NotifyDescription>
-          {/* <DetailContentContainer>
+          <DetailContentContainer>
             <DetailContent>
               <UnivTuitionTable tableData={tuition} additionalInfo="." />
               <UnivScholarshipTable tableData={scholarship} additionalInfo="." />
@@ -294,13 +295,17 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                         <QualificationImage>
                           <QualificationIcon />
                         </QualificationImage>
-                        <QualificationDescription>{value.qualificationname}</QualificationDescription>
+                        <QualificationDescription>
+                          {value.qualificationname.split('<br>').map((text) => (
+                            <span key={text}>{text}</span>
+                          ))}
+                        </QualificationDescription>
                       </PrepareStepItem>
                     );
                   })}
                 </PrepareStepItemContainer>
               </PrepareSection>
-              <PrepareSection>
+              {/* <PrepareSection>
                 <ContentSectionTitle>지원준비</ContentSectionTitle>
                 <PrepareStepItemContainer>
                   {document.map((value, index) => {
@@ -325,12 +330,12 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                     );
                   })}
                 </PrepareStepItemContainer>
-              </PrepareSection>
+              </PrepareSection> */}
               <CalendarSection>
                 <Calendar data={calendar} />
               </CalendarSection>
             </DetailContent>
-          </DetailContentContainer> */}
+          </DetailContentContainer>
           <SideNav>
             <SideNavItem background="main">
               <SideNavDescription>

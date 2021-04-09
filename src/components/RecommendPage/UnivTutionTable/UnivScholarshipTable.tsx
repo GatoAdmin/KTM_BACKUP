@@ -1,12 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-  Table,
-  TableCol,
-  TableHeadCol,
-  TableRow,
-  TableTitle,
-} from '@components/Shared/Style/Table.style';
+import { Table, TableCol, TableHeadCol, TableRow, TableTitle } from '@components/Shared/Style/Table.style';
 import TypeSelect from '@components/RecommendPage/TypeSelect/TypeSelect';
 
 const UnivTuitionSection = styled.section`
@@ -25,9 +19,7 @@ interface IProps {
   additionalInfo: string;
 }
 
-const UnivTuitionTable: React.FC<IProps> = ({
-  tableData,
-}) => {
+const UnivTuitionTable: React.FC<IProps> = ({ tableData }) => {
   const [type, setType] = React.useState<SubjectType>(subjectType[0]);
   const handleChangeSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
@@ -38,13 +30,7 @@ const UnivTuitionTable: React.FC<IProps> = ({
   return (
     <UnivTuitionSection>
       <TableTitle>모집학과</TableTitle>
-      <TypeSelect
-        name="subject"
-        types={subjectType}
-        typeFooter="계열"
-        value={type}
-        onChange={handleChangeSelect}
-      />
+      <TypeSelect name="subject" types={subjectType} typeFooter="계열" value={type} onChange={handleChangeSelect} />
       <Table>
         <thead>
           <TableRow>
@@ -57,7 +43,7 @@ const UnivTuitionTable: React.FC<IProps> = ({
           {renderedData.map((value) => (
             <TableRow key={value.name}>
               <TableCol>{value.name}</TableCol>
-              <TableCol> </TableCol>
+              <TableCol>{value.vnName}</TableCol>
               <TableCol>{value.tuition}</TableCol>
             </TableRow>
           ))}

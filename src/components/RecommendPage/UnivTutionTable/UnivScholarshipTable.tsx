@@ -14,6 +14,7 @@ interface IProps {
   tableData: Array<{
     type: SubjectType;
     name: string;
+    vnName: string;
     tuition: string;
   }>;
   additionalInfo: string;

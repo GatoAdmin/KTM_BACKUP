@@ -207,6 +207,83 @@ export const QualificationDescription = styled.div`
   text-align: center;
 `;
 
+export const Item = styled.div`
+  position: relative;
+  display: flex;
+  /* justify-content: space-around; */
+  align-items: center;
+  height: 62px;
+  border-bottom: 2px solid #c4c4c4;
+`;
+
+export const DocumentGrid = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  /* grid-template-rows: 62px 62px; */
+  column-gap: 20px;
+
+  ${Item}:nth-child(-n+2) {
+    border-top: 2px solid #c4c4c4;
+  }
+`;
+
+export const Content = styled.div`
+  display: flex;
+  align-items: center;
+  width: 345px;
+  height: 44px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+
+  color: #232323;
+`;
+
+export const Icon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ff7263;
+  margin: 0px 20px;
+
+  svg {
+    transform: scale(0.8);
+  }
+`;
+
+export const Info = styled.div`
+  display: none;
+  height: 22px;
+  border-radius: 20px;
+  background-color: #df4d3d;
+  font-size: 12px;
+  line-height: 22px;
+  padding: 0px 10px;
+  color: #fff;
+`;
+
+export const ExclamationIcon = styled.div`
+  position: absolute;
+  left: calc(100% - 40px);
+  height: 22px;
+  z-index: 1;
+  width: fit-content;
+  display: flex;
+
+  :hover > ${Info} {
+    display: inline-block;
+  }
+
+  :hover > svg {
+    display: none;
+  }
+`;
+
 export const DocumentIconContainer = styled.div`
   position: relative;
   width: 90px;

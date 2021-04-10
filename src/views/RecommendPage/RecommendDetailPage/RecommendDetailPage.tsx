@@ -50,6 +50,12 @@ import {
   CalendarSection,
   SideNavImage,
   NotifyDescription,
+  DocumentGrid,
+  Icon,
+  Item,
+  Content,
+  ExclamationIcon,
+  Info,
 } from '@views/RecommendPage/RecommendDetailPage/RecommendDetailPage.style';
 
 import i18nResource from '@assets/i18n/consultPage.json';
@@ -61,17 +67,18 @@ import WritePictogram from '@assets/svg/write_pictogram.svg';
 import SearchPictogram from '@assets/svg/search_pictogram.svg';
 import StudyPictogram from '@assets/svg/study_pictogram.svg';
 import FamilyPictogram from '@assets/svg/family_pictogram.svg';
-import BalancePictogram from '@assets/svg/balance_pictogram.svg';
+import MoneyPictogram from '@assets/svg/money_pictogram.svg';
 import UnFilledHeart from '@assets/svg/unfilled_heart.svg';
 import FilledHeart from '@assets/svg/filled_heart.svg';
+import Exclamation from '@assets/svg/exclamation.svg';
 import useTranslate from '@util/hooks/useTranslate';
 
 import API from '@util/api';
 
 const qualificationIcons = [
   { type: '국적요건', icon: FamilyIcon },
-  { type: '어학요건', icon: EducationIcon },
-  { type: '학력요건', icon: CertificateIcon },
+  { type: '어학요건', icon: CertificateIcon },
+  { type: '학력요건', icon: EducationIcon },
 ] as const;
 
 const documentPictogram = {
@@ -79,7 +86,7 @@ const documentPictogram = {
   check: SearchPictogram,
   study: StudyPictogram,
   family: FamilyPictogram,
-  balance: BalancePictogram,
+  money: MoneyPictogram,
 } as const;
 
 type ConditionType = typeof qualificationIcons[number]['type'];
@@ -305,33 +312,35 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                   })}
                 </PrepareStepItemContainer>
               </PrepareSection>
-              {/* <PrepareSection>
-                <ContentSectionTitle>지원준비</ContentSectionTitle>
-                <PrepareStepItemContainer>
+              <PrepareSection>
+                <ContentSectionTitle>입학지원 제출서류</ContentSectionTitle>
+                <DocumentGrid>
                   {document.map((value, index) => {
                     const Pictogram = documentPictogram[value.pictogram];
                     return (
-                      <PrepareStepItem size="sm" key={value.name}>
-                        <DocumentIconContainer>
-                          <DocumentIcon />
-                          <DocumentTypeIconContainer>
-                            <Pictogram />
-                          </DocumentTypeIconContainer>
-                        </DocumentIconContainer>
-                        <DocumentDescription>
-                          {value.info ? (
-                            <DocumentEssential>
-                              <DocumentEssentialDesc>{value.info}</DocumentEssentialDesc>
-                            </DocumentEssential>
-                          ) : null}
-                          {value.name}
-                        </DocumentDescription>
-                      </PrepareStepItem>
+                      <Item>
+                        <Icon>
+                          <Pictogram />
+                        </Icon>
+                        <Content>{value.name}</Content>
+
+                        <ExclamationIcon>
+                          {value.info !== 'None' && (
+                            <>
+                              <Info>
+                                <span>{value.info}</span>
+                              </Info>
+                              <Exclamation />
+                            </>
+                          )}
+                        </ExclamationIcon>
+                      </Item>
                     );
                   })}
-                </PrepareStepItemContainer>
-              </PrepareSection> */}
+                </DocumentGrid>
+              </PrepareSection>
               <CalendarSection>
+                <ContentSectionTitle style={{ width: '100%' }}>입시 일정</ContentSectionTitle>
                 <Calendar data={calendar} />
               </CalendarSection>
             </DetailContent>

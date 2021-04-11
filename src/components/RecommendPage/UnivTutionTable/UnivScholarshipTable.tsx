@@ -11,16 +11,16 @@ const subjectType = ['인문', '자연', '예체능'] as const;
 export type SubjectType = typeof subjectType[number];
 
 interface IProps {
+  t: (s: string) => string;
   tableData: Array<{
     type: SubjectType;
     name: string;
     vnName: string;
     tuition: string;
   }>;
-  additionalInfo: string;
 }
 
-const UnivTuitionTable: React.FC<IProps> = ({ tableData }) => {
+const UnivTuitionTable: React.FC<IProps> = ({ t, tableData }) => {
   const [type, setType] = React.useState<SubjectType>(subjectType[0]);
   const handleChangeSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
@@ -30,14 +30,14 @@ const UnivTuitionTable: React.FC<IProps> = ({ tableData }) => {
   const renderedData = tableData.filter((data) => data.type === type);
   return (
     <UnivTuitionSection>
-      <TableTitle>모집학과</TableTitle>
-      <TypeSelect name="subject" types={subjectType} typeFooter="계열" value={type} onChange={handleChangeSelect} />
+      <TableTitle>{t('tuition-label')}</TableTitle>
+      <TypeSelect t={t} name="subject" types={subjectType} value={type} onChange={handleChangeSelect} />
       <Table>
         <thead>
           <TableRow>
-            <TableHeadCol width="346px">학과명</TableHeadCol>
-            <TableHeadCol width="353px">학과명(외국어)</TableHeadCol>
-            <TableHeadCol width="223px">등록금</TableHeadCol>
+            <TableHeadCol width="346px">{t('head1')}</TableHeadCol>
+            <TableHeadCol width="353px">{t('head2')}</TableHeadCol>
+            <TableHeadCol width="223px">{t('head3')}</TableHeadCol>
           </TableRow>
         </thead>
         <tbody>

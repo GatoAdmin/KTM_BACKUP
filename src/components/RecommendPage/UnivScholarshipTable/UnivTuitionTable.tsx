@@ -11,43 +11,40 @@ const scholarshipType = ['입학', '재학'] as const;
 export type ScholarshipType = typeof scholarshipType[number];
 
 interface IProps {
+  t: (s: string) => string;
+  lang: string;
   tableData: Array<{
-    scholarshiptype: ScholarshipType;
-    target: string;
-    statement: string;
+    ScholarshipType: ScholarshipType;
+    Target: string;
+    Statement: string;
+    VnTarget: string;
+    VnStatement: string;
   }>;
-  additionalInfo: string;
 }
 
-const UnivScholarshipTable: React.FC<IProps> = ({ tableData }) => {
+const UnivScholarshipTable: React.FC<IProps> = ({ t, lang, tableData }) => {
   const [type, setType] = React.useState<ScholarshipType>(scholarshipType[0]);
   const handleChangeSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     setType(target.value as ScholarshipType);
   };
-  const renderedData = tableData.filter((data) => data.scholarshiptype === type);
+  const renderedData = tableData.filter((data) => data.ScholarshipType === type);
   return (
     <UnivScholarshipSection>
-      <TableTitle>외국인 장학금</TableTitle>
-      <TypeSelect
-        name="scholarship"
-        types={scholarshipType}
-        typeFooter="장학금"
-        value={type}
-        onChange={handleChangeSelect}
-      />
+      <TableTitle>{t('scholarship-label')}</TableTitle>
+      <TypeSelect t={t} name="scholarship" types={scholarshipType} value={type} onChange={handleChangeSelect} />
       <Table>
         <thead>
           <TableRow>
-            <TableHeadCol width="346px">장학 대상</TableHeadCol>
-            <TableHeadCol width="353px">장학 내역</TableHeadCol>
+            <TableHeadCol width="346px">{t('scholarship-head1')}</TableHeadCol>
+            <TableHeadCol width="353px">{t('scholarship-head2')}</TableHeadCol>
           </TableRow>
         </thead>
         <tbody>
           {renderedData.map((value) => (
-            <TableRow key={value.target}>
-              <TableCol>{value.target}</TableCol>
-              <TableCol>{value.statement}</TableCol>
+            <TableRow key={value.Target}>
+              <TableCol>{lang === 'ko' ? value.Target : value.VnTarget}</TableCol>
+              <TableCol>{lang === 'ko' ? value.Statement : value.VnStatement}</TableCol>
             </TableRow>
           ))}
         </tbody>

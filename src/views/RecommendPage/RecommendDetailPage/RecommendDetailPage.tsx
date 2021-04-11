@@ -119,6 +119,7 @@ const fetchUnivDetailInfo = (univCode: string, lang?: string) =>
         univbadge: Array<{
           pictogram: string;
           name: string;
+          vnName: string;
         }>;
         university: Array<{
           kor_name: string;
@@ -135,25 +136,31 @@ const fetchUnivDetailInfo = (univCode: string, lang?: string) =>
         }>;
         scholarship: Array<{
           scholarshiptype: ScholarshipType;
-          target: string;
-          statement: string;
+          Target: string;
+          Statement: string;
+          VnTarget: string;
+          VnStatement: string;
         }>;
         supportcondition: Array<{
-          qualification: ConditionType;
-          qualificationname: string;
+          Qualification: ConditionType;
+          QualificationName: string;
+          VnQualification: string;
+          VnQualificationName: string;
         }>;
         supportdocument: Array<{
-          document: string;
-          documenttype: string;
-          pictogram: Pictogram;
-          additionalinfo: string | null;
+          DocumentType: string;
+          Pictogram: Pictogram;
+          Document: string;
+          VnDocument: string;
+          AdditionalInfo: string;
+          VnAdditionalInfo: string;
         }>;
-        additionalinfo: Array<{}>;
         calendar: Array<{
-          calendartype: string;
-          calendarname: string;
-          starttime: string;
-          endtime?: string;
+          CalendarType: string;
+          CalendarName: string;
+          VnCalendarName?: string;
+          StartTime: string;
+          EndTime?: string;
         }>;
         photo: Array<{
           photo_category: string;
@@ -183,19 +190,22 @@ const fetchUnivDetailInfo = (univCode: string, lang?: string) =>
         })),
         condition: supportcondition,
         document: supportdocument.map((documentInfo) => ({
-          name: documentInfo.document,
-          type: documentInfo.documenttype,
-          pictogram: documentInfo.pictogram,
-          info: documentInfo.additionalinfo,
+          type: documentInfo.DocumentType,
+          pictogram: documentInfo.Pictogram,
+          name: documentInfo.Document,
+          vnName: documentInfo.VnDocument,
+          info: documentInfo.AdditionalInfo,
+          vnInfo: documentInfo.VnAdditionalInfo,
         })),
         scholarship,
         badge: univbadge,
         calendar: calendar
           .map((dateInfo) => ({
-            type: dateInfo.calendartype,
-            name: dateInfo.calendarname,
-            start: dateInfo.starttime,
-            end: dateInfo?.endtime,
+            type: dateInfo.CalendarType,
+            name: dateInfo.CalendarName,
+            vncalendarname: dateInfo?.VnCalendarName,
+            start: dateInfo.StartTime,
+            end: dateInfo?.EndTime,
           }))
           .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()),
       };
@@ -248,7 +258,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
 
   return (
     <DefaultLayout>
-      <Header background="dark" t={t} changeLang={changeLang} />
+      <Header background="dark" t={t} lang={lang} changeLang={changeLang} />
       <Main>
         <SectionContainer>
           <ImageCarousel image={images} />
@@ -257,8 +267,8 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
             <InfoTextContainer>
               <TitleRow>
                 <Title>{university.name}</Title>
-                <UnivTypeLink active>전문대학교</UnivTypeLink>
-                <UnivTypeLink active={false}>어학원</UnivTypeLink>
+                <UnivTypeLink active>{t('univ-type1')}</UnivTypeLink>
+                {/* <UnivTypeLink active={false}>어학원</UnivTypeLink> */}
               </TitleRow>
               <UnivAddressRow>
                 {university.nameEng}
@@ -266,7 +276,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                 {university.address}
               </UnivAddressRow>
               <UnivLinkRow>
-                <HomePageLink href={university.homepage}>홈페이지 바로가기</HomePageLink>
+                <HomePageLink href={university.homepage}>{t('homepage')}</HomePageLink>
                 <LikeButton aria-pressed={false} pressed={liked} onClick={() => onPushHeart()}>
                   Like
                   {liked ? <FilledHeart /> : <UnFilledHeart />}
@@ -279,33 +289,45 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                   <InfoCardImageContainer>
                     <InfoCardImage src={value.pictogram} />
                   </InfoCardImageContainer>
-                  {value.name.split('<br>').map((text) => (
-                    <InfoCardDescription key={text}>{text}</InfoCardDescription>
-                  ))}
+                  {lang === 'ko' &&
+                    value.name
+                      .split('<br>')
+                      .map((text) => <InfoCardDescription key={text}>{text}</InfoCardDescription>)}
+                  {lang === 'vn' &&
+                    value.vnName
+                      .split('<br>')
+                      .map((text) => <InfoCardDescription key={text}>{text}</InfoCardDescription>)}
                 </InfoCard>
               ))}
             </InfoCardContainer>
           </InfoSection>
-          <NotifyDescription>* 본교의 외국인 모집요강과 공시자료를 기반으로 작성하였습니다.</NotifyDescription>
+          {t('notify')
+            .split('<br>')
+            .map((text) => (
+              <NotifyDescription key={text}>{text}</NotifyDescription>
+            ))}
           <DetailContentContainer>
             <DetailContent>
-              <UnivTuitionTable tableData={tuition} additionalInfo="." />
-              <UnivScholarshipTable tableData={scholarship} additionalInfo="." />
+              <UnivTuitionTable t={t} tableData={tuition} />
+              <UnivScholarshipTable t={t} lang={lang} tableData={scholarship} />
               <PrepareSection>
-                <ContentSectionTitle>입학지원 자격요건</ContentSectionTitle>
+                <ContentSectionTitle>{t('content-section-requirement')}</ContentSectionTitle>
                 <PrepareStepItemContainer>
                   {condition.map((value) => {
-                    const QualificationIcon = qualificationIcons[getQualificationIndex(value.qualification)].icon;
+                    const QualificationIcon = qualificationIcons[getQualificationIndex(value.Qualification)].icon;
                     return (
-                      <PrepareStepItem key={value.qualification} size="lg">
-                        <QualificationTitle>{value.qualification}</QualificationTitle>
+                      <PrepareStepItem key={value.Qualification} size="lg">
+                        <QualificationTitle>
+                          {lang === 'ko' ? value.Qualification : value.VnQualification}
+                        </QualificationTitle>
                         <QualificationImage>
                           <QualificationIcon />
                         </QualificationImage>
                         <QualificationDescription>
-                          {value.qualificationname.split('<br>').map((text) => (
-                            <span key={text}>{text}</span>
-                          ))}
+                          {lang === 'ko' &&
+                            value.QualificationName.split('<br>').map((text) => <span key={text}>{text}</span>)}
+                          {lang === 'vn' &&
+                            value.VnQualificationName.split('<br>').map((text) => <span key={text}>{text}</span>)}
                         </QualificationDescription>
                       </PrepareStepItem>
                     );
@@ -313,22 +335,22 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                 </PrepareStepItemContainer>
               </PrepareSection>
               <PrepareSection>
-                <ContentSectionTitle>입학지원 제출서류</ContentSectionTitle>
+                <ContentSectionTitle>{t('content-section-document')}</ContentSectionTitle>
                 <DocumentGrid>
                   {document.map((value, index) => {
                     const Pictogram = documentPictogram[value.pictogram];
                     return (
-                      <Item>
+                      <Item key={index}>
                         <Icon>
                           <Pictogram />
                         </Icon>
-                        <Content>{value.name}</Content>
+                        <Content>{lang === 'ko' ? value.name : value.vnName}</Content>
 
                         <ExclamationIcon>
                           {value.info !== 'None' && (
                             <>
                               <Info>
-                                <span>{value.info}</span>
+                                <span>{lang === 'ko' ? value.info : value.vnInfo}</span>
                               </Info>
                               <Exclamation />
                             </>
@@ -340,33 +362,35 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                 </DocumentGrid>
               </PrepareSection>
               <CalendarSection>
-                <ContentSectionTitle style={{ width: '100%' }}>입시 일정</ContentSectionTitle>
-                <Calendar data={calendar} />
+                <ContentSectionTitle style={{ width: '100%' }}>{t('content-section-calendar')}</ContentSectionTitle>
+                <Calendar t={t} lang={lang} data={calendar} />
               </CalendarSection>
             </DetailContent>
           </DetailContentContainer>
           <SideNav>
             <SideNavItem background="main">
               <SideNavDescription>
-                해당 대학의
-                <br />
-                입학을
-                <br />
-                준비하세요!
-                <br />
+                {t('side-nav-label1')
+                  .split('<br/>')
+                  .map((text) => (
+                    <span key={text}>{text}</span>
+                  ))}
               </SideNavDescription>
               <SideNavLink>
-                입학솔루션
-                <br />
-                바로가기
+                {t('side-nav-label2')
+                  .split('<br/>')
+                  .map((text) => (
+                    <span key={text}>{text}</span>
+                  ))}
               </SideNavLink>
             </SideNavItem>
             <SideNavItem background="light">
               <SideNavDescription>
-                입학 상담이
-                <br />
-                필요하신가요?
-                <br />
+                {t('side-nav-label3')
+                  .split('<br/>')
+                  .map((text) => (
+                    <span key={text}>{text}</span>
+                  ))}
               </SideNavDescription>
               <SideNavImageLink>
                 <SideNavImage src="/images/consult_button_icon.png" />

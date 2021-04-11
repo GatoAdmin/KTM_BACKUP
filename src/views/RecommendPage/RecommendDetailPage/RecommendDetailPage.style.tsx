@@ -416,13 +416,19 @@ export const SideNavItem = styled.li<SideNavItemProps>`
 
 export const SideNavDescription = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 68px;
+  height: 80px;
+  span {
+    font-size: 14px;
+    line-height: 1.4;
+  }
 `;
 
 export const SideNavLink = styled.a`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;

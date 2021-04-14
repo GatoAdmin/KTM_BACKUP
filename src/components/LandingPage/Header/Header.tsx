@@ -48,6 +48,9 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+  // const isLoggedIn = window.sessionStorage
+
   React.useEffect(() => {
     const isBrowser = typeof window !== 'undefined';
     if (!isBrowser) return;
@@ -64,11 +67,15 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
     }
     setIsTop(window.pageYOffset <= 100);
     window.addEventListener('scroll', makeScrollCallback());
+    if (window.sessionStorage.getItem('sid')) setIsLoggedIn(true);
     return () => {
       window.removeEventListener('scroll', makeScrollCallback());
     };
   }, []);
 
+  React.useEffect(() => {
+    console.log(isLoggedIn);
+  }, [isLoggedIn]);
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>
       <LogoContainer>
@@ -89,9 +96,13 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
           <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 1} />
 
-          <Link href={{ pathname: '/login', query: { lang } }} passHref>
-            <LoginLink>{t('login')}</LoginLink>
-          </Link>
+          {!isLoggedIn && (
+            <Link href={{ pathname: '/login', query: { lang } }} passHref>
+              <LoginLink>{t('login')}</LoginLink>
+            </Link>
+          )}
+
+          {/* {isLoggedIn && <LoginLink>{t('logout')}</LoginLink>} */}
         </LocalizationButtonContainer>
       </NavigationContainer>
     </HeaderContainer>

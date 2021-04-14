@@ -111,4 +111,8 @@ export default {
     const response = await axios.get('/?action=get_my_service&params={}');
     return response.data;
   },
+  getMyUniversityList: async (page: number) => {
+    const response = await axios.get(`/?action=get_my_univ&params={"options":"created", "page":${page}}`);
+    return response.data.value;
+  },
 };

@@ -84,7 +84,7 @@ export const LocalizationButton = styled.button`
   outline: none;
 
   :last-of-type {
-    margin: 0;
+    /* margin: 0; */
   }
 
   :nth-child(1):hover ~ ${LocalizationSelector} {

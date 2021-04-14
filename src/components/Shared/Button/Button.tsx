@@ -17,9 +17,14 @@ const StyledButton = styled.button<ButtonProps>`
   font-weight: bold;
   font-size: 14px;
   line-height: 19px;
+  font-family: Noto Sans;
   outline: none;
   cursor: pointer;
   width: fit-content;
+
+  &:hover {
+    background-color: #FF7263;
+  }
 `;
 
 const Button: React.FC<ButtonProps> = ({ onClick, children, active = true }) => (

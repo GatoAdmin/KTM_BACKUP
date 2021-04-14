@@ -1,5 +1,6 @@
 {
     "ko": {
+        "warn-not-logged-in" : "로그인이 필요한 서비스입니다.",
         "introduce": "회사소개",
         "university": "대학 소개&추천",
         "consult": "입학 상담",
@@ -58,6 +59,7 @@
         "가을": "가을학기 일정"   
     },
     "vn": {
+        "warn-not-logged-in" : "Dịch vụ bắt buộc phải đăng nhập.",
         "introduce": "Giới thiệu công ty",
         "university": "Tìm kiếm Trường",
         "consult": "Tư vấn nhập học",

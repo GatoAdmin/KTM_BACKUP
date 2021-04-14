@@ -384,6 +384,7 @@ export const CalendarSection = styled.section`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  margin-bottom: 120px;
 `;
 
 export const SideNav = styled.ul`
@@ -444,6 +445,7 @@ export const SideNavLink = styled.a`
   color: ${mainColor600};
   text-decoration: none;
   box-sizing: content-box;
+  cursor: pointer;
 `;
 
 export const SideNavImageLink = styled.a`

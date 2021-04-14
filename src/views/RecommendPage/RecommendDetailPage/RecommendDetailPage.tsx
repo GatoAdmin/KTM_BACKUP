@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import Header from '@components/Shared/Header/Header';
@@ -238,16 +238,28 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
 }) => {
   const { t, lang, changeLang } = useTranslate(i18nResource);
   const [liked, setLiked] = useState(false);
+  const [currentUniv, setCurrentUniv] = useState('');
 
   const onPushHeart = () => {
-    const currentUniv = window.location.pathname.split('/')[2];
+    if (isLogin()) {
+      API.pushLikeButton(currentUniv).then(() => setLiked((prev) => !prev));
+    } else {
+      alert(t('warn-not-logged-in'));
+      Router.push('/login');
+    }
+  };
 
-    API.pushLikeButton(currentUniv).then(() => setLiked((prev) => !prev));
+  const goToSolution = () => {
+    if (isLogin()) {
+      Router.push(`/solution?univ=${currentUniv}`);
+    } else {
+      alert(t('warn-not-logged-in'));
+      Router.push('/login');
+    }
   };
 
   useEffect(() => {
-    const currentUniv = window.location.pathname.split('/')[2];
-
+    setCurrentUniv(window.location.pathname.split('/')[2]);
     if (isLogin()) {
       API.getUserInfo().then((res) => {
         if (res.liked_univ.includes(currentUniv)) {
@@ -379,7 +391,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                     <span key={text}>{text}</span>
                   ))}
               </SideNavDescription>
-              <SideNavLink>
+              <SideNavLink onClick={() => goToSolution()}>
                 {t('side-nav-label2')
                   .split('<br/>')
                   .map((text) => (
@@ -395,7 +407,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                     <span key={text}>{text}</span>
                   ))}
               </SideNavDescription>
-              <SideNavImageLink>
+              <SideNavImageLink href="/consult">
                 <SideNavImage src="/images/consult_button_icon.png" />
               </SideNavImageLink>
             </SideNavItem>

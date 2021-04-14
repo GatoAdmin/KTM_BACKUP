@@ -4,9 +4,9 @@ import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import Button from '@components/Shared/Button/Button';
 import { useRouter } from 'next/router';
+import { Title } from '@components/MyPage';
 import {
   MySolutionSectionContainer,
-  Title,
   Table,
   TableHeader,
   Tr,

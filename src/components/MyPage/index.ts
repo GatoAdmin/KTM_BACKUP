@@ -4,6 +4,7 @@ import MyInfomation from './MyInfomation/MyInfomation';
 import MySolutionSection from './MySolutionSection/MySolutionSection';
 import RefundSection from './RefundSection/RefundSection';
 import MainArea from './MainArea/MainArea';
+import Title from './Title/Title';
 
 export {
   SelectTab,
@@ -12,4 +13,5 @@ export {
   MySolutionSection,
   RefundSection,
   MainArea,
+  Title,
 };

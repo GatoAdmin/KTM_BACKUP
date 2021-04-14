@@ -43,16 +43,6 @@ export const ButtonTd = styled.div`
   padding: 0 14px;
 `;
 
-export const Title = styled.p`
-  font-family: Noto Sans;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 22px;
-  line-height: 30px;
-  
-  color: ${fontColor};
-`;
-
 export const AlertIcon = styled(ErrorIconSVG)`
   margin-right: 10px;
 `;

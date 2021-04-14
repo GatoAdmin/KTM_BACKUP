@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
-import {
-  fontColor, greyColor, mainColor, whiteColor,
-} from '@util/style/color';
+import { fontColor, greyColor, mainColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import LeftArrowSVG from '@assets/svg/arrow_left_icon.svg';
 import RightArrowSVG from '@assets/svg/arrow_right_icon.svg';
@@ -28,7 +26,7 @@ export const CalendarControlButton = styled.button`
   padding: 0;
   border: 0;
   background: transparent;
-  
+
   :first-child {
     margin-right: 5px;
   }
@@ -82,8 +80,7 @@ export const CalendarDateContainer = styled.tbody`
   width: 100%;
 `;
 
-export const CalendarDateRow = styled.tr`
-`;
+export const CalendarDateRow = styled.tr``;
 
 interface CalendarDateProps {
   disabled: boolean;
@@ -108,50 +105,57 @@ export const CalendarCol = styled.td<CalendarDateProps>`
   padding: 0;
   color: ${greyColor};
 
-  ${(props) => (props.isStartDate || props.isEndDate) && !props.disabled && css`
-    color: ${whiteColor};
-    ::before {
-      position: absolute;
-      top: calc(50% - 24px);
-      left: calc(50% - 24px);
-      width: 48px;
-      height: 48px;
-      border-radius: 23px;
-      background-color: ${getCalendarColor[props.isInRange](1)};
-      z-index: 3;
-      content: '';
-    }
-  `};
+  ${(props) =>
+    (props.isStartDate || props.isEndDate) &&
+    !props.disabled &&
+    css`
+      color: ${whiteColor};
+      ::before {
+        position: absolute;
+        top: calc(50% - 24px);
+        left: calc(50% - 24px);
+        width: 48px;
+        height: 48px;
+        border-radius: 23px;
+        background-color: ${getCalendarColor[props.isInRange](1)};
+        z-index: 3;
+        content: '';
+      }
+    `};
 
-  ${(props) => props.isInRange !== -1 && !(props.isStartDate && props.isEndDate) && !props.disabled && css`
-    color: ${whiteColor};
-    
-    ::after {
-      position: absolute;
-      top: calc(50% - 24px);
-      left: ${props.isStartDate ? 'unset' : 0};
-      right: ${props.isStartDate ? 0 : 'unset'};
-      width: ${props.isStartDate || props.isEndDate ? '50%' : '100%'};
-      height: 48px;
-      background-color: ${getCalendarColor[props.isInRange](0.5)};
-      z-index: 2;
-      content: '';
-    }
+  ${(props) =>
+    props.isInRange !== -1 &&
+    !(props.isStartDate && props.isEndDate) &&
+    !props.disabled &&
+    css`
+      color: ${whiteColor};
 
-    &:first-child::after {
-      left: unset;
-      right: 0;
-      width: calc(50% + 20px);
-      border-radius: 20px 0 0 20px;
-      content: ${props.isEndDate ? 'unset' : "''"};
-    }
+      ::after {
+        position: absolute;
+        top: calc(50% - 24px);
+        left: ${props.isStartDate ? 'unset' : 0};
+        right: ${props.isStartDate ? 0 : 'unset'};
+        width: ${props.isStartDate || props.isEndDate ? '50%' : '100%'};
+        height: 48px;
+        background-color: ${getCalendarColor[props.isInRange](0.5)};
+        z-index: 2;
+        content: '';
+      }
 
-    &:last-child::after {
-      width: calc(50% + 20px);
-      border-radius: 0 20px 20px 0;
-      content: ${props.isStartDate ? 'unset' : "''"};
-    }
-  `};
+      &:first-child::after {
+        left: unset;
+        right: 0;
+        width: calc(50% + 20px);
+        border-radius: 20px 0 0 20px;
+        content: ${props.isEndDate ? 'unset' : "''"};
+      }
+
+      &:last-child::after {
+        width: calc(50% + 20px);
+        border-radius: 0 20px 20px 0;
+        content: ${props.isStartDate ? 'unset' : "''"};
+      }
+    `};
 `;
 
 export const CalendarDate = styled.div`
@@ -164,7 +168,9 @@ export const CalendarDate = styled.div`
 
 export const CalendarDescriptionContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
+  height: 50px;
   margin-left: 15px;
 `;
 
@@ -175,7 +181,8 @@ interface ICalendarDescriptionProps {
 export const CalendarDescription = styled.div<ICalendarDescriptionProps>`
   display: flex;
   align-items: center;
-  margin-right: 15px;
+  width: fit-content;
+  margin-right: 20px;
   font: normal 500 18px/27px ${defaultFont};
 
   ::before {

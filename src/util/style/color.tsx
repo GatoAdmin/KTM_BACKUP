@@ -10,7 +10,7 @@ export const greyColor = '#9E9E9E';
 
 export const lightGreyColor = '#C4C4C4';
 
-export const mainBackgroundColor = '#E5E5E5';
+export const mainBackgroundColor = '#fff';
 
 export const lightBackgroundColor = '#F5F5F5';
 

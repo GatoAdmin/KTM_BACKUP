@@ -3,7 +3,15 @@ module.exports = {
   trailingSlash: false,
   env: {
     API_PATH: process.env.API_PATH,
-    CLIENT_HOST: process.env.CLIENT_HOST
+    REACT_APP_ACCESS_ID: process.env.REACT_APP_ACCESS_ID,
+    REACT_APP_ACCESS_KEY: process.env.REACT_APP_ACCESS_KEY,
+    REACT_APP_BUCKET_NAME: process.env.REACT_APP_BUCKET_NAME,
+    REACT_APP_REGION: process.env.REACT_APP_REGION,
+    REACT_APP_S3_URL: process.env.REACT_APP_S3_URL,
+    CLIENT_HOST: process.env.CLIENT_HOST,
+    IAMPORT_USER_CODE: process.env.IAMPORT_USER_CODE,
+    IAMPORT_REST_API_KEY: process.env.IAMPORT_REST_API_KEY,
+    IAMPORT_REST_API_SECRET: process.env.IAMPORT_REST_API_SECRET
   },
   webpack(config) {
     config.module.rules.push({

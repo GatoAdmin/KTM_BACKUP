@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import useIntersection from '@util/hooks/useInteraction';
+import isLogin from '@util/auth/auth';
 import {
   HeaderContainer,
   LogoContainer,
@@ -67,7 +68,8 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isLogged, setIsLogged] = React.useState<boolean>(false);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
-  React.useEffect(() => {
+
+  useEffect(() => {
     const isBrowser = typeof window !== 'undefined';
     if (!isBrowser) return;
     function makeScrollCallback() {
@@ -113,10 +115,7 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
           <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
           <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 1} />
-
-          <Link href={{ pathname: '/login', query: { lang } }} passHref>
-            <LoginLink>{t('login')}</LoginLink>
-          </Link>
+          {userButton}
         </LocalizationButtonContainer>
       </NavigationContainer>
     </HeaderContainer>

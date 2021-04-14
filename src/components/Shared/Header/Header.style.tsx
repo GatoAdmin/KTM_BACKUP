@@ -15,6 +15,10 @@ interface HeaderContainerProps {
   position: 'relative' | 'absolute';
 }
 
+interface LocalizationSelectorProps {
+  selectedIndex: number;
+}
+
 export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
   align-items: center;
@@ -65,18 +69,36 @@ export const NavLink = styled.a`
 export const LocalizationButtonContainer = styled.div`
   display: flex;
   position: relative;
-  width: 50px;
+`;
+
+export const LocalizationSelector = styled.div<LocalizationSelectorProps>`
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 26px;
+  border: 1px solid black;
+  transition: transform ease 0.3s;
+  transform: ${(props) => `translateX(${props.selectedIndex * 58}px)`};
 `;
 
 export const LocalizationButton = styled.button`
   display: inline-block;
   width: 26px;
+  margin-right: 32px;
   padding: 0;
   border: 0;
   color: inherit;
   font: normal normal normal 14px/19px ${defaultFont};
   background-color: transparent;
   cursor: pointer;
+  outline: none;
+
+  :nth-child(1):hover ~ ${LocalizationSelector} {
+    transform: translateX(0);
+  }
+  :nth-child(2):hover ~ ${LocalizationSelector} {
+    transform: translateX(58px);
+  }
 `;
 
 export const LoginLink = styled.a`

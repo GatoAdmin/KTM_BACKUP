@@ -18,6 +18,7 @@ const WritePage: NextPage = () => {
         background="dark"
         t={t}
         changeLang={changeLang}
+        lang={lang}
       />
       <Introduction>
         <IntroductionSection t={t} lang={lang} />

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import isLogin from '@util/auth/auth';
 import {
   HeaderContainer,
   LogoContainer,
@@ -9,6 +10,7 @@ import {
   Navigation,
   NavigationContainer,
   NavLink,
+  LocalizationSelector,
 } from './Header.style';
 
 interface headerLink {
@@ -21,12 +23,29 @@ interface HeaderProps {
   background: 'light' | 'dark';
   t: (s: string) => string;
   changeLang: (s: string) => void;
+  lang: string;
 }
 
 const Header: React.VFC<HeaderProps> = ({
-  background, position = 'absolute', t, changeLang,
+  background, position = 'absolute', t, changeLang, lang,
 }) => {
-  const [languageIndex, setLanguageIndex] = React.useState<number>(0);
+  const [userButton, setUserButton] = useState(<></>);
+
+  useEffect(() => {
+    if (isLogin()) {
+      setUserButton(
+        <Link href={{ pathname: '/mypage', query: { lang } }} passHref>
+          <LoginLink>{t('mypage')}</LoginLink>
+        </Link>,
+      );
+    } else {
+      setUserButton(
+        <Link href={{ pathname: '/login', query: { lang } }} passHref>
+          <LoginLink>{t('login')}</LoginLink>
+        </Link>,
+      );
+    }
+  }, [t, lang]);
 
   const headerLinks: Array<headerLink> = [
     {
@@ -64,12 +83,10 @@ const Header: React.VFC<HeaderProps> = ({
         </Navigation>
         <LocalizationButtonContainer>
           <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
-          /
           <LocalizationButton onClick={() => changeLang('vn')}>VE</LocalizationButton>
+          <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 1} />
         </LocalizationButtonContainer>
-        <Link href="/login" passHref>
-          <LoginLink>{t('login')}</LoginLink>
-        </Link>
+        {userButton}
       </NavigationContainer>
     </HeaderContainer>
   );

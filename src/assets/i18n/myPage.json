@@ -1,0 +1,24 @@
+{
+    "ko": {
+        "introduce": "회사소개",
+        "university": "대학 소개&추천",
+        "consult": "입학 상담",
+        "one-click": "원클릭 입학솔루션",
+        "login": "로그인",
+        "mypage": "마이페이지",
+        "1": "번역공증 서비스",
+        "2": "입학지원 서비스",
+        "3": "입학지원 서비스"
+    },
+    "vn": {
+        "introduce": "Giới thiệu công ty",
+        "university": "Tìm kiếm Trường",
+        "consult": "Tư vấn nhập học",
+        "one-click": "Dịch vụ nhập học",
+        "login": "Đăng nhập",
+        "mypage": "Trang của tôi",
+        "1": "Dịch vụ dịch và công chứng",
+        "2": "Dịch vụ nhập học",
+        "3": "Dịch vụ nhập học PRO"
+    }
+}

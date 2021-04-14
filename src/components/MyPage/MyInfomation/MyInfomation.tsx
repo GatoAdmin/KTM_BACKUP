@@ -2,7 +2,7 @@ import React from 'react';
 import { } from './MyInfomation.style';
 
 interface MyInfomationProps {
-  t: () => void
+  t: (s:string) => string;
 }
 
 const MyInfomation: React.FC<MyInfomationProps> = () => (

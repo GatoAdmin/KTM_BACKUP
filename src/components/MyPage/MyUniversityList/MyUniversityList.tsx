@@ -2,7 +2,7 @@ import React from 'react';
 import { } from './MyUniversityList.style';
 
 interface MyUniversityListProps {
-  t: () => void
+  t: (s:string) => string;
 }
 
 const MyUniversityList: React.FC<MyUniversityListProps> = () => (

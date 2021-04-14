@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import useIntersection from '@util/hooks/useInteraction';
-import isLogin from '@util/auth/auth';
 import {
   HeaderContainer,
   LogoContainer,
@@ -12,9 +11,6 @@ import {
   Navigation,
   NavigationContainer,
   NavLink,
-  MyPageLink,
-  LogoutLink,
-  LinkButtonContainer,
 } from './Header.style';
 
 interface headerLink {
@@ -37,7 +33,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: 'one-click',
-    link: '/solution',
+    link: '/',
   },
 ];
 
@@ -48,28 +44,11 @@ interface HeaderProps {
   changeLang: (s: string) => void;
 }
 
-const showLoginOrLogout = (t: (s: string) => string, isLogged: boolean, lang: string) => {
-  const term = isLogged ? 'logout' : 'login';
-  return (
-    <Link href={{ pathname: `/${term}`, query: { lang } }} passHref>
-      <LoginLink>{t(`${term}`)}</LoginLink>
-    </Link>
-  );
-};
-
-const MyPageButton = React.forwardRef(({ onClick, href }, ref) => (
-  <a href={href} onClick={onClick} ref={ref}>
-    <MyPageLink />
-  </a>
-));
-
 const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
-  const [isLogged, setIsLogged] = React.useState<boolean>(false);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
-
-  useEffect(() => {
+  React.useEffect(() => {
     const isBrowser = typeof window !== 'undefined';
     if (!isBrowser) return;
     function makeScrollCallback() {
@@ -88,12 +67,6 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
     return () => {
       window.removeEventListener('scroll', makeScrollCallback());
     };
-  }, []);
-
-  React.useEffect(() => {
-    if (sessionStorage.getItem('sid') !== null) {
-      setIsLogged(true);
-    }
   }, []);
 
   return (
@@ -115,7 +88,10 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
           <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
           <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 1} />
-          {userButton}
+
+          <Link href={{ pathname: '/login', query: { lang } }} passHref>
+            <LoginLink>{t('login')}</LoginLink>
+          </Link>
         </LocalizationButtonContainer>
       </NavigationContainer>
     </HeaderContainer>

@@ -74,6 +74,7 @@ import Exclamation from '@assets/svg/exclamation.svg';
 import useTranslate from '@util/hooks/useTranslate';
 
 import API from '@util/api';
+import isLogin from '@util/auth/auth';
 
 const qualificationIcons = [
   { type: '국적요건', icon: FamilyIcon },
@@ -247,13 +248,15 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
   useEffect(() => {
     const currentUniv = window.location.pathname.split('/')[2];
 
-    API.getUserInfo().then((res) => {
-      if (res.liked_univ.includes(currentUniv)) {
-        setLiked(true);
-      } else {
-        setLiked(false);
-      }
-    });
+    if (isLogin()) {
+      API.getUserInfo().then((res) => {
+        if (res.liked_univ.includes(currentUniv)) {
+          setLiked(true);
+        } else {
+          setLiked(false);
+        }
+      });
+    }
   }, []);
 
   return (

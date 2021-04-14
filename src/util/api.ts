@@ -107,4 +107,8 @@ export default {
     const response = await axios.get('/?action=get_review&params={}');
     return response.data.university;
   },
+  getMyService: async () => {
+    const response = await axios.get('/?action=get_my_service&params={}');
+    return response.data;
+  },
 };

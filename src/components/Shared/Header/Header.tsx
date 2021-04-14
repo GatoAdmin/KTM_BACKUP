@@ -62,7 +62,7 @@ const Header: React.VFC<HeaderProps> = ({
     },
     {
       name: t('one-click'),
-      link: '/',
+      link: '/solution',
     },
   ];
 

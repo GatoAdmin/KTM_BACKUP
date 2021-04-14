@@ -12,6 +12,9 @@ import {
   Navigation,
   NavigationContainer,
   NavLink,
+  MyPageLink,
+  LogoutLink,
+  LinkButtonContainer,
 } from './Header.style';
 
 interface headerLink {
@@ -34,7 +37,7 @@ const headerLinks: Array<headerLink> = [
   },
   {
     name: 'one-click',
-    link: '/',
+    link: '/solution',
   },
 ];
 
@@ -45,10 +48,25 @@ interface HeaderProps {
   changeLang: (s: string) => void;
 }
 
+const showLoginOrLogout = (t: (s: string) => string, isLogged: boolean, lang: string) => {
+  const term = isLogged ? 'logout' : 'login';
+  return (
+    <Link href={{ pathname: `/${term}`, query: { lang } }} passHref>
+      <LoginLink>{t(`${term}`)}</LoginLink>
+    </Link>
+  );
+};
+
+const MyPageButton = React.forwardRef(({ onClick, href }, ref) => (
+  <a href={href} onClick={onClick} ref={ref}>
+    <MyPageLink />
+  </a>
+));
+
 const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
-  const [isTop, setIsTop] = useState<boolean>(true);
-  const [userButton, setUserButton] = useState(<></>);
-  const header = useRef<HTMLElement>(null);
+  const [isTop, setIsTop] = React.useState<boolean>(true);
+  const [isLogged, setIsLogged] = React.useState<boolean>(false);
+  const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
 
   useEffect(() => {
@@ -72,21 +90,11 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isLogin()) {
-      setUserButton(
-        <Link href={{ pathname: '/mypage', query: { lang } }} passHref>
-          <LoginLink>{t('mypage')}</LoginLink>
-        </Link>,
-      );
-    } else {
-      setUserButton(
-        <Link href={{ pathname: '/login', query: { lang } }} passHref>
-          <LoginLink>{t('login')}</LoginLink>
-        </Link>,
-      );
+  React.useEffect(() => {
+    if (sessionStorage.getItem('sid') !== null) {
+      setIsLogged(true);
     }
-  }, [t, lang]);
+  }, []);
 
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>

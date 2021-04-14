@@ -164,8 +164,12 @@ const useDateInfoArray = (selectedSemesterData: Array<DateInfo>, selectedSemeste
 };
 
 const Calendar: React.VFC<CalendarProps> = ({ t, lang, data }) => {
-  const { selectedData, selectedSemester, handleChangeTypeSelect } = useSelectSemester(data);
+  const dateNullData = data.filter(({ start, end }) => start === null || end === null);
+  const filteredData = data.filter((elem) => !dateNullData.includes(elem));
+
+  const { selectedData, selectedSemester, handleChangeTypeSelect } = useSelectSemester(filteredData);
   const { nextCalendar, previousCalendar, calendars } = useDateInfoArray(selectedData, selectedSemester);
+
   return (
     <>
       <TypeSelect
@@ -216,6 +220,11 @@ const Calendar: React.VFC<CalendarProps> = ({ t, lang, data }) => {
       <CalendarDescriptionContainer>
         {selectedData.map((data, index) => (
           <CalendarDescription key={data.name} index={index}>
+            {lang === 'ko' ? data.name : data.vncalendarname}
+          </CalendarDescription>
+        ))}
+        {dateNullData.map((data, index) => (
+          <CalendarDescription key={data.name} index={index + selectedData.length}>
             {lang === 'ko' ? data.name : data.vncalendarname}
           </CalendarDescription>
         ))}

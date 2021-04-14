@@ -126,10 +126,10 @@ export const InfoCardContainer = styled.div`
 `;
 
 export const InfoCard = styled.div`
-  width: 78px;
-  height: 86px;
+  width: 120px;
+  height: 90px;
   margin-left: 10px;
-  padding: 16px;
+  padding: 10px;
   border: 1px solid ${lightGreyColor};
   border-radius: 9px;
 `;
@@ -358,11 +358,12 @@ interface IPrepareStepItem {
 
 export const PrepareStepItem = styled.li<IPrepareStepItem>`
   list-style: none;
-  width: ${(props) => (props.size === 'lg' ? '236px' : '176px')};
+  width: ${(props) => (props.size === 'lg' ? '307px' : '176px')};
   height: ${(props) => (props.size === 'lg' ? '336px' : '246px')};
   margin: 0 12px 10px 0;
   border: 2px solid ${mainBackgroundColor};
   border-radius: 9px;
+  color: #232323;
 
   :hover {
     ${DocumentEssential} {

@@ -16,9 +16,7 @@ const ContentContainer = styled.div`
 
 const DefaultLayout: React.FC = ({ children }) => (
   <LayoutBackground>
-    <ContentContainer>
-      {children}
-    </ContentContainer>
+    <ContentContainer>{children}</ContentContainer>
   </LayoutBackground>
 );
 

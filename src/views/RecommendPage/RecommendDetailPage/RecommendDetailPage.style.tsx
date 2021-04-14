@@ -3,7 +3,7 @@ import {
   fontColor,
   greyColor,
   lightGreyColor,
-  mainBackgroundColor,
+  borderColor,
   mainColor,
   mainColor600,
   whiteColor,
@@ -32,7 +32,7 @@ export const DetailContent = styled.div``;
 export const InfoSection = styled.section`
   display: flex;
   padding: 0 60px;
-  border-bottom: 1px solid ${mainBackgroundColor};
+  border-bottom: 1px solid ${borderColor};
 `;
 
 export const LogoImage = styled.img`
@@ -361,7 +361,7 @@ export const PrepareStepItem = styled.li<IPrepareStepItem>`
   width: ${(props) => (props.size === 'lg' ? '307px' : '176px')};
   height: ${(props) => (props.size === 'lg' ? '336px' : '246px')};
   margin: 0 12px 10px 0;
-  border: 2px solid ${mainBackgroundColor};
+  border: 2px solid ${borderColor};
   border-radius: 9px;
   color: #232323;
 

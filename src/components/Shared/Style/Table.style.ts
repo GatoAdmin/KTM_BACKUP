@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontColor, lightGreyColor, mainBackgroundColor } from '@util/style/color';
+import { fontColor, lightGreyColor, borderColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 export const TableTitle = styled.h3`

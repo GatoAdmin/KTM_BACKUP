@@ -11,6 +11,11 @@ import {
 import { defaultFont } from '@util/style/font';
 import DocumentSVG from '@assets/svg/document_icon.svg';
 
+export const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 export const Main = styled.main`
   width: 100%;
 `;
@@ -31,8 +36,13 @@ export const DetailContent = styled.div``;
 
 export const InfoSection = styled.section`
   display: flex;
-  padding: 0 60px;
+  justify-content: center;
   border-bottom: 1px solid ${borderColor};
+`;
+
+export const InfoWrapper = styled.div`
+  display: flex;
+  width: 990px;
 `;
 
 export const LogoImage = styled.img`

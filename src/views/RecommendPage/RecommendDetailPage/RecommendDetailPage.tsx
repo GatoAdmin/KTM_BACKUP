@@ -56,6 +56,8 @@ import {
   Content,
   ExclamationIcon,
   Info,
+  Wrapper,
+  InfoWrapper,
 } from '@views/RecommendPage/RecommendDetailPage/RecommendDetailPage.style';
 
 import i18nResource from '@assets/i18n/consultPage.json';
@@ -272,12 +274,12 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
   }, []);
 
   return (
-    <DefaultLayout>
+    <Wrapper>
       <Header background="dark" t={t} lang={lang} changeLang={changeLang} />
       <Main>
-        <SectionContainer>
-          <ImageCarousel image={images} />
-          <InfoSection>
+        <ImageCarousel image={images} />
+        <InfoSection>
+          <InfoWrapper>
             <LogoImage src={logo} />
             <InfoTextContainer>
               <TitleRow>
@@ -315,7 +317,9 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                 </InfoCard>
               ))}
             </InfoCardContainer>
-          </InfoSection>
+          </InfoWrapper>
+        </InfoSection>
+        <SectionContainer>
           {t('notify')
             .split('<br>')
             .map((text) => (
@@ -414,7 +418,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
           </SideNav>
         </SectionContainer>
       </Main>
-    </DefaultLayout>
+    </Wrapper>
   );
 };
 

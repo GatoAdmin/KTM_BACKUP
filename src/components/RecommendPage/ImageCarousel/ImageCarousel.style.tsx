@@ -5,9 +5,10 @@ import { fontColor } from '@util/style/color';
 
 export const ImageCarouselContainer = styled.section`
   position: relative;
-  width: 1100px;
+  /* width: 1100px; */
   height: 450px;
   margin: 30px 0 40px;
+  margin-top: 120px;
   perspective: 500px;
   perspective-origin: center;
   overflow: hidden;
@@ -41,7 +42,7 @@ export const CarouselImage = styled.img<CarouselImageProps>`
   width: 800px;
   height: 450px;
   object-fit: cover;
-  
+
   ${({ index }) => {
     if (index === 0) {
       return css`
@@ -68,17 +69,17 @@ export const CarouselImage = styled.img<CarouselImageProps>`
 `;
 
 export const LeftArrow = styled(LeftArrowSVG)`
-    height: 25px;
-    path {
-      stroke: ${fontColor};
-      stroke-width: 2px;
-    }
-  `;
+  height: 25px;
+  path {
+    stroke: ${fontColor};
+    stroke-width: 2px;
+  }
+`;
 
 export const RightArrow = styled(RightArrowSVG)`
-    height: 25px;
-    path {
-      stroke: ${fontColor};
-      stroke-width: 2px;
-    }
-  `;
+  height: 25px;
+  path {
+    stroke: ${fontColor};
+    stroke-width: 2px;
+  }
+`;

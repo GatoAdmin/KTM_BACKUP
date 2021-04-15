@@ -20,15 +20,18 @@ interface ImageCarouselButtonProps {
 
 export const ImageCarouselButton = styled.button<ImageCarouselButtonProps>`
   position: absolute;
-  top: calc(50% - 13px);
+  top: calc(50% - 50px);
   ${(props) => (props.isRight ? 'right' : 'left')}: 60px;
-  width: 26px;
-  height: 26px;
+  width: 78px;
+  height: 100px;
+  /* width: 78px;
+  height: 78px; */
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
   z-index: 3;
+  outline: none;
 `;
 
 interface CarouselImageProps {
@@ -69,7 +72,8 @@ export const CarouselImage = styled.img<CarouselImageProps>`
 `;
 
 export const LeftArrow = styled(LeftArrowSVG)`
-  height: 25px;
+  /* height: 25px; */
+
   path {
     stroke: ${fontColor};
     stroke-width: 2px;
@@ -77,9 +81,16 @@ export const LeftArrow = styled(LeftArrowSVG)`
 `;
 
 export const RightArrow = styled(RightArrowSVG)`
-  height: 25px;
+  /* height: 25px; */
   path {
     stroke: ${fontColor};
     stroke-width: 2px;
   }
+`;
+
+export const ButtonWrapper = styled.div`
+  position: relative;
+  width: 1100px;
+  height: 100%;
+  margin: 0 auto;
 `;

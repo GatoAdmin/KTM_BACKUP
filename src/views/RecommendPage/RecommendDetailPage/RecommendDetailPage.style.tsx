@@ -268,12 +268,12 @@ export const Icon = styled.div`
 
 export const Info = styled.div`
   display: none;
-  height: 22px;
-  border-radius: 20px;
+  /* height: 100px; */
+  border-radius: 15px;
   background-color: #df4d3d;
-  font-size: 12px;
-  line-height: 22px;
-  padding: 0px 10px;
+  font-size: 14px;
+  /* line-height: 22px; */
+  padding: 5px 10px;
   color: #fff;
 `;
 
@@ -284,6 +284,7 @@ export const ExclamationIcon = styled.div`
   z-index: 1;
   width: fit-content;
   display: flex;
+  flex-wrap: wrap;
 
   :hover > ${Info} {
     display: inline-block;

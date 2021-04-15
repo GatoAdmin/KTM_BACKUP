@@ -284,8 +284,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
             <InfoTextContainer>
               <TitleRow>
                 <Title>{university.name}</Title>
-                <UnivTypeLink active>{t('univ-type1')}</UnivTypeLink>
-                {/* <UnivTypeLink active={false}>어학원</UnivTypeLink> */}
+                <UnivTypeLink active>{t(university.category)}</UnivTypeLink>
               </TitleRow>
               <UnivAddressRow>
                 {university.nameEng}
@@ -357,11 +356,11 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                 <ContentSectionTitle>{t('content-section-document')}</ContentSectionTitle>
                 <DocumentGrid>
                   {document.map((value, index) => {
-                    const Pictogram = documentPictogram[value.pictogram];
+                    const DocumentPictogram = documentPictogram[value.pictogram];
                     return (
                       <Item key={index}>
                         <Icon>
-                          <Pictogram />
+                          <DocumentPictogram />
                         </Icon>
                         <Content>{lang === 'ko' ? value.name : value.vnName}</Content>
 
@@ -369,7 +368,9 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                           {value.info !== 'None' && (
                             <>
                               <Info>
-                                <span>{lang === 'ko' ? value.info : value.vnInfo}</span>
+                                {lang === 'ko' && value.info.split('<br>').map((text) => <div key={text}>{text}</div>)}
+                                {lang === 'vn' &&
+                                  value.vnInfo.split('<br>').map((text) => <div key={text}>{text}</div>)}
                               </Info>
                               <Exclamation />
                             </>

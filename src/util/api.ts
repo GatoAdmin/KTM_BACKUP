@@ -3,8 +3,8 @@
 import axios from 'axios';
 import isLogin from '@util/auth/auth';
 
-// axios.defaults.baseURL = `http://localhost:8000/api`;
 axios.defaults.baseURL = `${process.env.CLIENT_HOST}/api`;
+// axios.defaults.baseURL = `http://localhost:8000/api`;
 axios.defaults.withCredentials = true;
 
 export default {
@@ -30,61 +30,61 @@ export default {
     const response = await axios.post('/login', formData);
     return response;
   },
-  getPlayerStatus:  async () => {
+  getPlayerStatus: async () => {
     const sid = sessionStorage.getItem('sid');
     if (!isLogin()) return {};
     const response = await axios.get(`/?action=get_player_status&params={}&sid=${sid}`);
     return response.data;
   },
-  getUserInfo:  async () => {
+  getUserInfo: async () => {
     const sid = sessionStorage.getItem('sid');
     if (!isLogin()) return {};
     const response = await axios.get(`/?action=get_user_info&params={}&sid=${sid}`);
     return response.data;
   },
-  getUnivData :  async (univ_code:string,lang:string) => {
+  getUnivData: async (univ_code: string, lang: string) => {
     if (!isLogin()) return {};
     const sid = sessionStorage.getItem('sid');
-    if(univ_code===undefined||univ_code===null)return {};
-    let params:{univ_code:string; lang?:string;} = {
-      univ_code: univ_code
-    }
-    if(lang&&lang!=="ko"){
+    if (univ_code === undefined || univ_code === null) return {};
+    let params: { univ_code: string; lang?: string } = {
+      univ_code: univ_code,
+    };
+    if (lang && lang !== 'ko') {
       params.lang = lang;
     }
     const response = await axios.get(`/?action=oneclick_univ&params=${JSON.stringify(params)}&sid=${sid}`);
     return response.data;
   },
-  sendPlayerInfo: async (url:string) => {
+  sendPlayerInfo: async (url: string) => {
     if (!isLogin()) return {};
     const response = await axios.get(url);
-     return response.data;
+    return response.data;
   },
-  sendAccountTransfer: async (status_id:number, name:string) => {
+  sendAccountTransfer: async (status_id: number, name: string) => {
     if (!isLogin()) return {};
     const sid = sessionStorage.getItem('sid');
     const params = {
-      status_id:status_id,
-      deposit_name:name,
-    }
+      status_id: status_id,
+      deposit_name: name,
+    };
     const response = await axios.get(`/?action=pay_account_num&params=${JSON.stringify(params)}&sid=${sid}`);
-     return response.data;
+    return response.data;
   },
-  sendSuccessPayment: async (status_id:number, imp_uid:string, merchant_uid:string) => {
+  sendSuccessPayment: async (status_id: number, imp_uid: string, merchant_uid: string) => {
     if (!isLogin()) return {};
     const sid = sessionStorage.getItem('sid');
     const params = {
-      status_id:status_id,
-      imp_uid:imp_uid,
-      merchant_uid:merchant_uid
-    }
+      status_id: status_id,
+      imp_uid: imp_uid,
+      merchant_uid: merchant_uid,
+    };
     const response = await axios.get(`/?action=pay_check_status&params=${JSON.stringify(params)}&sid=${sid}`);
-     return response.data;
+    return response.data;
   },
-  requestDocumentAction: async (url:string) => {
+  requestDocumentAction: async (url: string) => {
     if (!isLogin()) return {};
     const response = await axios.get(url);
-     return response.data;
+    return response.data;
   },
   getPlayerPayrank: async () => {
     const sid = sessionStorage.getItem('sid');
@@ -93,12 +93,16 @@ export default {
     const response = await axios.get(`/?action=get_player_payrank&params={"status_id":"${status_id}"}&sid=${sid}`);
     return response.data;
   },
-  getPlayerDocument: async (lang:string) => {
+  getPlayerDocument: async (lang: string) => {
     const sid = sessionStorage.getItem('sid');
     if (!isLogin()) return {};
     const univ_code = sessionStorage.getItem('chooseUnivCode');
     const univ_info = sessionStorage.getItem('chooseUnivInfoType');
-    const response = await axios.get(`/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}","lang":"${lang!=="ko"?lang:""}"}&sid=${sid}`);
+    const response = await axios.get(
+      `/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}","lang":"${
+        lang !== 'ko' ? lang : ''
+      }"}&sid=${sid}`,
+    );
     return response.data;
   },
   getUniversityList: async () => {

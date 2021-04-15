@@ -244,7 +244,14 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
 
   const onPushHeart = () => {
     if (isLogin()) {
-      API.pushLikeButton(currentUniv).then(() => setLiked((prev) => !prev));
+      API.pushLikeButton(currentUniv)
+        .then((res) => {
+          if (res.status === 'success') {
+            setLiked((prev) => !prev);
+          }
+        })
+        // .then(() => setLiked((prev) => !prev))
+        .catch((err) => console.log(err));
     } else {
       alert(t('warn-not-logged-in'));
       Router.push('/login');
@@ -264,14 +271,16 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
     setCurrentUniv(window.location.pathname.split('/')[2]);
     if (isLogin()) {
       API.getUserInfo().then((res) => {
-        if (res.liked_univ.includes(currentUniv)) {
-          setLiked(true);
-        } else {
-          setLiked(false);
+        if (res.liked_univ !== undefined) {
+          if (res.liked_univ.includes(currentUniv)) {
+            setLiked(true);
+          } else {
+            setLiked(false);
+          }
         }
       });
     }
-  }, []);
+  }, [currentUniv]);
 
   return (
     <Wrapper>

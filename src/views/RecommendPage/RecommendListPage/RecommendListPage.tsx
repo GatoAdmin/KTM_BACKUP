@@ -59,49 +59,50 @@ const filterInitialValue = {
   category: [],
 };
 
-const fetchUnivList = (url: string) => axios.get(url)
-  .then(
-    (res) => {
-      const {
-        univs,
-        pages,
-      }: {
-          univs: Array<{
-            univ_code: string;
-            tuition: number;
-            kor_name: string;
-            eng_name: string;
-            category: UnivCategory;
-            kor_short_address: string;
-            photos: {
-              photo_category: string;
-              file: string;
-            }[];
-            topik: string;
-          }>,
-          pages: {
-            max_page: number;
-          }
-        } = res.data;
-
-      return {
-        univList: univs.map((value) => ({
-          id: value.univ_code,
-          name: value.kor_name,
-          nameEng: value.eng_name,
-          city: value.kor_short_address,
-          category: value.category,
-          tuition: value.tuition,
-          topik: value.topik,
-          thumbnail: value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string ?? null,
-        })),
-        maxPage: pages.max_page,
+const fetchUnivList = (url: string) =>
+  axios.get(url).then((res) => {
+    const {
+      univs,
+      pages,
+    }: {
+      univs: Array<{
+        univ_code: string;
+        tuition: number;
+        kor_name: string;
+        eng_name: string;
+        category: UnivCategory;
+        kor_short_address: string;
+        photos: {
+          photo_category: string;
+          file: string;
+        }[];
+        topik: string;
+      }>;
+      pages: {
+        max_page: number;
       };
-    },
-  );
+    } = res.data;
+
+    return {
+      univList: univs.map((value) => ({
+        id: value.univ_code,
+        name: value.kor_name,
+        nameEng: value.eng_name,
+        city: value.kor_short_address,
+        category: value.category,
+        tuition: value.tuition,
+        topik: value.topik,
+        thumbnail:
+          (value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string) ?? null,
+      })),
+      maxPage: pages.max_page,
+    };
+  });
 
 const changeQueryToBoolParamsValue = (value: string | string[] | undefined): boolean | null => {
-  if (value === '' || value === undefined) { return null; }
+  if (value === '' || value === undefined) {
+    return null;
+  }
   return value === 'true';
 };
 
@@ -115,26 +116,22 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
   const { query } = context;
   const filterParams: FilterValue = {
     location: query.location
-      ? String(query.location).split(',') as Array<KoreaLocation>
+      ? (String(query.location).split(',') as Array<KoreaLocation>)
       : filterInitialValue.location,
     tuition: query.tuition ? Number(query.tuition) : filterInitialValue.tuition,
     topik: query.topik ? String(query.topik).split(',').map(Number) : filterInitialValue.topik,
     has_own_exam: changeQueryToBoolParamsValue(query.has_own_exam),
     has_scholarship: changeQueryToBoolParamsValue(query.has_scholarship),
-    category: query.category
-      ? String(query.category).split(',') as Array<UnivCategory>
-      : filterInitialValue.category,
+    category: query.category ? (String(query.category).split(',') as Array<UnivCategory>) : filterInitialValue.category,
     word: query.word ? String(query.word) : '',
   };
   let responseUnivList;
   try {
-    responseUnivList = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
-      JSON.stringify(
-        Object.assign(
-          filterParams,
-          { page: 1 },
-        ),
-      )}`);
+    responseUnivList = await fetchUnivList(
+      `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(
+        Object.assign(filterParams, { page: 1 }),
+      )}`,
+    );
   } catch {
     responseUnivList = {};
   }
@@ -175,19 +172,18 @@ const useFilterRefObject = (): FilterRefObject => {
 };
 
 const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivInfo>, maxPage: number) => {
-  const getKey = (index: number) => `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(Object.assign(filterParams, { page: index + 1 }))}`;
-  const {
-    data, size, setSize, mutate,
-  } = useSWRInfinite(
-    getKey,
-    (url) => fetchUnivList(url),
-    {
-      initialData: [{
+  const getKey = (index: number) =>
+    `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(
+      Object.assign(filterParams, { page: index + 1 }),
+    )}`;
+  const { data, size, setSize, mutate } = useSWRInfinite(getKey, (url) => fetchUnivList(url), {
+    initialData: [
+      {
         univList: initialUnivList,
         maxPage,
-      }],
-    },
-  );
+      },
+    ],
+  });
   const loadUnivList = () => {
     setSize(size + 1);
   };
@@ -201,9 +197,10 @@ const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivI
 
 // TODO: Update with Types for filter value
 export interface UpdateUrlQueryFunction {
-  (propertyKey: string,
-   newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<UnivCategory> | boolean | null)
-    : void;
+  (
+    propertyKey: string,
+    newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<UnivCategory> | boolean | null,
+  ): void;
 }
 
 interface SWRData {
@@ -211,15 +208,10 @@ interface SWRData {
   maxPage: number;
 }
 
-const usePushRouterWithFiiterValue = ({
-  location,
-  tuition,
-  exam,
-  scholarship,
-  category,
-  searchInput,
-}: FilterRefObject,
-mutate: responseInterface<Array<SWRData>, unknown>['mutate']): UpdateUrlQueryFunction => {
+const usePushRouterWithFiiterValue = (
+  { location, tuition, exam, scholarship, category, searchInput }: FilterRefObject,
+  mutate: responseInterface<Array<SWRData>, unknown>['mutate'],
+): UpdateUrlQueryFunction => {
   const router = useRouter();
 
   return (propertyKey, newPropertyValue) => {
@@ -233,20 +225,19 @@ mutate: responseInterface<Array<SWRData>, unknown>['mutate']): UpdateUrlQueryFun
       word: searchInput.current?.value,
       [propertyKey]: Array.isArray(newPropertyValue) ? String(newPropertyValue) : newPropertyValue,
     };
-    router
-      .replace({
+    router.replace(
+      {
         pathname: '/recommend',
         query: queryUrlObject,
-      }, undefined, { shallow: true });
+      },
+      undefined,
+      { shallow: true },
+    );
     mutate();
   };
 };
 
-const RecommendListPage: NextPage<RecommendListPageProps> = ({
-  filterParams,
-  initialUnivList,
-  maxPage,
-}) => {
+const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, initialUnivList, maxPage }) => {
   const filterRefObject = useFilterRefObject();
 
   const filterButtonRef = React.useRef<HTMLDivElement>(null);
@@ -267,9 +258,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
     <DefaultLayout>
       <Header background="dark" position="absolute" t={t} changeLang={changeLang} />
       <SearchSectionContainer>
-        <SearchSectionTitle>
-          모든 대학을 알려드립니다
-        </SearchSectionTitle>
+        <SearchSectionTitle>나를 위한 한국의 대학교를 검색하세요.</SearchSectionTitle>
         <SearchSectionContent>
           <SearchFilterContainer ref={filterButtonRef}>
             <SearchFilterButton onClick={toggleIsFilterShow}>
@@ -325,9 +314,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
       </SearchSectionContainer>
       <UnivListSection>
         <UnivListTitle>대학 리스트</UnivListTitle>
-        {univList ? univList.map((univItem) => (
-          <UnivItem key={univItem.id} {...univItem} />
-        )) : null}
+        {univList ? univList.map((univItem) => <UnivItem key={univItem.id} {...univItem} />) : null}
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
     </DefaultLayout>

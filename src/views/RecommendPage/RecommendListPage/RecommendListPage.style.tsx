@@ -23,7 +23,8 @@ export const UnivListLoadTrigger = styled.div`
 
 export const SearchSectionContainer = styled.div`
   position: relative;
-  height: 340px;
+  height: 310px;
+  margin-top: 73px;
   background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
     url('/images/search_background.jpg') center/cover no-repeat;
 `;
@@ -32,7 +33,7 @@ export const SearchSectionTitle = styled.h1`
   display: inline-block;
   width: 100%;
   padding: 0;
-  margin: 165px 0 0;
+  margin: 96px 0 0;
   font: normal bold 26px/35px ${defaultFont};
   text-align: center;
 `;
@@ -58,6 +59,7 @@ export const SearchFilterButton = styled.button`
 `;
 
 export const SearchInputContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   width: 600px;
@@ -79,6 +81,8 @@ export const SearchInput = styled.input.attrs({
 `;
 
 export const SearchButton = styled.button`
+  position: absolute;
+  right: 30px;
   width: 20px;
   height: 20px;
   padding: 0;

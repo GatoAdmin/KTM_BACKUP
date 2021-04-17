@@ -25,7 +25,7 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   top: 0;
   justify-content: space-between;
   margin: 0 auto;
-  padding: 44px 0 22px;
+  padding: 22px 0;
   width: 1100px;
   font: normal normal normal 14px/19px ${defaultFont};
   background-color: transparent;

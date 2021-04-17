@@ -78,6 +78,7 @@ const fetchUnivList = (url: string) =>
           file: string;
         }[];
         topik: string;
+        has_own_exam: boolean;
       }>;
       pages: {
         max_page: number;
@@ -93,6 +94,7 @@ const fetchUnivList = (url: string) =>
         category: value.category,
         tuition: value.tuition,
         topik: value.topik,
+        hasOwnExam: value.has_own_exam,
         thumbnail:
           (value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string) ?? null,
       })),
@@ -316,7 +318,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
         </SearchSectionContent>
       </SearchSectionContainer>
       <UnivListSection>
-        <UnivListTitle>대학 리스트</UnivListTitle>
+        <UnivListTitle>나에게 맞는 대학 리스트</UnivListTitle>
         {univList ? univList.map((univItem) => <UnivItem key={univItem.id} {...univItem} />) : null}
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>

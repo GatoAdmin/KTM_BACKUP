@@ -7,6 +7,7 @@ import Header from '@components/Shared/Header/Header';
 import {
   FilterModalContainer,
   FilterSection,
+  HeaderWrapper,
   SearchButton,
   SearchFilterButton,
   SearchFilterContainer,
@@ -256,7 +257,9 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
 
   return (
     <DefaultLayout>
-      <Header background="dark" position="absolute" t={t} changeLang={changeLang} />
+      <HeaderWrapper>
+        <Header background="dark" position="absolute" t={t} changeLang={changeLang} />
+      </HeaderWrapper>
       <SearchSectionContainer>
         <SearchSectionTitle>나를 위한 한국의 대학교를 검색하세요.</SearchSectionTitle>
         <SearchSectionContent>

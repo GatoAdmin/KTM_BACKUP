@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import { fontColor, borderColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
+export const HeaderWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 export const UnivListSection = styled.section`
   position: relative;
   width: 1000px;
@@ -56,6 +62,7 @@ export const SearchFilterButton = styled.button`
   border-radius: 25px;
   background-color: ${whiteColor};
   cursor: pointer;
+  outline: none;
 `;
 
 export const SearchInputContainer = styled.div`
@@ -99,8 +106,8 @@ interface FilterModalContainerProps {
 export const FilterModalContainer = styled.div<FilterModalContainerProps>`
   display: ${(props) => (props.show ? 'flex' : 'none')};
   position: absolute;
-  top: 298px;
-  left: 110px;
+  top: 240px;
+  left: calc(50% - 440px);
   width: 880px;
   height: 280px;
   padding: 20px 0;

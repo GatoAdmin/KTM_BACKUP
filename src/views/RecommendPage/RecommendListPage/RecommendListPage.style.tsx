@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontColor, mainBackgroundColor, whiteColor } from '@util/style/color';
+import { fontColor, borderColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 
 export const UnivListSection = styled.section`
@@ -24,7 +24,8 @@ export const UnivListLoadTrigger = styled.div`
 export const SearchSectionContainer = styled.div`
   position: relative;
   height: 340px;
-  background: linear-gradient(rgba(255,255,255, 0.5), rgba(255,255,255, 0.5)), url("/images/search_background.jpg") center/cover no-repeat;
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url('/images/search_background.jpg') center/cover no-repeat;
 `;
 
 export const SearchSectionTitle = styled.h1`
@@ -42,9 +43,7 @@ export const SearchSectionContent = styled.div`
   margin: 33px auto 0;
 `;
 
-export const SearchFilterContainer = styled.div`
-
-`;
+export const SearchFilterContainer = styled.div``;
 
 export const SearchFilterButton = styled.button`
   flex: 0 0 auto;
@@ -103,7 +102,7 @@ export const FilterModalContainer = styled.div<FilterModalContainerProps>`
   padding: 20px 0;
   border-radius: 20px;
   background: ${whiteColor};
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   z-index: 2;
   cursor: default;
 `;
@@ -111,9 +110,9 @@ export const FilterModalContainer = styled.div<FilterModalContainerProps>`
 export const FilterSection = styled.div`
   width: 180px;
   height: 100%;
-  border-right: 1px solid ${mainBackgroundColor};
+  border-right: 1px solid ${borderColor};
   box-sizing: border-box;
-  
+
   :last-child {
     border: 0;
   }

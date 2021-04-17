@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { mainBackgroundColor, mainColor } from '@util/style/color';
+import { borderColor, mainColor } from '@util/style/color';
 import LogoIcon from '../../../assets/logo.svg';
 
 const FooterContainer = styled.footer`
   width: 100%;
   height: 200px;
-  background-color: ${mainBackgroundColor};
+  background-color: ${borderColor};
 `;
 
 const FooterContent = styled.div`
@@ -28,7 +28,7 @@ const Logo = styled(LogoIcon)`
   width: 100px;
   height: 100px;
   margin-right: 20px;
-  
+
   > path {
     fill: ${mainColor};
   }

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontColor, mainBackgroundColor, whiteColor, mainColor600 } from '@util/style/color';
+import { fontColor, borderColor, whiteColor, mainColor600 } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import ClickHandSVG from '@assets/svg/click_hand_icon.svg';
 
@@ -36,7 +36,7 @@ export const FilterModalContainer = styled.div<FilterModalContainerProps>`
   padding: 20px 0;
   border-radius: 20px;
   background: ${whiteColor};
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   z-index: 2;
   cursor: default;
 `;
@@ -44,9 +44,9 @@ export const FilterModalContainer = styled.div<FilterModalContainerProps>`
 export const FilterSection = styled.div`
   width: 180px;
   height: 100%;
-  border-right: 1px solid ${mainBackgroundColor};
+  border-right: 1px solid ${borderColor};
   box-sizing: border-box;
-  
+
   :last-child {
     border: 0;
   }
@@ -56,19 +56,19 @@ export const ImageContainer = styled.div`
   width: 1100px;
   height: auto;
   opacity: 0.9;
-  padding-top:80px; 
+  padding-top: 80px;
   position: relative;
 
-  >div {
+  > div {
     width: 510px;
-    height: 60px;    
+    height: 60px;
     position: absolute;
     left: 490px;
     top: 182px;
     font-weight: bold;
     font-size: 22px;
     line-height: 30px;
-    color:#FFFFFF;
+    color: #ffffff;
   }
 `;
 export const CoverImage = styled.img.attrs({
@@ -76,10 +76,9 @@ export const CoverImage = styled.img.attrs({
   alt: 'cover',
 })`
   width: 1100px;
-  height: auto;   
-
+  height: auto;
 `;
 
 export const Accent = styled.span`
-    color: ${mainColor600};
-`; 
+  color: ${mainColor600};
+`;

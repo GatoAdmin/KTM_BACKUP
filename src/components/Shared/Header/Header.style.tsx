@@ -24,6 +24,7 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   align-items: center;
   top: 0;
   justify-content: space-between;
+  margin: 0 auto;
   padding: 44px 0 22px;
   width: 1100px;
   font: normal normal normal 14px/19px ${defaultFont};
@@ -31,20 +32,22 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   user-select: none;
   z-index: 3;
 
-  ${(props) => (props.background === 'light'
-    ? css`
+  ${(props) =>
+    props.background === 'light'
+      ? css`
           box-shadow: 0 0 5px #0f0f0f33;
         `
-    : null)}
+      : null}
 
-  ${(props) => (props.position === 'relative'
-    ? css`
+  ${(props) =>
+    props.position === 'relative'
+      ? css`
           position: relative;
           padding: 22px 0;
         `
-    : css`
+      : css`
           position: absolute;
-        `)}
+        `}
 `;
 
 export const Navigation = styled.div`

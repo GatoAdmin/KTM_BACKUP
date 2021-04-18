@@ -37,6 +37,10 @@ export interface UnivInfo {
   hasOwnExam: boolean;
 }
 
+const HeartSection = ({ isLiked, onPushHeart, id }) => {
+  return <HeartContainer onClick={() => onPushHeart(id)}>{isLiked ? <RedHeart /> : <EmptyHeart />}</HeartContainer>;
+};
+
 const UnivItem: React.VFC<UnivInfo> = ({
   id,
   name,
@@ -47,15 +51,14 @@ const UnivItem: React.VFC<UnivInfo> = ({
   topik,
   thumbnail,
   hasOwnExam,
+  isLiked,
+  onPushHeart,
 }) => {
   const categoryName = univCategoryInfo.find((univCategory) => univCategory.value == category)?.name;
 
   return (
     <UnivItemContainer>
-      <HeartContainer>
-        <EmptyHeart />
-        {/* <RedHeart /> */}
-      </HeartContainer>
+      <HeartSection isLiked={isLiked} onPushHeart={onPushHeart} id={id} />
       {thumbnail ? <UnivItemImage src={thumbnail} alt={id} /> : <UnivItemNoImage />}
       <UnivItemDescriptionContainer>
         <UnivItemTitle>{name}</UnivItemTitle>

@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+
 import { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import {
@@ -36,9 +37,12 @@ import CategoryFilter, {
   CategoryFilterRef,
   UnivCategory,
 } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
+
+import API from '@util/api';
 import useIntersection from '@util/hooks/useInteraction';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/landingPage.json';
+import isLogin from '@util/auth/auth';
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -138,6 +142,7 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
   } catch {
     responseUnivList = {};
   }
+  console.log();
   return {
     props: {
       filterParams,
@@ -246,6 +251,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
   const filterButtonRef = React.useRef<HTMLDivElement>(null);
   const [isFilterShow, toggleIsFilterShow] = useVisible(filterButtonRef);
   const { univList, loadUnivList, mutate } = useUnivListData(filterParams, initialUnivList, maxPage);
+  const [likedUniv, setLikedUniv] = React.useState([]);
   const updateUrlQuery = usePushRouterWithFiiterValue(filterRefObject, mutate);
 
   const univListLoadRef = React.useRef<HTMLDivElement>(null);
@@ -255,7 +261,35 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
       loadUnivList();
     }
   }, [isTriggerLoadUnivList]);
+
+  React.useEffect(() => {
+    if (isLogin()) {
+      API.getUserInfo().then((res) => {
+        setLikedUniv(res.liked_univ);
+      });
+    }
+  }, []);
   const { t, lang, changeLang } = useTranslate(i18nResource);
+
+  const onPushHeart = (univKey: string) => {
+    if (isLogin()) {
+      API.pushLikeButton(univKey)
+        .then((res) => {
+          if (res.status === 'success') {
+            if (!likedUniv.includes(univKey)) {
+              setLikedUniv((prev) => [...prev, univKey]);
+            } else {
+              setLikedUniv((prev) => prev.filter((elem) => elem !== univKey));
+            }
+          }
+        })
+        // .then(() => setLiked((prev) => !prev))
+        .catch((err) => console.log(err));
+    } else {
+      alert(t('warn-not-logged-in'));
+      Router.push('/login');
+    }
+  };
 
   return (
     <DefaultLayout>
@@ -319,7 +353,18 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
       </SearchSectionContainer>
       <UnivListSection>
         <UnivListTitle>나에게 맞는 대학 리스트</UnivListTitle>
-        {univList ? univList.map((univItem) => <UnivItem key={univItem.id} {...univItem} />) : null}
+        {univList
+          ? univList.map((univItem) => {
+              return (
+                <UnivItem
+                  key={`${univItem.id}${univItem.category}`}
+                  {...univItem}
+                  isLiked={likedUniv.includes(univItem.id)}
+                  onPushHeart={onPushHeart}
+                />
+              );
+            })
+          : null}
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
     </DefaultLayout>

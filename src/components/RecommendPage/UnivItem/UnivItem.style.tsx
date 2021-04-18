@@ -23,6 +23,7 @@ export const HeartContainer = styled.div`
   position: absolute;
   top: 16px;
   left: 16px;
+  cursor: pointer;
 
   svg {
     transform: scale(1.3);

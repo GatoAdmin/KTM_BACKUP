@@ -1,5 +1,6 @@
 {
   "ko": {
+    "warn-not-logged-in" : "로그인이 필요한 서비스입니다.",
     "introduce": "회사소개",
     "university": "대학 소개&추천",
     "consult": "입학 상담",
@@ -22,6 +23,7 @@
     "landing-solution-section-button": "입학 솔루션 바로가기"
   },
   "vn": {
+    "warn-not-logged-in" : "Dịch vụ bắt buộc phải đăng nhập.",
     "introduce": "Giới thiệu công ty",
     "university": "Giới thiệu các trường đại học",
     "consult": "Tư vấn nhập học",

@@ -53,6 +53,7 @@ const UnivItem: React.VFC<UnivInfo> = ({
   hasOwnExam,
   isLiked,
   onPushHeart,
+  t,
 }) => {
   const categoryName = univCategoryInfo.find((univCategory) => univCategory.value == category)?.name;
 
@@ -96,7 +97,7 @@ const UnivItem: React.VFC<UnivInfo> = ({
         </UnivItemInformation>
         <UnivItemLinkContainer>
           <Link href={`/recommend/${id}`} passHref>
-            <UnivItemLink>상세보기</UnivItemLink>
+            <UnivItemLink>{t('detail_button')}</UnivItemLink>
           </Link>
         </UnivItemLinkContainer>
       </UnivItemDescriptionContainer>

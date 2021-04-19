@@ -26,9 +26,7 @@ interface HeaderProps {
   lang: string;
 }
 
-const Header: React.VFC<HeaderProps> = ({
-  background, position = 'absolute', t, changeLang, lang,
-}) => {
+const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute', t, changeLang, lang }) => {
   const [userButton, setUserButton] = useState(<></>);
 
   useEffect(() => {

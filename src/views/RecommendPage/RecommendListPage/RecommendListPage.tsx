@@ -300,10 +300,10 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
   return (
     <DefaultLayout>
       <HeaderWrapper>
-        <Header background="dark" position="absolute" t={t} changeLang={changeLang} />
+        <Header background="dark" t={t} lang={lang} changeLang={changeLang} />
       </HeaderWrapper>
       <SearchSectionContainer>
-        <SearchSectionTitle>나를 위한 한국의 대학교를 검색하세요.</SearchSectionTitle>
+        <SearchSectionTitle>{t('search-section-title')}</SearchSectionTitle>
         <SearchSectionContent>
           <SearchFilterContainer ref={filterButtonRef}>
             <SearchFilterButton onClick={toggleIsFilterShow}>
@@ -355,7 +355,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
               updateUrlQuery('word', e.target[0].value);
             }}
           >
-            <SearchInput ref={filterRefObject.searchInput} />
+            <SearchInput ref={filterRefObject.searchInput} placeholder={t('search-section-placeholder')} />
             <SearchButton>
               <SearchIcon />
             </SearchButton>
@@ -363,7 +363,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
         </SearchSectionContent>
       </SearchSectionContainer>
       <UnivListSection>
-        <UnivListTitle>나에게 맞는 대학 리스트</UnivListTitle>
+        <UnivListTitle>{t('univ-list-title')}</UnivListTitle>
 
         {univList
           ? univList.map((univItem) => {
@@ -373,11 +373,12 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
                   {...univItem}
                   isLiked={likedUniv.includes(univItem.id)}
                   onPushHeart={onPushHeart}
+                  t={t}
                 />
               );
             })
           : null}
-        <UnivSort updateUrlQuery={updateUrlQuery} />
+        <UnivSort updateUrlQuery={updateUrlQuery} t={t} />
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
     </DefaultLayout>

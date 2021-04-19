@@ -10,37 +10,39 @@ import {
   CurrentSortBox,
 } from './UnivSort.style';
 
-const SortList = [
-  {
-    label: '정확도순',
-    value: 'kor_name',
-  },
-  {
-    label: '많은 유학생 순',
-    value: '-number_of_student',
-  },
-  {
-    label: '적은 유학생 순',
-    value: 'number_of_student',
-  },
-  {
-    label: '높은 학비 순',
-    value: '-tuition',
-  },
-  {
-    label: '낮은 학비 순',
-    value: 'tuition',
-  },
-];
-
-const UnivSort = ({ updateUrlQuery }) => {
-  const [currentSort, setCurrentSort] = React.useState('정확도순');
+const UnivSort = ({ updateUrlQuery, t }) => {
+  const [currentSort, setCurrentSort] = React.useState('accuracy');
   const [isSortSectionVisible, setIsSortSectionVisible] = React.useState(false);
+
+  // const;
+
+  const SortList = [
+    {
+      label: 'accuracy',
+      value: 'kor_name',
+    },
+    {
+      label: 'large_student_order',
+      value: '-number_of_student',
+    },
+    {
+      label: 'small_student_order',
+      value: 'number_of_student',
+    },
+    {
+      label: 'large_tuition_order',
+      value: '-tuition',
+    },
+    {
+      label: 'small_tuition_order',
+      value: 'tuition',
+    },
+  ];
 
   return (
     <Wrapper>
       <CurrentSortBox onClick={() => setIsSortSectionVisible((prev) => !prev)}>
-        <CurrentLabel>{currentSort}</CurrentLabel>
+        <CurrentLabel>{t(currentSort)}</CurrentLabel>
         <BelowArrow />
       </CurrentSortBox>
 
@@ -48,13 +50,14 @@ const UnivSort = ({ updateUrlQuery }) => {
         <UnivSortSection>
           {SortList.map(({ label, value }) => (
             <SortBox
+              key={value}
               onClick={() => {
                 setCurrentSort(label);
                 setIsSortSectionVisible((prev) => !prev);
                 updateUrlQuery('sorted_by', value);
               }}
             >
-              <SortLabel current={label === currentSort}>{label}</SortLabel>
+              <SortLabel current={label === currentSort}>{t(label)}</SortLabel>
             </SortBox>
           ))}
           <UpperArrow />

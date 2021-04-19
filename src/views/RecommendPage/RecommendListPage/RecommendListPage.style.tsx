@@ -76,9 +76,7 @@ export const SearchInputContainer = styled.form`
   background-color: ${whiteColor};
 `;
 
-export const SearchInput = styled.input.attrs({
-  placeholder: '궁금한 대학교를 검색해보세요!',
-})`
+export const SearchInput = styled.input`
   width: 490px;
   height: 20px;
   margin-right: 20px;

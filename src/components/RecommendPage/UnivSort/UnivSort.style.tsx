@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
 `;
 
 export const CurrentSortBox = styled.div`
-  width: 130px;
+  width: 160px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,7 +65,7 @@ export const SortLabel = styled.span`
 
 export const CurrentLabel = styled(SortLabel)`
   color: #df4d3d !important;
-  margin-right: 13px;
+  margin-right: 18px;
 `;
 
 export const UpperArrow = styled(UnderArrow)`

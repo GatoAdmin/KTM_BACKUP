@@ -54,6 +54,7 @@ const UnivItem: React.VFC<UnivInfo> = ({
   isLiked,
   onPushHeart,
   t,
+  lang,
 }) => {
   const categoryName = univCategoryInfo.find((univCategory) => univCategory.value == category)?.name;
 
@@ -69,24 +70,31 @@ const UnivItem: React.VFC<UnivInfo> = ({
             <UnivItemDescriptionIcon>
               <TuitionIcon />
             </UnivItemDescriptionIcon>
-            <UnivItemLabel>{`평균 ${tuition} 만원`}</UnivItemLabel>
+            <UnivItemLabel>
+              {lang === 'ko' && `평균 ${tuition} 만원`}
+              {lang === 'vn' && `Khoảng ${(tuition / 100).toFixed(1)} Triệu KRW`}
+            </UnivItemLabel>
           </UnivItemDescription>
           <UnivItemDescription>
             <UnivItemDescriptionIcon>
               <AbilityIcon />
             </UnivItemDescriptionIcon>
             <UnivItemLabel>
-              토픽
-              {topik !== '0' ? ` ${topik}급` : ' 상관없음'}
+              {lang === 'ko' && topik !== '0' && `토픽 ${topik}급`}
+              {lang === 'ko' && topik === '0' && '토픽 필요 없음'}
+              {lang === 'vn' && topik !== '0' && `TOPIK Cấp ${topik}`}
+              {lang === 'vn' && topik === '0' && 'Không giới hạn cấp độ '}
+
               <br />
-              {hasOwnExam === true && '학교 자체 시험'}
+              {hasOwnExam === true && lang === 'ko' && '학교 자체 시험'}
+              {hasOwnExam === true && lang === 'vn' && 'Bài thi của trường'}
             </UnivItemLabel>
           </UnivItemDescription>
           <UnivItemDescription>
             <UnivItemDescriptionIcon>
               <CategoryIcon />
             </UnivItemDescriptionIcon>
-            <UnivItemLabel>{categoryName}</UnivItemLabel>
+            <UnivItemLabel>{t(categoryName)}</UnivItemLabel>
           </UnivItemDescription>
           <UnivItemDescription disabled>
             <UnivItemDescriptionIcon>

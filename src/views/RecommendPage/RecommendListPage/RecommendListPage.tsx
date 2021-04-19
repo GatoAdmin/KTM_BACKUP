@@ -374,6 +374,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
                   isLiked={likedUniv.includes(univItem.id)}
                   onPushHeart={onPushHeart}
                   t={t}
+                  lang={lang}
                 />
               );
             })

@@ -29,7 +29,10 @@
     "small_student_order":"적은 유학생 순",
     "large_tuition_order":"높은 학비 순",
     "small_tuition_order":"적은 학비 순",
-    "detail_button":"상세보기"
+    "detail_button":"상세보기",
+    "대학교":"대학교",
+    "전문대학교":"전문대학교",
+    "어학원":"어학원"
   },
   "vn": {
     "warn-not-logged-in" : "Dịch vụ bắt buộc phải đăng nhập.",
@@ -61,6 +64,9 @@
     "small_student_order":"ít du học sinh",
     "large_tuition_order":"Học phí cao",
     "small_tuition_order":"Học phí thấp",
-    "detail_button":"Xem chi tiết"
+    "detail_button":"Xem chi tiết",
+    "대학교":"Đại học",
+    "전문대학교":"Cao đẳng nghề",
+    "어학원":"Trường tiếng"
   }
 }

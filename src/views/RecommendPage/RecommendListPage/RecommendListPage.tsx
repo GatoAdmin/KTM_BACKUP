@@ -37,6 +37,7 @@ import CategoryFilter, {
   CategoryFilterRef,
   UnivCategory,
 } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
+import UnivSort from '@components/RecommendPage/UnivSort/UnivSort';
 
 import API from '@util/api';
 import useIntersection from '@util/hooks/useInteraction';
@@ -51,8 +52,8 @@ interface FilterValue {
   has_own_exam: boolean | null;
   has_scholarship: boolean | null;
   category: Array<UnivCategory>;
+  sorted_by: string;
   word: string;
-  // sort_by: string;
 }
 
 const filterInitialValue = {
@@ -62,6 +63,8 @@ const filterInitialValue = {
   has_own_exam: null,
   has_scholarship: null,
   category: [],
+  sorted_by: '',
+  word: '',
 };
 
 const fetchUnivList = (url: string) =>
@@ -131,6 +134,7 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
     has_scholarship: changeQueryToBoolParamsValue(query.has_scholarship),
     category: query.category ? (String(query.category).split(',') as Array<UnivCategory>) : filterInitialValue.category,
     word: query.word ? String(query.word) : '',
+    sorted_by: query.sorted_by ? String(query.sorted_by) : '',
   };
   let responseUnivList;
   try {
@@ -142,7 +146,6 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
   } catch {
     responseUnivList = {};
   }
-  console.log();
   return {
     props: {
       filterParams,
@@ -239,7 +242,7 @@ const usePushRouterWithFiiterValue = (
         query: queryUrlObject,
       },
       undefined,
-      { shallow: true },
+      // { shallow: true },
     );
     mutate();
   };
@@ -271,6 +274,10 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
   }, []);
   const { t, lang, changeLang } = useTranslate(i18nResource);
 
+  // React.useEffect(() => {
+  //   console.log(univList);
+  // }, [univList]);
+
   const onPushHeart = (univKey: string) => {
     if (isLogin()) {
       API.pushLikeButton(univKey)
@@ -283,7 +290,6 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
             }
           }
         })
-        // .then(() => setLiked((prev) => !prev))
         .catch((err) => console.log(err));
     } else {
       alert(t('warn-not-logged-in'));
@@ -343,7 +349,12 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
             </FilterModalContainer>
           </SearchFilterContainer>
 
-          <SearchInputContainer>
+          <SearchInputContainer
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateUrlQuery('word', e.target[0].value);
+            }}
+          >
             <SearchInput ref={filterRefObject.searchInput} />
             <SearchButton>
               <SearchIcon />
@@ -353,6 +364,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
       </SearchSectionContainer>
       <UnivListSection>
         <UnivListTitle>나에게 맞는 대학 리스트</UnivListTitle>
+
         {univList
           ? univList.map((univItem) => {
               return (
@@ -365,6 +377,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
               );
             })
           : null}
+        <UnivSort updateUrlQuery={updateUrlQuery} />
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
     </DefaultLayout>

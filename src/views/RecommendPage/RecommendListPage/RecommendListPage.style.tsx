@@ -65,7 +65,7 @@ export const SearchFilterButton = styled.button`
   outline: none;
 `;
 
-export const SearchInputContainer = styled.div`
+export const SearchInputContainer = styled.form`
   position: relative;
   display: flex;
   align-items: center;
@@ -85,6 +85,7 @@ export const SearchInput = styled.input.attrs({
   padding: 15px 0;
   border: 0;
   font: normal bold 14px/20px ${defaultFont};
+  outline: none;
 `;
 
 export const SearchButton = styled.button`
@@ -97,6 +98,7 @@ export const SearchButton = styled.button`
   border: 0;
   background: ${whiteColor};
   cursor: pointer;
+  outline: none;
 `;
 
 interface FilterModalContainerProps {

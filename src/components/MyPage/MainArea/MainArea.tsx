@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SelectTab,
   MySolutionSection,
   MyUniversityList,
   MyInfomation,
+  RefundSection,
+  EmptyFlame,
 } from '@components/MyPage';
 import MainAreaContainer from './MainArea.style';
 
@@ -14,11 +16,23 @@ interface MainAreaProps {
 const MainArea: React.FC<MainAreaProps> = ({ t }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [refundMode, setRefundMode] = useState(false);
+  const [payId, setPayId] = useState(0);
+
+  const handlingClickSelectTab = (num: number) => {
+    setSelectedIndex(num);
+    setRefundMode(false);
+  };
+
+  const handlingClickRefundButton = (responsePayId: number) => {
+    setPayId(responsePayId);
+    setRefundMode(true);
+  };
 
   const selectSection = () => {
+    if (refundMode) return <RefundSection t={t} payId={payId} />;
     switch (selectedIndex) {
       case 0:
-        return <MySolutionSection t={t} />;
+        return <MySolutionSection t={t} onRefundClick={handlingClickRefundButton} />;
       case 1:
         return <MyUniversityList t={t} />;
       case 2:
@@ -26,12 +40,15 @@ const MainArea: React.FC<MainAreaProps> = ({ t }) => {
       default:
         break;
     }
-    return <></>;
+    return <EmptyFlame> </EmptyFlame>;
   };
 
   return (
     <MainAreaContainer>
-      <SelectTab selectedIndex={selectedIndex} onClick={(num: number) => setSelectedIndex(num)} />
+      <SelectTab
+        selectedIndex={selectedIndex}
+        onClick={handlingClickSelectTab}
+      />
       {selectSection()}
     </MainAreaContainer>
   );

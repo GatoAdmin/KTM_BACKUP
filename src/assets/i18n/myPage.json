@@ -6,9 +6,20 @@
         "one-click": "원클릭 입학솔루션",
         "login": "로그인",
         "mypage": "마이페이지",
-        "1": "번역공증 서비스",
-        "2": "입학지원 서비스",
-        "3": "입학지원 서비스"
+        "service-1": "번역공증 서비스",
+        "service-2": "입학지원 서비스",
+        "service-3": "입학지원 서비스",
+        "identity-1": "한국 유학에 관심이 있거나 준비중입니다.",
+        "identity-2": "어학원에서 공부하며 대학교 입학을 준비중입니다",
+        "identity-3": "한국의 대학교에서 공부하는 대학생입니다.",
+        "identity-4": "기타",
+        "topik-0": "없음",
+        "topik-1": "TOPIK 1급",
+        "topik-2": "TOPIK 2급",
+        "topik-3": "TOPIK 3급",
+        "topik-4": "TOPIK 4급",
+        "topik-5": "TOPIK 5급",
+        "topik-6": "TOPIK 6급"
     },
     "vn": {
         "introduce": "Giới thiệu công ty",
@@ -17,8 +28,19 @@
         "one-click": "Dịch vụ nhập học",
         "login": "Đăng nhập",
         "mypage": "Trang của tôi",
-        "1": "Dịch vụ dịch và công chứng",
-        "2": "Dịch vụ nhập học",
-        "3": "Dịch vụ nhập học PRO"
+        "service-1": "Dịch vụ dịch và công chứng",
+        "service-2": "Dịch vụ nhập học",
+        "service-3": "Dịch vụ nhập học PRO",
+        "identity-1": "Có quan tâm hoặc đang chuẩn bị đi du học Hàn Quốc",
+        "identity-2": "Học ở trường tiếng và đang chuẩn bị nhập học đại học",
+        "identity-3": "Là sinh viên đang học tại trường đại học ở Hàn Quốc",
+        "identity-4": "Khác",
+        "topic-0": "TOPIK không có",
+        "topic-1": "TOPIK Cấp 1",
+        "topic-2": "TOPIK Cấp 2",
+        "topic-3": "TOPIK Cấp 3",
+        "topic-4": "TOPIK Cấp 4",
+        "topic-5": "TOPIK Cấp 5",
+        "topic-6": "TOPIK Cấp 6"
     }
 }

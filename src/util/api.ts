@@ -115,4 +115,20 @@ export default {
     const response = await axios.get(`/?action=get_my_univ&params={"options":"created", "page":${page}}`);
     return response.data.value;
   },
+  getMyInfomation: async () => {
+    const response = await axios.get('?action=get_my_info&params={}');
+    return response.data.value;
+  },
+  patchMyInfomation: async ({
+    first_name, last_name, topik_level, identity, username,
+  }: any) => {
+    const response = await axios.get(
+      `?action=change_my_info&params={"infos":{"last_name" : "${last_name}", "first_name":"${first_name}", "username":"${username}", "identity":${identity}, "topik_level":${topik_level}}}`,
+    );
+    return response.data;
+  },
+  getMyRefundInfo: async (payId: number) => {
+    const response = await axios.get(`?action=get_refund_info&params={"id":${payId}}`);
+    return response.data;
+  },
 };

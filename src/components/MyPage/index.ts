@@ -5,6 +5,7 @@ import MySolutionSection from './MySolutionSection/MySolutionSection';
 import RefundSection from './RefundSection/RefundSection';
 import MainArea from './MainArea/MainArea';
 import Title from './Title/Title';
+import EmptyFlame from './EmptyFlame/EmptyFlame.style';
 
 export {
   SelectTab,
@@ -14,4 +15,5 @@ export {
   RefundSection,
   MainArea,
   Title,
+  EmptyFlame,
 };

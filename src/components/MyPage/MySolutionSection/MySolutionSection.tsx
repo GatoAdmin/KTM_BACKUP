@@ -4,7 +4,10 @@ import API from '@util/api';
 import usePromise from '@util/hooks/usePromise';
 import Button from '@components/Shared/Button/Button';
 import { useRouter } from 'next/router';
-import { Title } from '@components/MyPage';
+import {
+  Title,
+  EmptyFlame,
+} from '@components/MyPage';
 import {
   MySolutionSectionContainer,
   Table,
@@ -20,6 +23,7 @@ import {
 
 interface MySolutionSectionProps {
   t: (s:string) => string;
+  onRefundClick: (payId: number) => void;
 }
 
 interface PaymentProps {
@@ -39,7 +43,7 @@ interface ValueProps {
   univ: string;
 }
 
-const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t }) => {
+const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick }) => {
   const router = useRouter();
   const getMyService = async () => {
     const service = await API.getMyService();
@@ -48,7 +52,7 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t }) => {
 
   const [loading, resolved, error] = usePromise(getMyService, []);
 
-  if (loading) return <> </>; // 나중에 스피너나 빈프레임 넣으면 좋을 것 같습니다 ㅎㅎ
+  if (loading) return <EmptyFlame />; // 나중에 스피너나 빈프레임 넣으면 좋을 것 같습니다 ㅎㅎ
   if (error) window.location.href = '/';
   if (!resolved) return null;
 
@@ -61,14 +65,14 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t }) => {
       const date = new Date(val.recent_time);
       return (
         <Tr key={val.id}>
-          <Td>{`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getDate()}`}</Td>
+          <Td>{`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`}</Td>
           <Td>{val.univ}</Td>
           <Td>{val.stage}</Td>
-          <Td>{t(val.rate)}</Td>
+          <Td>{t(`service-${val.rate}`)}</Td>
           <Td>
             <ButtonTd>
               { val.alarm ? <AlertIcon /> : null }
-              <Button onClick={() => console.log('hi')}> MORE </Button>
+              <Button onClick={() => router.replace('/solution')}> MORE </Button>
             </ButtonTd>
           </Td>
         </Tr>
@@ -84,13 +88,13 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t }) => {
       return (
         <Tr key={pay.id}>
           <Td>{String(pay.id).padStart(8, '0')}</Td>
-          <Td>{`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getDate()}`}</Td>
+          <Td>{`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`}</Td>
           <Td>{pay.univ}</Td>
           <Td>{t(pay.rate)}</Td>
           <Td>{`${pay.cost.toLocaleString()} KRW`}</Td>
           <Td>
             <ButtonTd>
-              <Button onClick={() => console.log('hi')}> 환불 신청 </Button>
+              <Button onClick={() => onRefundClick(pay.id)}> 환불 신청 </Button>
             </ButtonTd>
           </Td>
         </Tr>

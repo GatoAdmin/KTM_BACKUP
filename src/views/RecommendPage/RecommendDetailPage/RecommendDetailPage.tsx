@@ -315,10 +315,13 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                     <InfoCardImage src={value.pictogram} />
                   </InfoCardImageContainer>
                   {lang === 'ko' &&
+                    value.name !== null &&
                     value.name
                       .split('<br>')
                       .map((text) => <InfoCardDescription key={text}>{text}</InfoCardDescription>)}
+
                   {lang === 'vn' &&
+                    value.vnName !== null &&
                     value.vnName
                       .split('<br>')
                       .map((text) => <InfoCardDescription key={text}>{text}</InfoCardDescription>)}

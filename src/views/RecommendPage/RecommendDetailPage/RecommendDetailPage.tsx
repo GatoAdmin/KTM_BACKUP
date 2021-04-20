@@ -374,7 +374,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                         <Content>{lang === 'ko' ? value.name : value.vnName}</Content>
 
                         <ExclamationIcon>
-                          {value.info !== 'None' && (
+                          {value.info !== null && (
                             <>
                               <Info>
                                 {lang === 'ko' && value.info.split('<br>').map((text) => <div key={text}>{text}</div>)}

@@ -10,9 +10,9 @@ import BadgeCheckbox from '@components/RecommendPage/BadgeCheckbox/BadgeCheckbox
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 
 export const univCategoryInfo = [
-  { name: '대학교', value: '4년제' },
-  { name: '전문대학교', value: '전문대' },
-  { name: '어학원', value: '어학원' },
+  { name: '대학교', vnName: 'Đại học', value: '4년제' },
+  { name: '전문대학교', vnName: 'Trường nghề', value: '전문대' },
+  { name: '어학원', vnName: 'Trường tiếng', value: '어학원' },
 ] as const;
 
 export type UnivCategory = typeof univCategoryInfo[number]['value'];
@@ -52,7 +52,7 @@ const useCategoryFilter = (
 };
 
 const CategoryFilter: React.ForwardRefRenderFunction<CategoryFilterRef, CategoryFilterProps> = (
-  { initialCategoryValue, updateUrlQuery },
+  { lang, initialCategoryValue, updateUrlQuery },
   ref,
 ) => {
   const [categoryValue, handleCategoryCheckbox] = useCategoryFilter(initialCategoryValue, updateUrlQuery);
@@ -68,7 +68,7 @@ const CategoryFilter: React.ForwardRefRenderFunction<CategoryFilterRef, Category
   return (
     <CategoryFilterContainer>
       <CategoryIcon />
-      <CategoryFilterTitle>대학 종류</CategoryFilterTitle>
+      <CategoryFilterTitle>{lang === 'ko' ? '대학 종류' : 'Thể loại trường'}</CategoryFilterTitle>
       <CategoryCheckboxContainer>
         {univCategoryInfo.map((categoryInfo) => (
           <CategoryCheckbox key={categoryInfo.value}>
@@ -78,7 +78,7 @@ const CategoryFilter: React.ForwardRefRenderFunction<CategoryFilterRef, Category
               checked={categoryValue.includes(categoryInfo.value)}
               onChange={handleCategoryCheckbox}
             >
-              {categoryInfo.name}
+              {lang === 'ko' ? categoryInfo.name : categoryInfo.vnName}
             </BadgeCheckbox>
           </CategoryCheckbox>
         ))}

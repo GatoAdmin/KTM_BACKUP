@@ -25,7 +25,7 @@ export const ExamFilterShortContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: 22px;
-  padding: 0 20px;
+  padding: ${({ lang }) => (lang === 'ko' ? '0 20px' : '0 10px')};
 `;
 
 const ExamFilterStyle = css`

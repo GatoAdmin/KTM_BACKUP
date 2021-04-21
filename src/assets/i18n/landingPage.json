@@ -32,7 +32,10 @@
     "detail_button":"상세보기",
     "대학교":"대학교",
     "전문대학교":"전문대학교",
-    "어학원":"어학원"
+    "어학원":"어학원",
+    "position":"위치",
+    "assign_fee":"등록금",
+    "assign_fee_label":"한 학기 기준"
   },
   "vn": {
     "warn-not-logged-in" : "Dịch vụ bắt buộc phải đăng nhập.",
@@ -67,6 +70,9 @@
     "detail_button":"Xem chi tiết",
     "대학교":"Đại học",
     "전문대학교":"Cao đẳng nghề",
-    "어학원":"Trường tiếng"
+    "어학원":"Trường tiếng",
+    "position":"Vị trí",
+    "assign_fee":"Học phí",
+    "assign_fee_label":"Tiều chuẩn mỗi học kỳ"
   }
 }

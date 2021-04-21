@@ -2,7 +2,9 @@ import React from 'react';
 import Checkbox from '@components/Shared/Checkbox/Checkbox';
 import { UpdateUrlQueryFunction } from '@views/RecommendPage/RecommendListPage/RecommendListPage';
 import {
-  TuitionCheckbox, TuitionCheckboxList, TuitionDescription,
+  TuitionCheckbox,
+  TuitionCheckboxList,
+  TuitionDescription,
   TuitionFilterContainer,
   TuitionFilterTitle,
   TuitionIcon,
@@ -20,12 +22,16 @@ interface TuitionFilterProps {
   updateUrlQuery: UpdateUrlQueryFunction;
 }
 
-const useTuitionFilter = (initialTuitionValue: number | null, updateUrlQuery: UpdateUrlQueryFunction)
-  : [number | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+const useTuitionFilter = (
+  initialTuitionValue: number | null,
+  updateUrlQuery: UpdateUrlQueryFunction,
+): [number | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [filterValue, setFilterValue] = React.useState<number | null>(() => initialTuitionValue);
   const handleClickTuitionCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newFilterValue: number | null;
-    const { target: { value } } = event;
+    const {
+      target: { value },
+    } = event;
     if (String(filterValue) === value) {
       newFilterValue = null;
     } else {
@@ -37,22 +43,27 @@ const useTuitionFilter = (initialTuitionValue: number | null, updateUrlQuery: Up
   return [filterValue, handleClickTuitionCheckbox];
 };
 
-const TuitionFilter: React.ForwardRefRenderFunction<TuitionFilterRef, TuitionFilterProps> = ({
-  initialTuitionValue,
-  updateUrlQuery,
-}, ref) => {
+const TuitionFilter: React.ForwardRefRenderFunction<TuitionFilterRef, TuitionFilterProps> = (
+  { t, lang, initialTuitionValue, updateUrlQuery },
+  ref,
+) => {
   const [filterValue, handleClickTuitionCheckbox] = useTuitionFilter(initialTuitionValue, updateUrlQuery);
 
-  React.useImperativeHandle<TuitionFilterRef, TuitionFilterRef>(ref, () => ({
-    value: filterValue,
-  }), [filterValue]);
+  React.useImperativeHandle<TuitionFilterRef, TuitionFilterRef>(
+    ref,
+    () => ({
+      value: filterValue,
+    }),
+    [filterValue],
+  );
 
   return (
     <TuitionFilterContainer>
       <TuitionIcon />
-      <TuitionFilterTitle>등록금</TuitionFilterTitle>
+      {console.log(lang)}
+      <TuitionFilterTitle>{t('assign_fee')}</TuitionFilterTitle>
       <TuitionCheckboxList>
-        <TuitionDescription>(한 학기 기준)</TuitionDescription>
+        <TuitionDescription>{`(${t('assign_fee_label')})`}</TuitionDescription>
         {tuitionArray.map((value) => (
           <TuitionCheckbox key={value}>
             <Checkbox
@@ -62,14 +73,12 @@ const TuitionFilter: React.ForwardRefRenderFunction<TuitionFilterRef, TuitionFil
               onChange={handleClickTuitionCheckbox}
             >
               {value}
-              백만원 ~
-              {value + 1}
-              백만원
+              {lang === 'ko' ? '백만원 ' : ' triệu '}~ {value + 1}
+              {lang === 'ko' ? '백만원' : ' triệu (KRW)'}
             </Checkbox>
           </TuitionCheckbox>
         ))}
       </TuitionCheckboxList>
-
     </TuitionFilterContainer>
   );
 };

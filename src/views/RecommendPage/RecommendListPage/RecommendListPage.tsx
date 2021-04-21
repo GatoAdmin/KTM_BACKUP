@@ -312,6 +312,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
             <FilterModalContainer show={isFilterShow}>
               <FilterSection>
                 <LocationFilter
+                  label={t('position')}
                   ref={filterRefObject.location}
                   updateUrlQuery={updateUrlQuery}
                   initialLocationValue={filterParams.location}
@@ -319,6 +320,8 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
               </FilterSection>
               <FilterSection>
                 <TuitionFilter
+                  t={t}
+                  lang={lang}
                   ref={filterRefObject.tuition}
                   updateUrlQuery={updateUrlQuery}
                   initialTuitionValue={filterParams.tuition}
@@ -326,6 +329,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
               </FilterSection>
               <FilterSection>
                 <ExamFilter
+                  lang={lang}
                   ref={filterRefObject.exam}
                   updateUrlQuery={updateUrlQuery}
                   initialTopikValue={filterParams.topik}
@@ -334,6 +338,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
               </FilterSection>
               <FilterSection>
                 <ScholarshipFilter
+                  lang={lang}
                   ref={filterRefObject.scholarship}
                   updateUrlQuery={updateUrlQuery}
                   initialScholarshipValue={filterParams.has_scholarship}
@@ -341,6 +346,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
               </FilterSection>
               <FilterSection>
                 <CategoryFilter
+                  lang={lang}
                   ref={filterRefObject.category}
                   updateUrlQuery={updateUrlQuery}
                   initialCategoryValue={filterParams.category}
@@ -371,7 +377,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
                 <UnivItem
                   key={`${univItem.id}${univItem.category}`}
                   {...univItem}
-                  isLiked={likedUniv.includes(univItem.id)}
+                  isLiked={likedUniv === undefined ? false : likedUniv.includes(univItem.id)}
                   onPushHeart={onPushHeart}
                   t={t}
                   lang={lang}

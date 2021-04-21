@@ -18,7 +18,7 @@ export const UnivListSection = styled.section`
 export const UnivListTitle = styled.h3`
   display: block;
   margin: 0 0 55px;
-  font: normal normal bold 22px/30px NEXON Lv1 Gothic;
+  font: normal normal bold 22px/30px Noto Sans;
   color: ${fontColor};
 `;
 

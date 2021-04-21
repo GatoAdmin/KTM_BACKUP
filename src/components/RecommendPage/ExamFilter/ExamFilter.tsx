@@ -9,6 +9,7 @@ import {
   ExamFilterTitle,
   ExamFilterCheckbox,
 } from './ExamFilter.style';
+import { CoverImage } from '@views/SolutionPage/SolutionSelectPage/SolutionSelectPage.style';
 
 export interface ExamFilterRef {
   topikValue: Array<number>;
@@ -65,13 +66,15 @@ const useTestFilter = (
     const {
       target: { value },
     } = event;
-    if (String(testValue) === value) {
-      newTestValue = null;
+
+    if (value === 'true') {
+      newTestValue = false;
     } else {
-      newTestValue = value === 'true';
+      newTestValue = true;
     }
+
     setTestValue(newTestValue);
-    updateUrlQuery('test', newTestValue);
+    updateUrlQuery('has_own_exam', newTestValue);
   };
 
   return [testValue, handleClickTestCheckbox];
@@ -115,28 +118,23 @@ const ExamFilter = React.forwardRef<ExamFilterRef, ExamFilterProps>(
             </ExamFilterCheckboxShort>
           ))}
           <ExamFilterCheckbox>
-            <Checkbox id="topik-0" value="0" checked={topikValue.includes(0)} onChange={handleClickTopikCheckbox}>
+            <Checkbox id="topik-7" value="7" checked={topikValue.includes(7)} onChange={handleClickTopikCheckbox}>
               {lang === 'ko' ? '토픽 급수제한 없음' : 'Không giới hạn cấp độ'}
             </Checkbox>
           </ExamFilterCheckbox>
           <ExamFilterCheckbox>
-            <Checkbox
-              id="test-true"
-              value={String(true)}
-              checked={testValue === true}
-              onChange={handleClickTestCheckbox}
-            >
-              {lang === 'ko' ? '학교 자체시험' : 'Không yêu cầu TOPIK'}
+            <Checkbox id="topik-8" value="8" checked={topikValue.includes(8)} onChange={handleClickTopikCheckbox}>
+              {lang === 'ko' ? '토픽 필요 없음' : 'Không yêu cầu TOPIK'}
             </Checkbox>
           </ExamFilterCheckbox>
           <ExamFilterCheckbox>
             <Checkbox
-              id="test-false"
-              value={String(false)}
-              checked={testValue === false}
+              id="has_own_exam"
+              value={testValue || testValue === null ? true : false}
+              checked={testValue || testValue === null}
               onChange={handleClickTestCheckbox}
             >
-              {lang === 'ko' ? '어학시험 필요 없음' : 'Bài thi của trường'}
+              {lang === 'ko' ? '학교 자체시험' : 'Bài thi của trường'}
             </Checkbox>
           </ExamFilterCheckbox>
         </ExamFilterShortContainer>

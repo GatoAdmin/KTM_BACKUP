@@ -226,7 +226,7 @@ const usePushRouterWithFiiterValue = (
   const router = useRouter();
 
   return (propertyKey, newPropertyValue) => {
-    const queryUrlObject = {
+    let queryUrlObject = {
       location: String(location.current?.value),
       tuition: tuition.current?.value,
       topik: String(exam.current?.topikValue),
@@ -259,6 +259,8 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
 
   const univListLoadRef = React.useRef<HTMLDivElement>(null);
   const isTriggerLoadUnivList = useIntersection(univListLoadRef, { threshold: 1 });
+  const router = useRouter();
+
   React.useEffect(() => {
     if (isTriggerLoadUnivList) {
       loadUnivList();
@@ -273,10 +275,6 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
     }
   }, []);
   const { t, lang, changeLang } = useTranslate(i18nResource);
-
-  // React.useEffect(() => {
-  //   console.log(univList);
-  // }, [univList]);
 
   const onPushHeart = (univKey: string) => {
     if (isLogin()) {
@@ -355,13 +353,16 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
             </FilterModalContainer>
           </SearchFilterContainer>
 
-          <SearchInputContainer
-            onSubmit={(e) => {
-              e.preventDefault();
-              updateUrlQuery('word', e.target[0].value);
-            }}
-          >
-            <SearchInput ref={filterRefObject.searchInput} placeholder={t('search-section-placeholder')} />
+          <SearchInputContainer>
+            <SearchInput
+              ref={filterRefObject.searchInput}
+              placeholder={t('search-section-placeholder')}
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  updateUrlQuery('word', e.target.value);
+                }
+              }}
+            />
             <SearchButton>
               <SearchIcon />
             </SearchButton>

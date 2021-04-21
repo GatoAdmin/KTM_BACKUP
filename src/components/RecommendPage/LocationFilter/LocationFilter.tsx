@@ -64,61 +64,57 @@ const useLocation = (
 const LocationFilter: React.ForwardRefRenderFunction<LocationFilterRef, LocationFilterProps> = (
   { initialLocationValue, updateUrlQuery, label },
   ref,
-) =>
-  // t,
-  // lang,
-  // ref,
-  {
-    const [filterValue, handleClickLocationShape] = useLocation(initialLocationValue, updateUrlQuery);
-    const labelRef = React.useRef();
+) => {
+  const [filterValue, handleClickLocationShape] = useLocation(initialLocationValue, updateUrlQuery);
+  const labelRef = React.useRef();
 
-    React.useImperativeHandle<LocationFilterRef, LocationFilterRef>(
-      ref,
-      () => ({
-        value: filterValue,
-      }),
-      [filterValue],
-    );
+  React.useImperativeHandle<LocationFilterRef, LocationFilterRef>(
+    ref,
+    () => ({
+      value: filterValue,
+    }),
+    [filterValue],
+  );
 
-    const labelValueChanger = (value) => {
-      if (labelRef.current) {
-        let current = locationArray.find((elem) => elem.value === value);
-        labelRef.current.style.visibility = 'visible';
-        labelRef.current.style.top = current.top;
-        labelRef.current.style.left = current.left;
-        labelRef.current.innerText = current.name;
-      }
-    };
-
-    const onLocationLeave = () => {
-      if (labelRef.current) labelRef.current.style.visibility = 'hidden';
-    };
-
-    // TODO: This doesn't meet the web accessibility. Add checkBox with label
-    return (
-      <LocationFilterContainer>
-        <LocationIcon />
-        <LocationFilterTitle>{label}</LocationFilterTitle>
-
-        <div>
-          <LocationLabel ref={labelRef} />
-          <LocationMap>
-            {locationArray.map((locationValue) => (
-              <>
-                <LocationShape
-                  key={locationValue.value}
-                  location={locationValue.value}
-                  active={filterValue.includes(locationValue.value)}
-                  onClick={handleClickLocationShape(locationValue.value)}
-                  onMouseOver={() => labelValueChanger(locationValue.value)}
-                  onMouseLeave={() => onLocationLeave()}
-                />
-              </>
-            ))}
-          </LocationMap>
-        </div>
-      </LocationFilterContainer>
-    );
+  const labelValueChanger = (value) => {
+    if (labelRef.current) {
+      let current = locationArray.find((elem) => elem.value === value);
+      labelRef.current.style.visibility = 'visible';
+      labelRef.current.style.top = current.top;
+      labelRef.current.style.left = current.left;
+      labelRef.current.innerText = current.name;
+    }
   };
+
+  const onLocationLeave = () => {
+    if (labelRef.current) labelRef.current.style.visibility = 'hidden';
+  };
+
+  // TODO: This doesn't meet the web accessibility. Add checkBox with label
+  return (
+    <LocationFilterContainer>
+      <LocationIcon />
+      <LocationFilterTitle>{label}</LocationFilterTitle>
+
+      <div>
+        <LocationLabel ref={labelRef} />
+        <LocationMap>
+          {locationArray.map((locationValue) => (
+            <>
+              <LocationShape
+                key={locationValue.value}
+                location={locationValue.value}
+                active={filterValue.includes(locationValue.value)}
+                onClick={handleClickLocationShape(locationValue.value)}
+                onMouseOver={() => labelValueChanger(locationValue.value)}
+                onMouseLeave={() => onLocationLeave()}
+              />
+            </>
+          ))}
+        </LocationMap>
+      </div>
+    </LocationFilterContainer>
+  );
+};
 
 export default React.forwardRef(LocationFilter);

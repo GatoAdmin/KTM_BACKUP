@@ -60,7 +60,6 @@ const TuitionFilter: React.ForwardRefRenderFunction<TuitionFilterRef, TuitionFil
   return (
     <TuitionFilterContainer>
       <TuitionIcon />
-      {console.log(lang)}
       <TuitionFilterTitle>{t('assign_fee')}</TuitionFilterTitle>
       <TuitionCheckboxList>
         <TuitionDescription>{`(${t('assign_fee_label')})`}</TuitionDescription>

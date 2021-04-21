@@ -80,10 +80,12 @@ const UnivItem: React.VFC<UnivInfo> = ({
               <AbilityIcon />
             </UnivItemDescriptionIcon>
             <UnivItemLabel>
-              {lang === 'ko' && topik !== '0' && `토픽 ${topik}급`}
-              {lang === 'ko' && topik === '0' && '토픽 필요 없음'}
-              {lang === 'vn' && topik !== '0' && `TOPIK Cấp ${topik}`}
-              {lang === 'vn' && topik === '0' && 'Không giới hạn cấp độ '}
+              {lang === 'ko' && topik !== '7' && topik !== '8' && `토픽 ${topik}급`}
+              {lang === 'ko' && topik === '7' && '토픽 급수제한 없음'}
+              {lang === 'ko' && topik === '8' && '토픽 필요 없음'}
+              {lang === 'vn' && topik !== '7' && topik !== '8' && `TOPIK Cấp ${topik}`}
+              {lang === 'vn' && topik === '7' && 'Không giới hạn cấp độ'}
+              {lang === 'vn' && topik === '8' && 'Không yêu cầu TOPIK'}
 
               <br />
               {hasOwnExam === true && lang === 'ko' && '학교 자체 시험'}

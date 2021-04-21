@@ -65,7 +65,7 @@ export const SearchFilterButton = styled.button`
   outline: none;
 `;
 
-export const SearchInputContainer = styled.form`
+export const SearchInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;

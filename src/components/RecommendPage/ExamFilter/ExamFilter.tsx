@@ -9,6 +9,7 @@ import {
   ExamFilterTitle,
   ExamFilterCheckbox,
 } from './ExamFilter.style';
+import { CoverImage } from '@views/SolutionPage/SolutionSelectPage/SolutionSelectPage.style';
 
 export interface ExamFilterRef {
   topikValue: Array<number>;
@@ -21,7 +22,7 @@ interface ExamFilterProps {
   updateUrlQuery: UpdateUrlQueryFunction;
 }
 
-const topik: Array<{name: string; value: number}> = [
+const topik: Array<{ name: string; value: number }> = [
   { name: '1급', value: 1 },
   { name: '2급', value: 2 },
   { name: '3급', value: 3 },
@@ -30,12 +31,16 @@ const topik: Array<{name: string; value: number}> = [
   { name: '6급', value: 6 },
 ];
 
-const useTopikFilter = (initialTopikValue: Array<number>, updateUrlQuery: UpdateUrlQueryFunction)
-  : [Array<number>, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+const useTopikFilter = (
+  initialTopikValue: Array<number>,
+  updateUrlQuery: UpdateUrlQueryFunction,
+): [Array<number>, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [topikValue, setTopikValue] = React.useState<Array<number>>(initialTopikValue);
   const handleClickTopikCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newTopikValue: Array<number>;
-    const { target: { value } } = event;
+    const {
+      target: { value },
+    } = event;
     const currentTopikValue = Number(value);
     if (topikValue.includes(currentTopikValue)) {
       newTopikValue = Array.from(topikValue);
@@ -51,91 +56,91 @@ const useTopikFilter = (initialTopikValue: Array<number>, updateUrlQuery: Update
   return [topikValue, handleClickTopikCheckbox];
 };
 
-const useTestFilter = (initialTestValue: boolean | null, updateUrlQuery: UpdateUrlQueryFunction)
-  : [boolean | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+const useTestFilter = (
+  initialTestValue: boolean | null,
+  updateUrlQuery: UpdateUrlQueryFunction,
+): [boolean | null, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
   const [testValue, setTestValue] = React.useState<boolean | null>(initialTestValue);
   const handleClickTestCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newTestValue: boolean | null;
-    const { target: { value } } = event;
-    if (String(testValue) === value) {
-      newTestValue = null;
+    const {
+      target: { value },
+    } = event;
+
+    if (value === 'true') {
+      newTestValue = false;
     } else {
-      newTestValue = value === 'true';
+      newTestValue = true;
     }
+
     setTestValue(newTestValue);
-    updateUrlQuery('test', newTestValue);
+    updateUrlQuery('has_own_exam', newTestValue);
   };
 
   return [testValue, handleClickTestCheckbox];
 };
 
-const ExamFilter = React.forwardRef<ExamFilterRef, ExamFilterProps>(({
-  initialTopikValue,
-  initialTestValue,
-  updateUrlQuery,
-}, ref) => {
-  const [topikValue, handleClickTopikCheckbox] = useTopikFilter(initialTopikValue, updateUrlQuery);
-  const [testValue, handleClickTestCheckbox] = useTestFilter(initialTestValue, updateUrlQuery);
+const ExamFilter = React.forwardRef<ExamFilterRef, ExamFilterProps>(
+  ({ lang, initialTopikValue, initialTestValue, updateUrlQuery }, ref) => {
+    const [topikValue, handleClickTopikCheckbox] = useTopikFilter(initialTopikValue, updateUrlQuery);
+    const [testValue, handleClickTestCheckbox] = useTestFilter(initialTestValue, updateUrlQuery);
 
-  React.useImperativeHandle<ExamFilterRef, ExamFilterRef>(ref, () => ({
-    topikValue,
-    testValue,
-  }), [topikValue, testValue]);
+    React.useImperativeHandle<ExamFilterRef, ExamFilterRef>(
+      ref,
+      () => ({
+        topikValue,
+        testValue,
+      }),
+      [topikValue, testValue],
+    );
 
-  return (
-    <ExamFilterContainer>
-      <ExamFilterIcon />
-      <ExamFilterTitle>
-        어학시험
-        <br />
-        TOPIK
-      </ExamFilterTitle>
-      <ExamFilterShortContainer>
-        {topik.map((topikInfoValue) => (
-          <ExamFilterCheckboxShort key={topikInfoValue.value}>
-            <Checkbox
-              id={`topik${String(topikInfoValue.value)}`}
-              value={String(topikInfoValue.value)}
-              checked={topikValue.includes(topikInfoValue.value)}
-              onChange={handleClickTopikCheckbox}
-            >
-              {topikInfoValue.name}
+    return (
+      <ExamFilterContainer>
+        <ExamFilterIcon />
+        <ExamFilterTitle>
+          {lang === 'ko' ? '어학시험' : 'Yêu cầu ngôn ngữ'}
+          <br />
+          TOPIK
+        </ExamFilterTitle>
+        <ExamFilterShortContainer lang={lang}>
+          {topik.map((topikInfoValue) => (
+            <ExamFilterCheckboxShort key={topikInfoValue.value}>
+              <Checkbox
+                id={`topik${String(topikInfoValue.value)}`}
+                value={String(topikInfoValue.value)}
+                checked={topikValue.includes(topikInfoValue.value)}
+                onChange={handleClickTopikCheckbox}
+              >
+                {lang === 'vn' && 'Cấp '}
+                {`${topikInfoValue.value}`}
+                {lang === 'ko' && '급'}
+              </Checkbox>
+            </ExamFilterCheckboxShort>
+          ))}
+          <ExamFilterCheckbox>
+            <Checkbox id="topik-7" value="7" checked={topikValue.includes(7)} onChange={handleClickTopikCheckbox}>
+              {lang === 'ko' ? '토픽 급수제한 없음' : 'Không giới hạn cấp độ'}
             </Checkbox>
-          </ExamFilterCheckboxShort>
-        ))}
-        <ExamFilterCheckbox>
-          <Checkbox
-            id="topik-0"
-            value="0"
-            checked={topikValue.includes(0)}
-            onChange={handleClickTopikCheckbox}
-          >
-            토픽 급수제한 없음
-          </Checkbox>
-        </ExamFilterCheckbox>
-        <ExamFilterCheckbox>
-          <Checkbox
-            id="test-true"
-            value={String(true)}
-            checked={testValue === true}
-            onChange={handleClickTestCheckbox}
-          >
-            학교 자체시험
-          </Checkbox>
-        </ExamFilterCheckbox>
-        <ExamFilterCheckbox>
-          <Checkbox
-            id="test-false"
-            value={String(false)}
-            checked={testValue === false}
-            onChange={handleClickTestCheckbox}
-          >
-            어학시험 필요 없음
-          </Checkbox>
-        </ExamFilterCheckbox>
-      </ExamFilterShortContainer>
-    </ExamFilterContainer>
-  );
-});
+          </ExamFilterCheckbox>
+          <ExamFilterCheckbox>
+            <Checkbox id="topik-8" value="8" checked={topikValue.includes(8)} onChange={handleClickTopikCheckbox}>
+              {lang === 'ko' ? '토픽 필요 없음' : 'Không yêu cầu TOPIK'}
+            </Checkbox>
+          </ExamFilterCheckbox>
+          <ExamFilterCheckbox>
+            <Checkbox
+              id="has_own_exam"
+              value={testValue || testValue === null ? true : false}
+              checked={testValue || testValue === null}
+              onChange={handleClickTestCheckbox}
+            >
+              {lang === 'ko' ? '학교 자체시험' : 'Bài thi của trường'}
+            </Checkbox>
+          </ExamFilterCheckbox>
+        </ExamFilterShortContainer>
+      </ExamFilterContainer>
+    );
+  },
+);
 
 export default ExamFilter;

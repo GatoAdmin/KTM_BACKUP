@@ -1,5 +1,6 @@
 {
   "ko": {
+    "warn-not-logged-in" : "로그인이 필요한 서비스입니다.",
     "introduce": "회사소개",
     "university": "대학 소개&추천",
     "consult": "입학 상담",
@@ -19,11 +20,27 @@
     "landing-solution-section-title": "빠르고 저렴한 대학교 입학 신청",
     "landing-solution-section-detail-1": "온라인으로 대학교 선택, 서류 준비, 원서접수까지",
     "landing-solution-section-detail-2": "입학에 필요한 모든 과정을 한번에 진행하세요.",
-    "landing-solution-section-button": "입학 솔루션 바로가기"
+    "landing-solution-section-button": "입학 솔루션 바로가기",
+    "search-section-title":"나를 위한 한국의 대학교를 검색하세요.",
+    "search-section-placeholder":"궁금한 대학교를 검색해보세요!",
+    "univ-list-title":"나에게 맞는 대학 리스트",
+    "accuracy":"정확도순",
+    "large_student_order":"많은 유학생 순",
+    "small_student_order":"적은 유학생 순",
+    "large_tuition_order":"높은 학비 순",
+    "small_tuition_order":"적은 학비 순",
+    "detail_button":"상세보기",
+    "대학교":"대학교",
+    "전문대학교":"전문대학교",
+    "어학원":"어학원",
+    "position":"위치",
+    "assign_fee":"등록금",
+    "assign_fee_label":"한 학기 기준"
   },
   "vn": {
+    "warn-not-logged-in" : "Dịch vụ bắt buộc phải đăng nhập.",
     "introduce": "Giới thiệu công ty",
-    "university": "Giới thiệu các trường đại học",
+    "university": "Tìm kiếm Trường",
     "consult": "Tư vấn nhập học",
     "one-click": "Dịch vụ nhập học",
     "login": "Đăng nhập",
@@ -41,6 +58,21 @@
     "landing-solution-section-title": "Đăng kí Nhập học nhanh chóng- tiết kiệm",
     "landing-solution-section-detail-1": "Chọn trường, chuẩn bị hồ sơ, đăng kí nhập học online",
     "landing-solution-section-detail-2": "Còn chần chờ gì nữa trải nghiệm cùng katumm nào!",
-    "landing-solution-section-button": "Đi đến Dịch vụ Nhập học"
+    "landing-solution-section-button": "Đi đến Dịch vụ Nhập học.",
+    "search-section-title":"Tìm kiếm trường yêu thích của bạn tại Hàn Quốc.",
+    "search-section-placeholder":"Hãy nhập tên trường mà bạn muốn tìm kiếm!",
+    "univ-list-title":"Danh sách các trường phù hợp với bạn",
+    "accuracy":"Độ chính xác",
+    "large_student_order":"Nhiều du học sinh",
+    "small_student_order":"ít du học sinh",
+    "large_tuition_order":"Học phí cao",
+    "small_tuition_order":"Học phí thấp",
+    "detail_button":"Xem chi tiết",
+    "대학교":"Đại học",
+    "전문대학교":"Cao đẳng nghề",
+    "어학원":"Trường tiếng",
+    "position":"Vị trí",
+    "assign_fee":"Học phí",
+    "assign_fee_label":"Tiều chuẩn mỗi học kỳ"
   }
 }

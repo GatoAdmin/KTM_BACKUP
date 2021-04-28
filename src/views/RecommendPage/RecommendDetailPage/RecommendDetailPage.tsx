@@ -315,10 +315,13 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                     <InfoCardImage src={value.pictogram} />
                   </InfoCardImageContainer>
                   {lang === 'ko' &&
+                    value.name !== null &&
                     value.name
                       .split('<br>')
                       .map((text) => <InfoCardDescription key={text}>{text}</InfoCardDescription>)}
+
                   {lang === 'vn' &&
+                    value.vnName !== null &&
                     value.vnName
                       .split('<br>')
                       .map((text) => <InfoCardDescription key={text}>{text}</InfoCardDescription>)}
@@ -374,7 +377,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
                         <Content>{lang === 'ko' ? value.name : value.vnName}</Content>
 
                         <ExclamationIcon>
-                          {value.info !== 'None' && (
+                          {value.info !== null && (
                             <>
                               <Info>
                                 {lang === 'ko' && value.info.split('<br>').map((text) => <div key={text}>{text}</div>)}

@@ -1,12 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+
 import { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useSWRInfinite, responseInterface } from 'swr';
 import Header from '@components/Shared/Header/Header';
 import {
   FilterModalContainer,
   FilterSection,
+  HeaderWrapper,
   SearchButton,
   SearchFilterButton,
   SearchFilterContainer,
@@ -35,9 +37,13 @@ import CategoryFilter, {
   CategoryFilterRef,
   UnivCategory,
 } from '@components/RecommendPage/CategoryFilter/CategoryFilter';
+import UnivSort from '@components/RecommendPage/UnivSort/UnivSort';
+
+import API from '@util/api';
 import useIntersection from '@util/hooks/useInteraction';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/landingPage.json';
+import isLogin from '@util/auth/auth';
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -46,8 +52,8 @@ interface FilterValue {
   has_own_exam: boolean | null;
   has_scholarship: boolean | null;
   category: Array<UnivCategory>;
+  sorted_by: string;
   word: string;
-  // sort_by: string;
 }
 
 const filterInitialValue = {
@@ -57,51 +63,56 @@ const filterInitialValue = {
   has_own_exam: null,
   has_scholarship: null,
   category: [],
+  sorted_by: '',
+  word: '',
 };
 
-const fetchUnivList = (url: string) => axios.get(url)
-  .then(
-    (res) => {
-      const {
-        univs,
-        pages,
-      }: {
-          univs: Array<{
-            univ_code: string;
-            tuition: number;
-            kor_name: string;
-            eng_name: string;
-            category: UnivCategory;
-            kor_short_address: string;
-            photos: {
-              photo_category: string;
-              file: string;
-            }[];
-            topik: string;
-          }>,
-          pages: {
-            max_page: number;
-          }
-        } = res.data;
-
-      return {
-        univList: univs.map((value) => ({
-          id: value.univ_code,
-          name: value.kor_name,
-          nameEng: value.eng_name,
-          city: value.kor_short_address,
-          category: value.category,
-          tuition: value.tuition,
-          topik: value.topik,
-          thumbnail: value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string ?? null,
-        })),
-        maxPage: pages.max_page,
+const fetchUnivList = (url: string) =>
+  axios.get(url).then((res) => {
+    const {
+      univs,
+      pages,
+    }: {
+      univs: Array<{
+        univ_code: string;
+        tuition: number;
+        kor_name: string;
+        eng_name: string;
+        category: UnivCategory;
+        kor_short_address: string;
+        photos: {
+          photo_category: string;
+          file: string;
+        }[];
+        topik: string;
+        has_own_exam: boolean;
+      }>;
+      pages: {
+        max_page: number;
       };
-    },
-  );
+    } = res.data;
+
+    return {
+      univList: univs.map((value) => ({
+        id: value.univ_code,
+        name: value.kor_name,
+        nameEng: value.eng_name,
+        city: value.kor_short_address,
+        category: value.category,
+        tuition: value.tuition,
+        topik: value.topik,
+        hasOwnExam: value.has_own_exam,
+        thumbnail:
+          (value.photos.find((photoInfo) => photoInfo.photo_category === 'main_photo')?.file as string) ?? null,
+      })),
+      maxPage: pages.max_page,
+    };
+  });
 
 const changeQueryToBoolParamsValue = (value: string | string[] | undefined): boolean | null => {
-  if (value === '' || value === undefined) { return null; }
+  if (value === '' || value === undefined) {
+    return null;
+  }
   return value === 'true';
 };
 
@@ -115,26 +126,23 @@ export const getServerSideProps: GetServerSideProps<RecommendListPageProps> = as
   const { query } = context;
   const filterParams: FilterValue = {
     location: query.location
-      ? String(query.location).split(',') as Array<KoreaLocation>
+      ? (String(query.location).split(',') as Array<KoreaLocation>)
       : filterInitialValue.location,
     tuition: query.tuition ? Number(query.tuition) : filterInitialValue.tuition,
     topik: query.topik ? String(query.topik).split(',').map(Number) : filterInitialValue.topik,
     has_own_exam: changeQueryToBoolParamsValue(query.has_own_exam),
     has_scholarship: changeQueryToBoolParamsValue(query.has_scholarship),
-    category: query.category
-      ? String(query.category).split(',') as Array<UnivCategory>
-      : filterInitialValue.category,
+    category: query.category ? (String(query.category).split(',') as Array<UnivCategory>) : filterInitialValue.category,
     word: query.word ? String(query.word) : '',
+    sorted_by: query.sorted_by ? String(query.sorted_by) : '',
   };
   let responseUnivList;
   try {
-    responseUnivList = await fetchUnivList(`${process.env.API_PATH}api/?action=filter_search&params=${
-      JSON.stringify(
-        Object.assign(
-          filterParams,
-          { page: 1 },
-        ),
-      )}`);
+    responseUnivList = await fetchUnivList(
+      `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(
+        Object.assign(filterParams, { page: 1 }),
+      )}`,
+    );
   } catch {
     responseUnivList = {};
   }
@@ -175,19 +183,18 @@ const useFilterRefObject = (): FilterRefObject => {
 };
 
 const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivInfo>, maxPage: number) => {
-  const getKey = (index: number) => `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(Object.assign(filterParams, { page: index + 1 }))}`;
-  const {
-    data, size, setSize, mutate,
-  } = useSWRInfinite(
-    getKey,
-    (url) => fetchUnivList(url),
-    {
-      initialData: [{
+  const getKey = (index: number) =>
+    `${process.env.API_PATH}api/?action=filter_search&params=${JSON.stringify(
+      Object.assign(filterParams, { page: index + 1 }),
+    )}`;
+  const { data, size, setSize, mutate } = useSWRInfinite(getKey, (url) => fetchUnivList(url), {
+    initialData: [
+      {
         univList: initialUnivList,
         maxPage,
-      }],
-    },
-  );
+      },
+    ],
+  });
   const loadUnivList = () => {
     setSize(size + 1);
   };
@@ -201,9 +208,10 @@ const useUnivListData = (filterParams: FilterValue, initialUnivList: Array<UnivI
 
 // TODO: Update with Types for filter value
 export interface UpdateUrlQueryFunction {
-  (propertyKey: string,
-   newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<UnivCategory> | boolean | null)
-    : void;
+  (
+    propertyKey: string,
+    newPropertyValue: Array<KoreaLocation> | Array<number> | number | Array<UnivCategory> | boolean | null,
+  ): void;
 }
 
 interface SWRData {
@@ -211,19 +219,14 @@ interface SWRData {
   maxPage: number;
 }
 
-const usePushRouterWithFiiterValue = ({
-  location,
-  tuition,
-  exam,
-  scholarship,
-  category,
-  searchInput,
-}: FilterRefObject,
-mutate: responseInterface<Array<SWRData>, unknown>['mutate']): UpdateUrlQueryFunction => {
+const usePushRouterWithFiiterValue = (
+  { location, tuition, exam, scholarship, category, searchInput }: FilterRefObject,
+  mutate: responseInterface<Array<SWRData>, unknown>['mutate'],
+): UpdateUrlQueryFunction => {
   const router = useRouter();
 
   return (propertyKey, newPropertyValue) => {
-    const queryUrlObject = {
+    let queryUrlObject = {
       location: String(location.current?.value),
       tuition: tuition.current?.value,
       topik: String(exam.current?.topikValue),
@@ -233,43 +236,72 @@ mutate: responseInterface<Array<SWRData>, unknown>['mutate']): UpdateUrlQueryFun
       word: searchInput.current?.value,
       [propertyKey]: Array.isArray(newPropertyValue) ? String(newPropertyValue) : newPropertyValue,
     };
-    router
-      .replace({
+    router.replace(
+      {
         pathname: '/recommend',
         query: queryUrlObject,
-      }, undefined, { shallow: true });
+      },
+      undefined,
+      // { shallow: true },
+    );
     mutate();
   };
 };
 
-const RecommendListPage: NextPage<RecommendListPageProps> = ({
-  filterParams,
-  initialUnivList,
-  maxPage,
-}) => {
+const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, initialUnivList, maxPage }) => {
   const filterRefObject = useFilterRefObject();
 
   const filterButtonRef = React.useRef<HTMLDivElement>(null);
   const [isFilterShow, toggleIsFilterShow] = useVisible(filterButtonRef);
   const { univList, loadUnivList, mutate } = useUnivListData(filterParams, initialUnivList, maxPage);
+  const [likedUniv, setLikedUniv] = React.useState([]);
   const updateUrlQuery = usePushRouterWithFiiterValue(filterRefObject, mutate);
 
   const univListLoadRef = React.useRef<HTMLDivElement>(null);
   const isTriggerLoadUnivList = useIntersection(univListLoadRef, { threshold: 1 });
+  const router = useRouter();
+
   React.useEffect(() => {
     if (isTriggerLoadUnivList) {
       loadUnivList();
     }
   }, [isTriggerLoadUnivList]);
+
+  React.useEffect(() => {
+    if (isLogin()) {
+      API.getUserInfo().then((res) => {
+        setLikedUniv(res.liked_univ);
+      });
+    }
+  }, []);
   const { t, lang, changeLang } = useTranslate(i18nResource);
+
+  const onPushHeart = (univKey: string) => {
+    if (isLogin()) {
+      API.pushLikeButton(univKey)
+        .then((res) => {
+          if (res.status === 'success') {
+            if (!likedUniv.includes(univKey)) {
+              setLikedUniv((prev) => [...prev, univKey]);
+            } else {
+              setLikedUniv((prev) => prev.filter((elem) => elem !== univKey));
+            }
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      alert(t('warn-not-logged-in'));
+      Router.push('/login');
+    }
+  };
 
   return (
     <DefaultLayout>
-      <Header background="dark" position="absolute" t={t} changeLang={changeLang} />
+      <HeaderWrapper>
+        <Header background="dark" t={t} lang={lang} changeLang={changeLang} />
+      </HeaderWrapper>
       <SearchSectionContainer>
-        <SearchSectionTitle>
-          모든 대학을 알려드립니다
-        </SearchSectionTitle>
+        <SearchSectionTitle>{t('search-section-title')}</SearchSectionTitle>
         <SearchSectionContent>
           <SearchFilterContainer ref={filterButtonRef}>
             <SearchFilterButton onClick={toggleIsFilterShow}>
@@ -278,6 +310,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
             <FilterModalContainer show={isFilterShow}>
               <FilterSection>
                 <LocationFilter
+                  label={t('position')}
                   ref={filterRefObject.location}
                   updateUrlQuery={updateUrlQuery}
                   initialLocationValue={filterParams.location}
@@ -285,6 +318,8 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
               </FilterSection>
               <FilterSection>
                 <TuitionFilter
+                  t={t}
+                  lang={lang}
                   ref={filterRefObject.tuition}
                   updateUrlQuery={updateUrlQuery}
                   initialTuitionValue={filterParams.tuition}
@@ -292,6 +327,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
               </FilterSection>
               <FilterSection>
                 <ExamFilter
+                  lang={lang}
                   ref={filterRefObject.exam}
                   updateUrlQuery={updateUrlQuery}
                   initialTopikValue={filterParams.topik}
@@ -300,6 +336,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
               </FilterSection>
               <FilterSection>
                 <ScholarshipFilter
+                  lang={lang}
                   ref={filterRefObject.scholarship}
                   updateUrlQuery={updateUrlQuery}
                   initialScholarshipValue={filterParams.has_scholarship}
@@ -307,6 +344,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
               </FilterSection>
               <FilterSection>
                 <CategoryFilter
+                  lang={lang}
                   ref={filterRefObject.category}
                   updateUrlQuery={updateUrlQuery}
                   initialCategoryValue={filterParams.category}
@@ -316,7 +354,15 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
           </SearchFilterContainer>
 
           <SearchInputContainer>
-            <SearchInput ref={filterRefObject.searchInput} />
+            <SearchInput
+              ref={filterRefObject.searchInput}
+              placeholder={t('search-section-placeholder')}
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  updateUrlQuery('word', e.target.value);
+                }
+              }}
+            />
             <SearchButton>
               <SearchIcon />
             </SearchButton>
@@ -324,10 +370,23 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({
         </SearchSectionContent>
       </SearchSectionContainer>
       <UnivListSection>
-        <UnivListTitle>대학 리스트</UnivListTitle>
-        {univList ? univList.map((univItem) => (
-          <UnivItem key={univItem.id} {...univItem} />
-        )) : null}
+        <UnivListTitle>{t('univ-list-title')}</UnivListTitle>
+
+        {univList
+          ? univList.map((univItem) => {
+              return (
+                <UnivItem
+                  key={`${univItem.id}${univItem.category}`}
+                  {...univItem}
+                  isLiked={likedUniv === undefined ? false : likedUniv.includes(univItem.id)}
+                  onPushHeart={onPushHeart}
+                  t={t}
+                  lang={lang}
+                />
+              );
+            })
+          : null}
+        <UnivSort updateUrlQuery={updateUrlQuery} t={t} />
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
     </DefaultLayout>

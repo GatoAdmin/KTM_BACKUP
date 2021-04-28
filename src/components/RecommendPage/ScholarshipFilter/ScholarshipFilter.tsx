@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   ScholarshipCheckboxContainer,
-  ScholarshipFilterContainer, ScholarshipFilterTitle,
+  ScholarshipFilterContainer,
+  ScholarshipFilterTitle,
   ScholarshipIcon,
 } from '@components/RecommendPage/ScholarshipFilter/ScholarshipFilter.style';
 import BadgeCheckbox from '@components/RecommendPage/BadgeCheckbox/BadgeCheckbox';
@@ -18,15 +19,16 @@ interface ScholarshipProps {
   updateUrlQuery: UpdateUrlQueryFunction;
 }
 
-const useScholarshipFilter = (initialScholarshipValue: ScholarshipFilterValue, updateUrlQuery: UpdateUrlQueryFunction)
-  : [ScholarshipFilterValue, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
-  const [
-    scholarshipValue,
-    setScholarshipValue,
-  ] = React.useState<ScholarshipFilterValue>(initialScholarshipValue);
+const useScholarshipFilter = (
+  initialScholarshipValue: ScholarshipFilterValue,
+  updateUrlQuery: UpdateUrlQueryFunction,
+): [ScholarshipFilterValue, (event: React.ChangeEvent<HTMLInputElement>) => void] => {
+  const [scholarshipValue, setScholarshipValue] = React.useState<ScholarshipFilterValue>(initialScholarshipValue);
   const handleChangeScholarshipCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newScholarshipValue: boolean | null;
-    const { target: { value } } = event;
+    const {
+      target: { value },
+    } = event;
     if (String(scholarshipValue) === value) {
       newScholarshipValue = null;
     } else {
@@ -38,48 +40,47 @@ const useScholarshipFilter = (initialScholarshipValue: ScholarshipFilterValue, u
   return [scholarshipValue, handleChangeScholarshipCheckbox];
 };
 
-const ScholarshipFilter: React.ForwardRefRenderFunction<
-  ScholarShipFilterRef,
-  ScholarshipProps
-  > = ({
+const ScholarshipFilter: React.ForwardRefRenderFunction<ScholarShipFilterRef, ScholarshipProps> = (
+  { lang, initialScholarshipValue, updateUrlQuery },
+  ref,
+) => {
+  const [scholarshipValue, handleChangeScholarshipCheckbox] = useScholarshipFilter(
     initialScholarshipValue,
     updateUrlQuery,
-  }, ref) => {
-    const [
-      scholarshipValue,
-      handleChangeScholarshipCheckbox,
-    ] = useScholarshipFilter(initialScholarshipValue, updateUrlQuery);
+  );
 
-    React.useImperativeHandle<ScholarShipFilterRef, ScholarShipFilterRef>(ref, () => ({
+  React.useImperativeHandle<ScholarShipFilterRef, ScholarShipFilterRef>(
+    ref,
+    () => ({
       value: scholarshipValue,
-    }), [scholarshipValue]);
+    }),
+    [scholarshipValue],
+  );
 
-    return (
-      <ScholarshipFilterContainer>
-        <ScholarshipIcon />
-        <ScholarshipFilterTitle>
-          외국인 장학금
-        </ScholarshipFilterTitle>
-        <ScholarshipCheckboxContainer>
-          <BadgeCheckbox
-            id="scholarship-true"
-            value="true"
-            checked={scholarshipValue === true}
-            onChange={handleChangeScholarshipCheckbox}
-          >
-            있음
-          </BadgeCheckbox>
-          <BadgeCheckbox
-            id="scholarship-false"
-            value="false"
-            checked={scholarshipValue === false}
-            onChange={handleChangeScholarshipCheckbox}
-          >
-            없음
-          </BadgeCheckbox>
-        </ScholarshipCheckboxContainer>
-      </ScholarshipFilterContainer>
-    );
-  };
+  return (
+    <ScholarshipFilterContainer>
+      <ScholarshipIcon />
+      <ScholarshipFilterTitle>{lang === 'ko' ? '외국인 장학금' : 'Học bổng'}</ScholarshipFilterTitle>
+      <ScholarshipCheckboxContainer>
+        <BadgeCheckbox
+          id="scholarship-true"
+          value="true"
+          checked={scholarshipValue === true}
+          onChange={handleChangeScholarshipCheckbox}
+        >
+          {lang === 'ko' ? '있음' : 'Có'}
+        </BadgeCheckbox>
+        <BadgeCheckbox
+          id="scholarship-false"
+          value="false"
+          checked={scholarshipValue === false}
+          onChange={handleChangeScholarshipCheckbox}
+        >
+          {lang === 'ko' ? '없음' : 'Không có'}
+        </BadgeCheckbox>
+      </ScholarshipCheckboxContainer>
+    </ScholarshipFilterContainer>
+  );
+};
 
 export default React.forwardRef(ScholarshipFilter);

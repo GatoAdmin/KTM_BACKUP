@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
-import {
-  greyColor, lightGreyColor, mainColor, whiteColor,
-} from '@util/style/color';
+import { greyColor, lightGreyColor, mainColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
+import UnFilledHeart from '@assets/svg/unfilled_heart.svg';
+import FilledHeart from '@assets/svg/filled_heart.svg';
 
 export const UnivItemContainer = styled.div`
   display: inline-flex;
@@ -19,9 +19,33 @@ export const UnivItemContainer = styled.div`
   }
 `;
 
+export const HeartContainer = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
+
+  svg {
+    transform: scale(1.3);
+  }
+`;
+
+export const RedHeart = styled(FilledHeart)`
+  > path {
+    fill: ${mainColor};
+  }
+`;
+
+export const EmptyHeart = styled(UnFilledHeart)`
+  > path {
+    stroke: #fff;
+  }
+`;
+
 export const UnivItemLinkContainer = styled.div`
-  display: flex;
-  margin-top: 18px;
+  width: 108px;
+  position: absolute;
+  bottom: 12px;
 `;
 
 export const UnivItemLink = styled.a`
@@ -82,33 +106,40 @@ export const UnivItemSubTitle = styled.h3`
 export const UnivItemInformation = styled.div`
   padding-top: 5px;
   width: 100%;
-  
+
   :before {
     display: block;
     border-top: 1px solid ${lightGreyColor};
     opacity: 0.5;
-    content: "";
+    content: '';
   }
 `;
 
 export const UnivItemDescriptionIcon = styled.div`
+  position: absolute;
+  top: 1px;
   width: 16px;
   height: 16px;
   margin-right: 7px;
-  
+
   > svg {
     fill: none;
   }
 `;
 
 interface DescriptionProps {
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 export const UnivItemDescription = styled.div<DescriptionProps>`
+  position: relative;
   display: flex;
   align-items: center;
   margin: 5px 0;
   color: ${(props) => (props.disabled ? lightGreyColor : mainColor)};
   font: normal normal bold 14px/19px ${defaultFont};
+`;
+
+export const UnivItemLabel = styled.div`
+  margin-left: 23px;
 `;

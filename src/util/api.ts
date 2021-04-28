@@ -136,6 +136,13 @@ export default {
     );
     return response.data;
   },
+  patchMyPassword: async (formData: FormData) => {
+    const response = await axios.post('changepassword/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    return response.data;
+  },
   getMyRefundInfo: async (payId: number) => {
     const response = await axios.get(`?action=get_refund_info&params={"id":${payId}}`);
     return response.data;

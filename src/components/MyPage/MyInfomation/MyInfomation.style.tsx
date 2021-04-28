@@ -14,6 +14,7 @@ export const ChangeInfomationArea = styled.form`
 
 export const Row = styled.div`
   display: flex;
+  position: relative;
   align-items: center;
   height: 58px;
   border-bottom: 2px solid #C4C4C4;
@@ -55,8 +56,22 @@ export const EmptyArea = styled.div`
 
 export const PasswordColumn = styled(InputColumn)`
   width: 550px;
+  outline: none;
 `;
 
 export const ButtonWrap = styled.div`
   margin-top: 19px;
+`;
+
+export const ErrorMessage = styled.div`
+  display: flex;
+  position: absolute;
+  right: 58px;
+  color: ${mainColor};
+  font-family: Noto Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 22px;
+  z-index: 100;
 `;

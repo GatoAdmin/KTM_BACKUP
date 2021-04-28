@@ -6,6 +6,7 @@ import RefundSection from './RefundSection/RefundSection';
 import MainArea from './MainArea/MainArea';
 import Title from './Title/Title';
 import EmptyFlame from './EmptyFlame/EmptyFlame.style';
+import UnivItem from './UnivItem/UnivItem';
 
 export {
   SelectTab,
@@ -16,4 +17,5 @@ export {
   MainArea,
   Title,
   EmptyFlame,
+  UnivItem,
 };

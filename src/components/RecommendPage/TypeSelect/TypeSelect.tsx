@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-  TypeSelectContainer, TypeSelectLabel,
+  TypeSelectContainer,
+  TypeSelectLabel,
   TypeSelectOption,
 } from '@components/RecommendPage/TypeSelect/TypeSelect.style';
 
 interface IProps {
+  t: (s: string) => string;
   name: string;
   types: ReadonlyArray<string>;
   value: string;
@@ -12,13 +14,7 @@ interface IProps {
   typeFooter?: string;
 }
 
-const TypeSelect: React.FC<IProps> = ({
-  name,
-  types,
-  value,
-  typeFooter,
-  onChange,
-}) => (
+const TypeSelect: React.FC<IProps> = ({ t, name, types, value, onChange }) => (
   <TypeSelectContainer>
     {types.map((type) => (
       <React.Fragment key={type}>
@@ -29,9 +25,7 @@ const TypeSelect: React.FC<IProps> = ({
           checked={value === type}
           onChange={onChange}
         />
-        <TypeSelectLabel htmlFor={`${name}-${type}`}>
-          {`${type} ${typeFooter}`}
-        </TypeSelectLabel>
+        <TypeSelectLabel htmlFor={`${name}-${type}`}>{t(type)}</TypeSelectLabel>
       </React.Fragment>
     ))}
   </TypeSelectContainer>

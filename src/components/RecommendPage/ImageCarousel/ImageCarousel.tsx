@@ -1,7 +1,11 @@
 import React from 'react';
 import {
   ImageCarouselContainer,
-  CarouselImage, ImageCarouselButton, LeftArrow, RightArrow,
+  CarouselImage,
+  ImageCarouselButton,
+  LeftArrow,
+  RightArrow,
+  ButtonWrapper,
 } from '@components/RecommendPage/ImageCarousel/ImageCarousel.style';
 
 interface ImageCarouselProps {
@@ -15,9 +19,9 @@ const useCarousel = <Data extends unknown>(sources: Array<Data>) => {
   const createCycleCarousel = (isPrevious = true) => () => {
     let newCarouselIndex: number;
     if (isPrevious) {
-      newCarouselIndex = (carouselIndex - 1) ? carouselIndex - 1 : sources.length;
+      newCarouselIndex = carouselIndex - 1 ? carouselIndex - 1 : sources.length;
     } else {
-      newCarouselIndex = carouselIndex % sources.length + 1;
+      newCarouselIndex = (carouselIndex % sources.length) + 1;
     }
     setCarouselIndex(newCarouselIndex);
   };
@@ -27,9 +31,7 @@ const useCarousel = <Data extends unknown>(sources: Array<Data>) => {
   };
 };
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({
-  image,
-}) => {
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ image }) => {
   const { srcInfo: renderingImageInfo, createCycleCarousel } = useCarousel(image);
 
   return (
@@ -42,17 +44,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           alt={`info-${renderingImage.id}`}
         />
       ))}
-      <ImageCarouselButton
-        onClick={createCycleCarousel(true)}
-      >
-        <LeftArrow />
-      </ImageCarouselButton>
-      <ImageCarouselButton
-        isRight
-        onClick={createCycleCarousel(false)}
-      >
-        <RightArrow />
-      </ImageCarouselButton>
+      <ButtonWrapper>
+        <ImageCarouselButton onClick={createCycleCarousel(true)}>
+          <LeftArrow />
+        </ImageCarouselButton>
+        <ImageCarouselButton isRight onClick={createCycleCarousel(false)}>
+          <RightArrow />
+        </ImageCarouselButton>
+      </ButtonWrapper>
     </ImageCarouselContainer>
   );
 };

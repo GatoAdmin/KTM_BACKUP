@@ -82,8 +82,9 @@ export const NumberSectionContent = styled.div<{ show: boolean }>`
   width: 1400px;
   margin: 0 auto;
 
-  ${(props) => (props.show
-    ? css`
+  ${(props) =>
+    props.show
+      ? css`
           ${Title} {
             opacity: 1;
             transform: translateX(0);
@@ -93,7 +94,7 @@ export const NumberSectionContent = styled.div<{ show: boolean }>`
             transform: translateX(0);
           }
         `
-    : css`
+      : css`
           ${Title} {
             opacity: 0;
             transform: translateX(-50px);
@@ -102,5 +103,5 @@ export const NumberSectionContent = styled.div<{ show: boolean }>`
             opacity: 0;
             transform: translateX(-50px);
           }
-        `)}
+        `}
 `;

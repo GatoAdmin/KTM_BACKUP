@@ -31,6 +31,7 @@ export const TuitionDescription = styled.h4`
 `;
 
 export const TuitionCheckbox = styled.div`
-  width: 140px;
+  width: fit-content;
+  min-width: 140px;
   margin: 0 auto 11px;
 `;

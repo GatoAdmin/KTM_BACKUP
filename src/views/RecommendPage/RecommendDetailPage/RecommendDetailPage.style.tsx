@@ -3,13 +3,18 @@ import {
   fontColor,
   greyColor,
   lightGreyColor,
-  mainBackgroundColor,
+  borderColor,
   mainColor,
   mainColor600,
   whiteColor,
 } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import DocumentSVG from '@assets/svg/document_icon.svg';
+
+export const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export const Main = styled.main`
   width: 100%;
@@ -27,13 +32,17 @@ export const DetailContentContainer = styled.div`
   margin-top: 60px;
 `;
 
-export const DetailContent = styled.div`
-`;
+export const DetailContent = styled.div``;
 
 export const InfoSection = styled.section`
   display: flex;
-  padding: 0 60px;
-  border-bottom: 1px solid ${mainBackgroundColor};
+  justify-content: center;
+  border-bottom: 1px solid ${borderColor};
+`;
+
+export const InfoWrapper = styled.div`
+  display: flex;
+  width: 990px;
 `;
 
 export const LogoImage = styled.img`
@@ -111,6 +120,15 @@ export const LikeButton = styled.button<ILikeButton>`
   font: normal bold 12px/16px ${defaultFont};
   color: ${(props) => (props.pressed ? whiteColor : mainColor)};
   cursor: pointer;
+  outline: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    margin-left: 4px;
+  }
 `;
 
 export const InfoCardContainer = styled.div`
@@ -118,13 +136,12 @@ export const InfoCardContainer = styled.div`
 `;
 
 export const InfoCard = styled.div`
-  width: 78px;
-  height: 86px;
+  width: 120px;
+  height: 90px;
   margin-left: 10px;
-  padding: 16px;
+  padding: 10px;
   border: 1px solid ${lightGreyColor};
   border-radius: 9px;
-  
 `;
 
 export const InfoCardImageContainer = styled.div`
@@ -142,6 +159,17 @@ export const InfoCardDescription = styled.div`
   font: normal bold 14px/17px ${defaultFont};
   color: ${mainColor};
   text-align: center;
+`;
+
+export const NotifyDescription = styled.div`
+  width: 100%;
+  /* background-color: red; */
+  box-sizing: border-box;
+  padding: 0px 60px;
+  text-align: right;
+  font-size: 14px;
+  color: #9e9e9e;
+  margin-top: 8px;
 `;
 
 export const ContentSectionTitle = styled.h2`
@@ -179,6 +207,7 @@ export const QualificationImage = styled.div`
 
 export const QualificationDescription = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100px;
@@ -186,6 +215,84 @@ export const QualificationDescription = styled.div`
   font: normal normal 18px/25px ${defaultFont};
   color: ${greyColor};
   text-align: center;
+`;
+
+export const Item = styled.div`
+  position: relative;
+  display: flex;
+  /* justify-content: space-around; */
+  align-items: center;
+  height: 62px;
+  border-bottom: 2px solid #c4c4c4;
+`;
+
+export const DocumentGrid = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  /* grid-template-rows: 62px 62px; */
+  column-gap: 20px;
+
+  ${Item}:nth-child(-n+2) {
+    border-top: 2px solid #c4c4c4;
+  }
+`;
+
+export const Content = styled.div`
+  display: flex;
+  align-items: center;
+  width: 345px;
+  height: 44px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+
+  color: #232323;
+`;
+
+export const Icon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ff7263;
+  margin: 0px 20px;
+
+  svg {
+    transform: scale(0.8);
+  }
+`;
+
+export const Info = styled.div`
+  display: none;
+  /* height: 100px; */
+  border-radius: 15px;
+  background-color: #df4d3d;
+  font-size: 14px;
+  /* line-height: 22px; */
+  padding: 5px 10px;
+  color: #fff;
+`;
+
+export const ExclamationIcon = styled.div`
+  position: absolute;
+  left: calc(100% - 40px);
+  height: 22px;
+  z-index: 1;
+  width: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+
+  :hover > ${Info} {
+    display: inline-block;
+  }
+
+  :hover > svg {
+    display: none;
+  }
 `;
 
 export const DocumentIconContainer = styled.div`
@@ -226,11 +333,11 @@ export const DocumentEssential = styled.div`
   background: ${mainColor};
   font: normal bold 12px/17px ${defaultFont};
   color: ${whiteColor};
-  
+
   ::before {
-    content: "!";
+    content: '!';
   }
-  
+
   ::after {
     display: block;
     position: absolute;
@@ -239,8 +346,8 @@ export const DocumentEssential = styled.div`
     width: 8px;
     height: 8px;
     background: ${mainColor};
-    clip-path: polygon(0 0, 100% 0, 50%  100%);
-    content: "";
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    content: '';
   }
 `;
 
@@ -262,11 +369,12 @@ interface IPrepareStepItem {
 
 export const PrepareStepItem = styled.li<IPrepareStepItem>`
   list-style: none;
-  width: ${(props) => (props.size === 'lg' ? '236px' : '176px')};
+  width: ${(props) => (props.size === 'lg' ? '307px' : '176px')};
   height: ${(props) => (props.size === 'lg' ? '336px' : '246px')};
   margin: 0 12px 10px 0;
-  border: 2px solid ${mainBackgroundColor};
+  border: 2px solid ${borderColor};
   border-radius: 9px;
+  color: #232323;
 
   :hover {
     ${DocumentEssential} {
@@ -287,6 +395,7 @@ export const CalendarSection = styled.section`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  margin-bottom: 120px;
 `;
 
 export const SideNav = styled.ul`
@@ -320,13 +429,19 @@ export const SideNavItem = styled.li<SideNavItemProps>`
 
 export const SideNavDescription = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 68px;
+  height: 80px;
+  span {
+    font-size: 14px;
+    line-height: 1.4;
+  }
 `;
 
 export const SideNavLink = styled.a`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -341,6 +456,7 @@ export const SideNavLink = styled.a`
   color: ${mainColor600};
   text-decoration: none;
   box-sizing: content-box;
+  cursor: pointer;
 `;
 
 export const SideNavImageLink = styled.a`
@@ -353,7 +469,7 @@ export const SideNavImageLink = styled.a`
     position: absolute;
     top: -5px;
     right: -5px;
-    content: "";
+    content: '';
   }
 `;
 

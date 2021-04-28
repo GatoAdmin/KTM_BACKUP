@@ -50,7 +50,9 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
   const [userButton, setUserButton] = useState(<></>);
-  useEffect(() => {
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
     const isBrowser = typeof window !== 'undefined';
     if (!isBrowser) return;
     function makeScrollCallback() {
@@ -66,6 +68,7 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
     }
     setIsTop(window.pageYOffset <= 100);
     window.addEventListener('scroll', makeScrollCallback());
+    if (window.sessionStorage.getItem('sid')) setIsLoggedIn(true);
     return () => {
       window.removeEventListener('scroll', makeScrollCallback());
     };
@@ -86,6 +89,10 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
       );
     }
   }, [t, lang]);
+
+  React.useEffect(() => {
+    console.log(isLoggedIn);
+  }, [isLoggedIn]);
 
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>

@@ -9,16 +9,15 @@ const LayoutBackground = styled.div`
 
 const ContentContainer = styled.div`
   margin: 0 auto;
-  width: 1100px;
+  /* width: 1100px; */
+  min-width: 1100px;
   min-height: 100vh;
   background: ${whiteColor};
 `;
 
 const DefaultLayout: React.FC = ({ children }) => (
   <LayoutBackground>
-    <ContentContainer>
-      {children}
-    </ContentContainer>
+    <ContentContainer>{children}</ContentContainer>
   </LayoutBackground>
 );
 

@@ -19,7 +19,10 @@
         "topik-3": "TOPIK 3급",
         "topik-4": "TOPIK 4급",
         "topik-5": "TOPIK 5급",
-        "topik-6": "TOPIK 6급"
+        "topik-6": "TOPIK 6급",
+        "4년제": "대학교",
+        "전문대": "전문대학교",
+        "어학원": "어학원"
     },
     "vn": {
         "introduce": "Giới thiệu công ty",
@@ -41,6 +44,9 @@
         "topic-3": "TOPIK Cấp 3",
         "topic-4": "TOPIK Cấp 4",
         "topic-5": "TOPIK Cấp 5",
-        "topic-6": "TOPIK Cấp 6"
+        "topic-6": "TOPIK Cấp 6",
+        "4년제": "Đại học",
+        "전문대": "Trường nghề",
+        "어학원": "Trường tiếng"
     }
 }

@@ -9,7 +9,7 @@ interface ButtonProps {
 }
 
 const StyledButton = styled.button<ButtonProps>`
-  padding: 8px 20px;
+  padding: 8px 15px;
   background: ${(props) => (props.active ? mainColor : 'rgba(255, 114, 99, 0.08);')};
   border: 1px solid ${mainColor};
   box-sizing: border-box;

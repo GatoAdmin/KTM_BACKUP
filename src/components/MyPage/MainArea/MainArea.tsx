@@ -11,9 +11,10 @@ import MainAreaContainer from './MainArea.style';
 
 interface MainAreaProps {
   t: (s:string) => string;
+  lang: string;
 }
 
-const MainArea: React.FC<MainAreaProps> = ({ t }) => {
+const MainArea: React.FC<MainAreaProps> = ({ t, lang }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [refundMode, setRefundMode] = useState(false);
   const [payId, setPayId] = useState(0);
@@ -29,12 +30,12 @@ const MainArea: React.FC<MainAreaProps> = ({ t }) => {
   };
 
   const selectSection = () => {
-    if (refundMode) return <RefundSection t={t} payId={payId} />;
+    if (refundMode) return <RefundSection t={t} payId={payId} lang={lang} />;
     switch (selectedIndex) {
       case 0:
         return <MySolutionSection t={t} onRefundClick={handlingClickRefundButton} />;
       case 1:
-        return <MyUniversityList t={t} />;
+        return <MyUniversityList t={t} lang={lang} />;
       case 2:
         return <MyInfomation t={t} />;
       default:
@@ -48,6 +49,8 @@ const MainArea: React.FC<MainAreaProps> = ({ t }) => {
       <SelectTab
         selectedIndex={selectedIndex}
         onClick={handlingClickSelectTab}
+        t={t}
+        lang={lang}
       />
       {selectSection()}
     </MainAreaContainer>

@@ -20,7 +20,7 @@ const MyPage: NextPage = () => {
         changeLang={changeLang}
         lang={lang}
       />
-      <MainArea t={t} />
+      <MainArea t={t} lang={lang} />
       <Footer />
     </MainPageContainer>
   );

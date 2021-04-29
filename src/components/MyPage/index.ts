@@ -7,6 +7,7 @@ import MainArea from './MainArea/MainArea';
 import Title from './Title/Title';
 import EmptyFlame from './EmptyFlame/EmptyFlame.style';
 import UnivItem from './UnivItem/UnivItem';
+import EmptyUnivItem from './EmptyUnivItem/EmptyUnivItem';
 
 export {
   SelectTab,
@@ -18,4 +19,5 @@ export {
   Title,
   EmptyFlame,
   UnivItem,
+  EmptyUnivItem,
 };

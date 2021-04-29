@@ -145,7 +145,7 @@ export default {
   },
   getMyRefundInfo: async (payId: number) => {
     const response = await axios.get(`?action=get_refund_info&params={"id":${payId}}`);
-    return response.data;
+    return response.data.infos;
   },
   getUserLikeInfo: async () => {
     const sid = sessionStorage.getItem('sid');
@@ -156,5 +156,9 @@ export default {
     const sid = sessionStorage.getItem('sid');
     const response = await axios.get(`/?action=push_like_button&params={"univ_code":"${univCode}"}&sid=${sid}`);
     return response.data;
+  },
+  postRefund: async (id: number, account: string, reason: string, bank: string) => {
+    const response = await axios.get(`?action=refund_account_num&params={"status_id":${id}, "account":"${account}", "reason":"${reason}", "bank":"${bank}"}`);
+    return response;
   },
 };

@@ -22,6 +22,8 @@ import {
   RegisterLink,
   LoadingPopup,
   Loading,
+  LanguageConvertWrapper,
+  Language,
 } from '@views/UserPage/LoginPage/LoginPage.style';
 import API from '@util/api';
 import useTranslate from '@util/hooks/useTranslate';
@@ -105,6 +107,10 @@ const LoginPage: NextPage = ({
         <LogoContainer>
           <Logo />
         </LogoContainer>
+        <LanguageConvertWrapper>
+          <Language>KR</Language>
+          <Language>VN</Language>
+        </LanguageConvertWrapper>
         <LoginForm onSubmit={handleSubmit}>
           <LoginFieldset>
             <LoginLegend>카툼 로그인</LoginLegend>

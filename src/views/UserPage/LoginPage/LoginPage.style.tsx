@@ -17,14 +17,25 @@ export const LogoContainer = styled.div`
 `;
 
 export const Logo = styled(LogoIcon)`
-  /* width: 220px; */
-  /* height: 60px; */
-  /* width: 80%; */
   margin: 40px 0 60px 0;
+`;
 
-  /* > path {
-    fill: ${mainColor};
-  } */
+export const LanguageConvertWrapper = styled.div`
+  position: absolute;
+  top: 105px;
+  right: 95px;
+
+  display: flex;
+  justify-content: space-between;
+
+  width: 70px;
+  height: 25px;
+`;
+
+export const Language = styled.span`
+  font-size: 18px;
+  color: #000;
+  cursor: pointer;
 `;
 
 export const LoginForm = styled.form`

@@ -95,7 +95,7 @@ const RefundSection: React.FC<RefundSectionProps> = ({ payId, t, lang }) => {
                 placeholder={t('bank_name_placeholder')}
               />
             )
-            : <ColumnInfo>{refund_account}</ColumnInfo>}
+            : <ColumnInfo>{refund_bank}</ColumnInfo>}
         </Tr>
         <Tr>
           <Column isKorean={lang === 'ko'}>{t('refund_account_number')}</Column>
@@ -106,7 +106,7 @@ const RefundSection: React.FC<RefundSectionProps> = ({ payId, t, lang }) => {
                 onChange={(e:any) => setAccountNumber(e.target.value)}
                 placeholder={t('refund_accound_number_placeholder')}
               />
-            ) : <ColumnInfo>{refund_bank}</ColumnInfo>}
+            ) : <ColumnInfo>{refund_account}</ColumnInfo>}
         </Tr>
         <Tr>
           <Column isKorean={lang === 'ko'}>{t('reason_for_refund')}</Column>

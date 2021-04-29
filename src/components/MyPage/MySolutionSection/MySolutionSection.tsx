@@ -90,7 +90,7 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick 
           <Td>{String(pay.id).padStart(8, '0')}</Td>
           <Td>{`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`}</Td>
           <Td>{pay.univ}</Td>
-          <Td>{t(pay.rate)}</Td>
+          <Td>{t(`service-${pay.rate}`)}</Td>
           <Td>{`${pay.cost.toLocaleString()} KRW`}</Td>
           <Td>
             <ButtonTd>

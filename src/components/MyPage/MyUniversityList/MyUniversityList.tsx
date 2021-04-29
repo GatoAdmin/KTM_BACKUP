@@ -30,7 +30,7 @@ const MyUniversityList: React.FC<MyUniversityListProps> = ({ t, lang }) => {
   if (error) window.location.href = '/';
   if (!resolved) return null;
 
-  const makeUnivItems = resolved[0].map((univInfo: any, idx: number) => (
+  const makeUnivItems = resolved[0].map((univInfo: any) => (
     <UnivItem
       id={univInfo.univ_code}
       name={univInfo.kor_name}

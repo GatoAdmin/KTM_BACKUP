@@ -8,6 +8,6 @@ export const MyUniversityListContainer = styled.div`
 
 export const UnivItemArea = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 450px);
+  grid-template-columns: repeat(2, 470px);
   grid-column-gap: 20px;
 `;

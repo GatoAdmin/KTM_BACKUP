@@ -9,12 +9,12 @@ import FilledHeart from '@assets/svg/filled_heart.svg';
 export const UnivItemContainer = styled.div`
   display: inline-flex;
   position: relative;
-  width: 450px;
+  width: 470px;
   height: 280px;
   border-radius: 12px;
   background: white;
   box-shadow: 1px 1px 7px #00000029;
-
+  margin-bottom: 20px;
 `;
 
 export const HeartContainer = styled.div`
@@ -42,7 +42,7 @@ export const EmptyHeart = styled(UnFilledHeart)`
 
 export const UnivItemLinkContainer = styled.div`
   display: flex;
-  width: 190px;
+  width: 215px;
   justify-content: space-between;
   align-items: center;
   position: absolute;
@@ -50,20 +50,27 @@ export const UnivItemLinkContainer = styled.div`
 `;
 
 export const UnivItemLink = styled.a`
-  display: block;
-  padding: 8px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 94px;
+  height: 32px;
   border-radius: 16px;
   font: normal normal bold 12px/16px ${defaultFont};
+  font-family: Noto Sans;
   color: ${whiteColor};
   background: ${mainColor};
   text-decoration: none;
   text-align: center;
   cursor: pointer;
-`;
+
+  &:hover {
+    background-color: #FF7263; 
+  }`;
 
 export const UnivItemDetailLink = styled(UnivItemLink)`
   min-width: 70px;
-  padding: 10px;
+  width: 108px;
 `;
 
 const ItemImageStyle = css`

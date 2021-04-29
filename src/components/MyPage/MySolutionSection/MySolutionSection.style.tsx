@@ -13,7 +13,7 @@ export const FormWrapper = styled.form`
 
 export const Table = styled.div`
   display: table;
-  width: 900px;
+  width: 100%;
 `;
 
 export const Tr = styled.div`

@@ -6,7 +6,9 @@ export const SelectTabContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 70px;
+  width: 100vw;
   border-bottom: 0.8px solid rgba(196, 196, 196, 0.8);
+  margin-top: 80px;
 `;
 
 export const LocalizationButtonContainer = styled.div`

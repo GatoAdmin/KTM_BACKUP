@@ -117,10 +117,10 @@ const UnivItem: React.VFC<UnivInfo> = ({
         </UnivItemInformation>
         <UnivItemLinkContainer>
           <Link href={`/recommend/${id}`} passHref>
-            <UnivItemDetailLink>상세보기</UnivItemDetailLink>
+            <UnivItemDetailLink>{t('detail_button_text')}</UnivItemDetailLink>
           </Link>
           <Link href={`/solution?univ=${id}`} passHref>
-            <UnivItemLink>입학솔루션</UnivItemLink>
+            <UnivItemLink>{t('solution_button_text')}</UnivItemLink>
           </Link>
         </UnivItemLinkContainer>
       </UnivItemDescriptionContainer>

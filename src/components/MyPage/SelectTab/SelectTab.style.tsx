@@ -17,25 +17,28 @@ export const LocalizationButtonContainer = styled.div`
 
 interface LocalizationSelectorProps {
   selectedIndex: number;
+  isKorean: boolean;
 }
 
 interface LocalizationButtonProps {
-    isSelect: boolean;
+  isSelect: boolean;
+  isKorean: boolean;
 }
 
 export const LocalizationSelector = styled.div<LocalizationSelectorProps>`
   position: absolute;
-  left: 7px;
+  left: ${({ isKorean }) => (isKorean ? '7px' : '9px')};
   top: 37px;
-  width: 100px;
+  width: ${({ isKorean }) => (isKorean ? '100px' : '150px')};
   border: 3px solid ${mainColor};
   transition: transform ease 0.3s;
-  transform: ${(props) => `translateX(${props.selectedIndex * 220}px)`};
+  transform: ${({ selectedIndex, isKorean }) => `translateX(${selectedIndex * (isKorean ? 220 : 275)}px)`
+};
 `;
 
 export const LocalizationButton = styled.button<LocalizationButtonProps>`
   display: inline-block;
-  width: 120px;
+  width: ${(props) => (props.isKorean ? '120px' : '174px')};
   margin-right: 100px;
   padding: 0;
   border: 0;
@@ -54,9 +57,9 @@ export const LocalizationButton = styled.button<LocalizationButtonProps>`
     transform: translateX(0);
   }
   :nth-child(2):hover ~ ${LocalizationSelector} {
-    transform: translateX(220px);
+    transform: translateX(${({ isKorean }) => (isKorean ? '220px' : '275px')});
   }
   :nth-child(3):hover ~ ${LocalizationSelector} {
-    transform: translateX(440px);
+    transform: translateX(${({ isKorean }) => (isKorean ? '440px' : '550px')});
   }
 `;

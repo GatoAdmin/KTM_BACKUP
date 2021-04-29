@@ -49,18 +49,18 @@ const UserInfo: React.FC<MyInfomationProps> = ({ t, userInfo }) => {
   return (
     <ChangeInfomationArea onSubmit={handlingSubmit}>
       <Row>
-        <ColHeader> 이메일 </ColHeader>
+        <ColHeader>{t('email')}</ColHeader>
         <EmailColumn>{email}</EmailColumn>
       </Row>
       <Row>
-        <ColHeader> 이름 </ColHeader>
+        <ColHeader>{t('first_name')}</ColHeader>
         <Col>
           <InputColumn
             value={first_name}
             onChange={(e:any) => { setFirstName(e.target.value); }}
           />
         </Col>
-        <ColHeader> 성 </ColHeader>
+        <ColHeader>{t('last_name')}</ColHeader>
         <Col>
           <InputColumn
             value={last_name}
@@ -69,7 +69,7 @@ const UserInfo: React.FC<MyInfomationProps> = ({ t, userInfo }) => {
         </Col>
       </Row>
       <Row>
-        <ColHeader> 닉네임 </ColHeader>
+        <ColHeader>{t('nick_name')}</ColHeader>
         <Col>
           <InputColumn
             value={username}
@@ -78,7 +78,7 @@ const UserInfo: React.FC<MyInfomationProps> = ({ t, userInfo }) => {
         </Col>
       </Row>
       <Row>
-        <ColHeader> 유학단계 </ColHeader>
+        <ColHeader>{t('steps_to_study_abroad')}</ColHeader>
         <ComboColumn
           value={identity}
           onChange={(e:any) => { setIdentity(e.target.value); }}
@@ -87,7 +87,7 @@ const UserInfo: React.FC<MyInfomationProps> = ({ t, userInfo }) => {
         </ComboColumn>
       </Row>
       <Row>
-        <ColHeader> 어학성적 </ColHeader>
+        <ColHeader>{t('language_grade')}</ColHeader>
         <ComboColumn
           value={topik_level}
           onChange={(e:any) => { setTopikLevel(e.target.value); }}
@@ -96,7 +96,7 @@ const UserInfo: React.FC<MyInfomationProps> = ({ t, userInfo }) => {
         </ComboColumn>
       </Row>
       <ButtonWrap>
-        <Button type="submit"> 변경하기 </Button>
+        <Button type="submit">{t('change_button_text')}</Button>
       </ButtonWrap>
     </ChangeInfomationArea>
   );

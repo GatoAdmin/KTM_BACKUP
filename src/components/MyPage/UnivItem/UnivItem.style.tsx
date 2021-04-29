@@ -9,9 +9,8 @@ import FilledHeart from '@assets/svg/filled_heart.svg';
 export const UnivItemContainer = styled.div`
   display: inline-flex;
   position: relative;
-  width: 430px;
+  width: 450px;
   height: 280px;
-  margin: 0 20px 20px 0px;
   border-radius: 12px;
   background: white;
   box-shadow: 1px 1px 7px #00000029;
@@ -63,7 +62,8 @@ export const UnivItemLink = styled.a`
 `;
 
 export const UnivItemDetailLink = styled(UnivItemLink)`
-  width: 48px;
+  min-width: 70px;
+  padding: 10px;
 `;
 
 const ItemImageStyle = css`

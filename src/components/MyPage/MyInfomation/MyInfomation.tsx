@@ -31,10 +31,10 @@ const MyInfomation: React.FC<MyInfomationProps> = ({ t }) => {
 
   return (
     <MyInfomationContainer>
-      <Title> 개인정보 변경 </Title>
+      <Title>{t('tab_patch_infomation')}</Title>
       <UserInfo t={t} userInfo={resolved} />
       <EmptyArea />
-      <Title> 비밀번호 변경 </Title>
+      <Title>{t('change_password')}</Title>
       <ChangePasswordArea t={t} />
     </MyInfomationContainer>
   );

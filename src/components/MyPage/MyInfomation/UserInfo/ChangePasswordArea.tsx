@@ -53,10 +53,10 @@ const ChangePasswordArea: React.FC<MyInfomationProps> = ({ t }) => {
   return (
     <ChangeInfomationArea>
       <Row>
-        <ColHeader> 현재 비밀번호 </ColHeader>
+        <ColHeader>{t('now_password')}</ColHeader>
         <PasswordColumn
           type="password"
-          placeholder="현재 사용하고 있는 비밀번호를 입력하세요."
+          placeholder={t('now_password_placeholder')}
           value={oldPassword}
           onChange={(e:any) => {
             setOldPassword(e.target.value);
@@ -64,13 +64,18 @@ const ChangePasswordArea: React.FC<MyInfomationProps> = ({ t }) => {
           }}
         />
         {oldPasswordError
-          ? <ErrorMessage> *현재 비밀번호가 일치하지 않습니다 </ErrorMessage> : null }
+          ? (
+            <ErrorMessage>
+              *
+              {t('now_password_error_message')}
+            </ErrorMessage>
+          ) : null }
       </Row>
       <Row>
-        <ColHeader> 신규 비밀번호 </ColHeader>
+        <ColHeader>{t('new_password')}</ColHeader>
         <PasswordColumn
           type="password"
-          placeholder="변경할 비밀번호를 입력하세요.(영문+숫자+특수기호 8자리 이상)"
+          placeholder={t('new_password_placeholder')}
           value={newPassword}
           onChange={(e:any) => {
             setNewPassword(e.target.value);
@@ -78,13 +83,18 @@ const ChangePasswordArea: React.FC<MyInfomationProps> = ({ t }) => {
           }}
         />
         {newPasswordError
-          ? <ErrorMessage> *영문+숫자+특수기호 8자리 이상으로 구성하여야 합니다 </ErrorMessage> : null }
+          ? (
+            <ErrorMessage>
+              *
+              {t('new_password_error_message')}
+            </ErrorMessage>
+          ) : null }
       </Row>
       <Row>
-        <ColHeader> 비밀번호 확인 </ColHeader>
+        <ColHeader>{t('check_new_password')}</ColHeader>
         <PasswordColumn
           type="password"
-          placeholder="변경할 비밀번호를 한번 더 입력하세요."
+          placeholder={t('check_new_password_placeholder')}
           value={newPassword2}
           onChange={(e:any) => {
             setNewPassword2(e.target.value);
@@ -92,10 +102,15 @@ const ChangePasswordArea: React.FC<MyInfomationProps> = ({ t }) => {
           }}
         />
         {newPassword2Error
-          ? <ErrorMessage> *비밀번호가 일치하지 않습니다 </ErrorMessage> : null }
+          ? (
+            <ErrorMessage>
+              *
+              {t('check_new_password_error_message')}
+            </ErrorMessage>
+          ) : null }
       </Row>
       <ButtonWrap>
-        <Button type="button" onClick={handlingSubmit}> 변경하기 </Button>
+        <Button type="button" onClick={handlingSubmit}>{t('change_button_text')}</Button>
       </ButtonWrap>
     </ChangeInfomationArea>
   );

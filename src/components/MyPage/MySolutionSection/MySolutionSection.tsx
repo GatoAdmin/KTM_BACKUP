@@ -67,12 +67,12 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick 
         <Tr key={val.id}>
           <Td>{`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`}</Td>
           <Td>{val.univ}</Td>
-          <Td>{val.stage}</Td>
+          <Td>{t(val.stage)}</Td>
           <Td>{t(`service-${val.rate}`)}</Td>
           <Td>
             <ButtonTd>
               { val.alarm ? <AlertIcon /> : null }
-              <Button onClick={() => router.replace('/solution')}> MORE </Button>
+              <Button onClick={() => router.replace('/solution')}>{t('more_button_text')}</Button>
             </ButtonTd>
           </Td>
         </Tr>
@@ -94,7 +94,7 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick 
           <Td>{`${pay.cost.toLocaleString()} KRW`}</Td>
           <Td>
             <ButtonTd>
-              <Button onClick={() => onRefundClick(pay.id)}> 환불 신청 </Button>
+              <Button onClick={() => onRefundClick(pay.id)}>{t('refund_button_text')}</Button>
             </ButtonTd>
           </Td>
         </Tr>
@@ -122,35 +122,35 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick 
 
   return (
     <MySolutionSectionContainer>
-      <Title> MY 입학솔루션 </Title>
+      <Title>{t('my_solution_title')}</Title>
 
       <Table>
         <Tr>
-          <TableHeader> 최근 진행일 </TableHeader>
-          <TableHeader> 대학 이름 </TableHeader>
-          <TableHeader> 진행 단계 </TableHeader>
-          <TableHeader> 결제 등급 </TableHeader>
+          <TableHeader>{t('recently_date')}</TableHeader>
+          <TableHeader>{t('univercity_name')}</TableHeader>
+          <TableHeader>{t('steps_in_progress')}</TableHeader>
+          <TableHeader>{t('payment_class')}</TableHeader>
           <TableHeader> &nbsp; </TableHeader>
         </Tr>
         {createValue()}
       </Table>
-      {createEmptyMessage(value, '진행 중인 입학솔루션이 없습니다', true)}
+      {createEmptyMessage(value, t('solution_error_message'), true)}
 
       <EmptyArea />
-      <Title> 결제 내역 </Title>
+      <Title>{t('payment_details')}</Title>
 
       <Table>
         <Tr>
-          <TableHeader> 결제번호 </TableHeader>
-          <TableHeader> 결제일 </TableHeader>
-          <TableHeader> 대학 이름 </TableHeader>
-          <TableHeader> 결제 등급 </TableHeader>
-          <TableHeader> 결제 금액 </TableHeader>
+          <TableHeader>{t('payment_number')}</TableHeader>
+          <TableHeader>{t('payment_date')}</TableHeader>
+          <TableHeader>{t('univercity_name')}</TableHeader>
+          <TableHeader>{t('payment_class')}</TableHeader>
+          <TableHeader>{t('payment_price')}</TableHeader>
           <TableHeader> &nbsp; </TableHeader>
         </Tr>
         {createPayment()}
       </Table>
-      {createEmptyMessage(payment, '결제 내역이 없습니다', false)}
+      {createEmptyMessage(payment, t('payment_error_message'), false)}
     </MySolutionSectionContainer>
   );
 };

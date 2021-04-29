@@ -41,6 +41,7 @@ interface ValueProps {
   recent_time: string;
   stage: string;
   univ: string;
+  univ_code: string;
 }
 
 const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick }) => {
@@ -72,7 +73,7 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick 
           <Td>
             <ButtonTd>
               { val.alarm ? <AlertIcon /> : null }
-              <Button onClick={() => router.replace('/solution')}>{t('more_button_text')}</Button>
+              <Button onClick={() => router.replace(`/solution?univ=${val.univ_code}`)}>{t('more_button_text')}</Button>
             </ButtonTd>
           </Td>
         </Tr>

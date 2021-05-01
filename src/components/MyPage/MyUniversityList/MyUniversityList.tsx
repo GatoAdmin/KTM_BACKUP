@@ -30,7 +30,9 @@ const MyUniversityList: React.FC<MyUniversityListProps> = ({ t, lang }) => {
   if (error) window.location.href = '/';
   if (!resolved) return null;
 
-  const makeUnivItems = resolved[0].map((univInfo: any) => (
+  const universitys = resolved.value instanceof Array ? resolved.value[0] : [];
+
+  const makeUnivItems = universitys.map((univInfo: any) => (
     <UnivItem
       id={univInfo.univ_code}
       name={univInfo.kor_name}
@@ -50,7 +52,7 @@ const MyUniversityList: React.FC<MyUniversityListProps> = ({ t, lang }) => {
     <MyUniversityListContainer>
       <Title>{t('tab_university_list')}</Title>
       <UnivItemArea>
-        {resolved[0].length !== 0
+        {universitys.length !== 0
           ? makeUnivItems
           : <EmptyUnivItem t={t} />}
       </UnivItemArea>

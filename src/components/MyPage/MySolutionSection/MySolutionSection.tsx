@@ -103,8 +103,10 @@ const MySolutionSection: React.FC<MySolutionSectionProps> = ({ t, onRefundClick 
     });
   };
 
-  const createEmptyMessage = (obj: ValueProps | PaymentProps, s:string, b: boolean) => {
-    if (obj === undefined) {
+  const createEmptyMessage = (
+    obj: ValueProps | PaymentProps | Array<any>, s:string, b: boolean,
+  ) => {
+    if (obj === undefined || obj instanceof Array) {
       return (
         <EmptyMessageBox>
           {s}

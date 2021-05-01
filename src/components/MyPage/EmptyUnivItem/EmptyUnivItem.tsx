@@ -32,7 +32,7 @@ const EmptyUnivItem: React.FC<EmptyUnivItemProps> = ({ t }) => (
             {t('add_university_text')}
           </SubTitle>
         </SubTitleContainer>
-        <Button>
+        <Button onClick={() => { window.location.replace('/recommend'); }}>
           {t('redirect_search_button')}
           →
         </Button>

@@ -141,7 +141,7 @@ const LoginPage: NextPage = () => {
           </RegisterThirdPartyButton>
         </RegisterThirdPartyButtonContainer>
         <LoginTextContainer>{t('register-label')}</LoginTextContainer>
-        <Link href={{ pathname: '/signup/infos' }} passHref>
+        <Link href={{ pathname: '/signup/term' }} passHref>
           <RegisterLink>{t('register-button')}</RegisterLink>
         </Link>
       </UserLayout>

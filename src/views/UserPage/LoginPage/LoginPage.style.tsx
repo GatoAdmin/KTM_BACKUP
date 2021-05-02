@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import { mainColor, greyColor, lightGreyColor, fontColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import LogoIcon from '../../../assets/logo.svg';
@@ -18,6 +19,7 @@ export const LogoContainer = styled.div`
 
 export const Logo = styled(LogoIcon)`
   margin: 40px 0 60px 0;
+  cursor: pointer;
 `;
 
 export const LanguageConvertWrapper = styled.div`

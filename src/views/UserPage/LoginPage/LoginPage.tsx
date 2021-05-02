@@ -95,7 +95,9 @@ const LoginPage: NextPage = () => {
           </LoadingPopup>
         )}
         <LogoContainer>
-          <Logo />
+          <Link href={{ pathname: '/' }} passHref>
+            <Logo />
+          </Link>
         </LogoContainer>
         <LanguageConvertWrapper>
           <Language onClick={() => changeLang('ko')}>KR</Language>

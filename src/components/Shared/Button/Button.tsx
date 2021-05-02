@@ -1,14 +1,15 @@
 import { mainColor } from '@util/style/color';
-import React, { Dispatch } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 interface ButtonProps {
-  onClick: () => void;
+  type?: 'button' | 'submit' | 'reset' | undefined;
+  onClick?: any;
   active?: boolean;
 }
 
 const StyledButton = styled.button<ButtonProps>`
-  padding: 8px 20px;
+  padding: 8px 15px;
   background: ${(props) => (props.active ? mainColor : 'rgba(255, 114, 99, 0.08);')};
   border: 1px solid ${mainColor};
   box-sizing: border-box;
@@ -17,13 +18,20 @@ const StyledButton = styled.button<ButtonProps>`
   font-weight: bold;
   font-size: 14px;
   line-height: 19px;
+  font-family: Noto Sans;
   outline: none;
   cursor: pointer;
   width: fit-content;
+
+  &:hover {
+    background-color: #FF7263;
+  }
 `;
 
-const Button: React.FC<ButtonProps> = ({ onClick, children, active = true }) => (
-  <StyledButton onClick={onClick} active={active}>
+const Button: React.FC<ButtonProps> = ({
+  type, onClick, children, active = true,
+}) => (
+  <StyledButton type={type} onClick={onClick} active={active}>
     {children}
   </StyledButton>
 );

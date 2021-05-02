@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import useIntersection from '@util/hooks/useInteraction';
+import isLogin from '@util/auth/auth';
 import {
   HeaderContainer,
   LogoContainer,
@@ -48,8 +49,8 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
   const header = React.useRef<HTMLElement>(null);
   const visible = useIntersection(header);
+  const [userButton, setUserButton] = useState(<></>);
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
-  // const isLoggedIn = window.sessionStorage
 
   React.useEffect(() => {
     const isBrowser = typeof window !== 'undefined';
@@ -73,9 +74,26 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isLogin()) {
+      setUserButton(
+        <Link href={{ pathname: '/mypage', query: { lang } }} passHref>
+          <LoginLink>{t('mypage')}</LoginLink>
+        </Link>,
+      );
+    } else {
+      setUserButton(
+        <Link href={{ pathname: '/login', query: { lang } }} passHref>
+          <LoginLink>{t('login')}</LoginLink>
+        </Link>,
+      );
+    }
+  }, [t, lang]);
+
   React.useEffect(() => {
     console.log(isLoggedIn);
   }, [isLoggedIn]);
+
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>
       <LogoContainer>
@@ -95,14 +113,7 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
           <LocalizationButton onClick={() => changeLang('ko')}>KR</LocalizationButton>
           <LocalizationButton onClick={() => changeLang('vn')}>VN</LocalizationButton>
           <LocalizationSelector selectedIndex={lang === 'ko' ? 0 : 1} />
-
-          {!isLoggedIn && (
-            <Link href={{ pathname: '/login', query: { lang } }} passHref>
-              <LoginLink>{t('login')}</LoginLink>
-            </Link>
-          )}
-
-          {/* {isLoggedIn && <LoginLink>{t('logout')}</LoginLink>} */}
+          {userButton}
         </LocalizationButtonContainer>
       </NavigationContainer>
     </HeaderContainer>

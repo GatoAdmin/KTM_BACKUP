@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import axios from 'axios';
@@ -46,8 +47,8 @@ export default {
     if (!isLogin()) return {};
     const sid = sessionStorage.getItem('sid');
     if (univ_code === undefined || univ_code === null) return {};
-    let params: { univ_code: string; lang?: string } = {
-      univ_code: univ_code,
+    const params: { univ_code: string; lang?: string } = {
+      univ_code,
     };
     if (lang && lang !== 'ko') {
       params.lang = lang;
@@ -64,7 +65,7 @@ export default {
     if (!isLogin()) return {};
     const sid = sessionStorage.getItem('sid');
     const params = {
-      status_id: status_id,
+      status_id,
       deposit_name: name,
     };
     const response = await axios.get(`/?action=pay_account_num&params=${JSON.stringify(params)}&sid=${sid}`);
@@ -74,9 +75,9 @@ export default {
     if (!isLogin()) return {};
     const sid = sessionStorage.getItem('sid');
     const params = {
-      status_id: status_id,
-      imp_uid: imp_uid,
-      merchant_uid: merchant_uid,
+      status_id,
+      imp_uid,
+      merchant_uid,
     };
     const response = await axios.get(`/?action=pay_check_status&params=${JSON.stringify(params)}&sid=${sid}`);
     return response.data;
@@ -98,11 +99,13 @@ export default {
     if (!isLogin()) return {};
     const univ_code = sessionStorage.getItem('chooseUnivCode');
     const univ_info = sessionStorage.getItem('chooseUnivInfoType');
+
     const response = await axios.get(
       `/?action=get_player_document&params={"univ_code":"${univ_code}", "info_type":"${univ_info}","lang":"${
         lang !== 'ko' ? lang : ''
       }"}&sid=${sid}`,
     );
+
     return response.data;
   },
   getUniversityList: async () => {
@@ -113,7 +116,38 @@ export default {
     const response = await axios.get('/?action=get_review&params={}');
     return response.data.university;
   },
-  getUserInfo: async () => {
+  getMyService: async () => {
+    const response = await axios.get('/?action=get_my_service&params={}');
+    return response.data;
+  },
+  getMyUniversityList: async (page: number) => {
+    const response = await axios.get(`/?action=get_my_univ&params={"options":"created", "page":${page}}`);
+    return response.data;
+  },
+  getMyInfomation: async () => {
+    const response = await axios.get('?action=get_my_info&params={}');
+    return response.data.value;
+  },
+  patchMyInfomation: async ({
+    first_name, last_name, topik_level, identity, username,
+  }: any) => {
+    const response = await axios.get(
+      `?action=change_my_info&params={"infos":{"last_name" : "${last_name}", "first_name":"${first_name}", "username":"${username}", "identity":${identity}, "topik_level":${topik_level}}}`,
+    );
+    return response.data;
+  },
+  patchMyPassword: async (formData: FormData) => {
+    const response = await axios.post('changepassword/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    return response.data;
+  },
+  getMyRefundInfo: async (payId: number) => {
+    const response = await axios.get(`?action=get_refund_info&params={"id":${payId}}`);
+    return response.data.infos;
+  },
+  getUserLikeInfo: async () => {
     const sid = sessionStorage.getItem('sid');
     const response = await axios.get(`/?action=get_user_like_info&params={}&sid=${sid}`);
     return response.data;
@@ -122,5 +156,9 @@ export default {
     const sid = sessionStorage.getItem('sid');
     const response = await axios.get(`/?action=push_like_button&params={"univ_code":"${univCode}"}&sid=${sid}`);
     return response.data;
+  },
+  postRefund: async (id: number, account: string, reason: string, bank: string) => {
+    const response = await axios.get(`?action=refund_account_num&params={"status_id":${id}, "account":"${account}", "reason":"${reason}", "bank":"${bank}"}`);
+    return response;
   },
 };

@@ -18,7 +18,7 @@ import {
   RegisterButton,
   RegisterInputTitle,
   RegisterInputExtraSmallGroup,
-} from '@views/UserPage/RegisterPage/RegisterPage.style';
+} from '@views/UserPage/SignupPage/SignupPage.style';
 import Select from '@components/UserPage/Select/Select';
 import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
@@ -28,15 +28,12 @@ import i18nLoginResource from '../../../assets/i18n/registerPage.json';
 const yearArray = Array.apply(null, Array(40)).map((value, index) => index + 1980);
 const monthArray = Array.apply(null, Array(12)).map((value, index) => index + 1);
 const dayArray = Array.apply(null, Array(31)).map((value, index) => index + 1);
-const countryArray = (t: (s: string) => string) => Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
+const countryArray = (t: (s: string) => string) =>
+  Array.apply(null, Array(36)).map((val, index) => t(`country-${index}`));
 const reasonArray = (t: (s: string) => string) => Array.apply(null, Array(4)).map((val, index) => t(`reason-${index}`));
 const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map((val, index) => t(`topik-${index}`));
 
-const RegisterPage: NextPage = ({
-  router: {
-    query: { lang: queryLang },
-  },
-}) => {
+const RegisterPage: NextPage = () => {
   const { t, lang, changeLang } = useTranslate(i18nLoginResource);
   const [formData, setFormData] = React.useState({
     username: null,
@@ -126,11 +123,11 @@ const RegisterPage: NextPage = ({
     }
   };
 
-  React.useEffect(() => {
-    if (queryLang !== undefined) {
-      changeLang(queryLang);
-    }
-  }, [queryLang]);
+  // React.useEffect(() => {
+  //   if (queryLang !== undefined) {
+  //     changeLang(queryLang);
+  //   }
+  // }, [queryLang]);
 
   React.useEffect(() => {
     if (loading) {

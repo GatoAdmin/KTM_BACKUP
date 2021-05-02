@@ -128,9 +128,7 @@ export default {
     const response = await axios.get('?action=get_my_info&params={}');
     return response.data.value;
   },
-  patchMyInfomation: async ({
-    first_name, last_name, topik_level, identity, username,
-  }: any) => {
+  patchMyInfomation: async ({ first_name, last_name, topik_level, identity, username }: any) => {
     const response = await axios.get(
       `?action=change_my_info&params={"infos":{"last_name" : "${last_name}", "first_name":"${first_name}", "username":"${username}", "identity":${identity}, "topik_level":${topik_level}}}`,
     );
@@ -158,7 +156,9 @@ export default {
     return response.data;
   },
   postRefund: async (id: number, account: string, reason: string, bank: string) => {
-    const response = await axios.get(`?action=refund_account_num&params={"status_id":${id}, "account":"${account}", "reason":"${reason}", "bank":"${bank}"}`);
+    const response = await axios.get(
+      `?action=refund_account_num&params={"status_id":${id}, "account":"${account}", "reason":"${reason}", "bank":"${bank}"}`,
+    );
     return response;
   },
 };

@@ -30,11 +30,7 @@ import useTranslate from '@util/hooks/useTranslate';
 import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import i18nLoginResource from '../../../assets/i18n/loginPage.json';
 
-const LoginPage: NextPage = ({
-  router: {
-    query: { lang: queryLang },
-  },
-}) => {
+const LoginPage: NextPage = () => {
   const { t, lang, changeLang } = useTranslate(i18nLoginResource);
   const [formData, setFormData] = React.useState({
     email: null,
@@ -83,12 +79,6 @@ const LoginPage: NextPage = ({
   };
 
   React.useEffect(() => {
-    if (queryLang !== undefined) {
-      changeLang(queryLang);
-    }
-  }, [queryLang]);
-
-  React.useEffect(() => {
     if (loading) {
       const errObj = { ...errMsg };
       Object.entries(errObj).map(([key, val]) => (errObj[key] = false));
@@ -108,8 +98,8 @@ const LoginPage: NextPage = ({
           <Logo />
         </LogoContainer>
         <LanguageConvertWrapper>
-          <Language>KR</Language>
-          <Language>VN</Language>
+          <Language onClick={() => changeLang('ko')}>KR</Language>
+          <Language onClick={() => changeLang('vn')}>VN</Language>
         </LanguageConvertWrapper>
         <LoginForm onSubmit={handleSubmit}>
           <LoginFieldset>
@@ -149,7 +139,7 @@ const LoginPage: NextPage = ({
           </RegisterThirdPartyButton>
         </RegisterThirdPartyButtonContainer>
         <LoginTextContainer>{t('register-label')}</LoginTextContainer>
-        <Link href={{ pathname: '/register', query: { lang } }} passHref>
+        <Link href={{ pathname: '/signup/infos' }} passHref>
           <RegisterLink>{t('register-button')}</RegisterLink>
         </Link>
       </UserLayout>

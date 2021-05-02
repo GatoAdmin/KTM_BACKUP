@@ -63,6 +63,11 @@ const TermPage: NextPage = () => {
     Router.push('/signup/infos');
   };
 
+  React.useEffect(() => {
+    if (checkboxStatus.all) setButtonStatus((prev) => ({ ...prev, next: 'activate' }));
+    else setButtonStatus((prev) => ({ ...prev, next: 'nonactivate' }));
+  }, [checkboxStatus.all]);
+
   return (
     <FontProvider lang={lang}>
       <UserLayout width={704} height={742}>

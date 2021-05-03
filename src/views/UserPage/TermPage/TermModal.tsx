@@ -1,18 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { NextPage } from 'next';
 
-import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
-import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import { Button } from '@views/UserPage/TermPage/TermPage.style';
-import useTranslate from '@util/hooks/useTranslate';
-
-import { PersonalTerm, ServiceTerm } from './Terms';
-import i18nSignUpResource from '../../../assets/i18n/signupPage.json';
 
 const TermModalWrapper = styled.div`
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   box-sizing: border-box;
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   position: absolute;
   top: 0;
   left: 0;

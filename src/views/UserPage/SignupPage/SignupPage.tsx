@@ -24,6 +24,7 @@ import axios from 'axios';
 import useTranslate from '@util/hooks/useTranslate';
 import { Loading, LoadingPopup } from '../LoginPage/LoginPage.style';
 import i18nLoginResource from '../../../assets/i18n/registerPage.json';
+import SignupModal from './SignupModal';
 
 const yearArray = Array.apply(null, Array(40)).map((value, index) => index + 1980);
 const monthArray = Array.apply(null, Array(12)).map((value, index) => index + 1);
@@ -35,6 +36,7 @@ const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map
 
 const RegisterPage: NextPage = () => {
   const { t, lang, changeLang } = useTranslate(i18nLoginResource);
+  const [isSignupModalVisible, setIsSignupModalVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({
     username: null,
     first_name: null,
@@ -97,16 +99,16 @@ const RegisterPage: NextPage = () => {
         const {
           data: { status },
         } = res;
-        console.log(status);
         if (status !== 'success') {
           setErrMsg((prev) => ({ ...prev, [status]: true }));
         } else {
-          alert(t('notify-email-certification'));
           setLoading(false);
-          Router.push({
-            pathname: '/login',
-            query: { lang },
-          });
+          setIsSignupModalVisible(true);
+          // alert(t('notify-email-certification'));
+          // Router.push({
+          //   pathname: '/login',
+          //   query: { lang },
+          // });
         }
         setLoading(false);
       })
@@ -288,6 +290,11 @@ const RegisterPage: NextPage = () => {
 
           <RegisterButton type="submit">{t('register-button')}</RegisterButton>
         </RegisterFieldset>
+        <SignupModal
+          isVisible={isSignupModalVisible}
+          email={formData.email}
+          setModalVisibleStatus={setIsSignupModalVisible}
+        />
       </RegisterForm>
     </UserLayout>
   );

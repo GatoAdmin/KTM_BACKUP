@@ -126,7 +126,7 @@ const LoginPage: NextPage = () => {
           </LoginFieldset>
         </LoginForm>
         <LoginTextContainer>
-          <Link href="/" passHref>
+          <Link href={{ pathname: '/findpassword' }} passHref>
             <LoginHelpLink>{t('find-password')}</LoginHelpLink>
           </Link>
         </LoginTextContainer>

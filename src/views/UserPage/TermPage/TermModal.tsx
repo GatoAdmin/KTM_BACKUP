@@ -4,6 +4,8 @@ import { NextPage } from 'next';
 
 import { Button } from '@views/UserPage/TermPage/TermPage.style';
 
+import { PersonalTerm, ServiceTerm } from './Terms';
+
 const TermModalWrapper = styled.div`
   box-sizing: border-box;
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};

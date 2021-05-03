@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
-import Router, { withRouter } from 'next/router';
+import { withRouter } from 'next/router';
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import {
   RegisterTitle,

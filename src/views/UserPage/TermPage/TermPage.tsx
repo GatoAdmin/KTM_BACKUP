@@ -2,10 +2,8 @@
 import React from 'react';
 
 import { NextPage } from 'next';
-import Router, { withRouter } from 'next/router';
-import Link from 'next/link';
+import Router from 'next/router';
 
-import Panel from '@components/SolutionPage/Agreement/Agreement';
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import {
@@ -37,7 +35,7 @@ const TermPage: NextPage = () => {
     next: 'nonactivate',
   });
 
-  const pushCheckbox = (type) => {
+  const pushCheckbox = (type: string) => {
     if (type === 'all') {
       if (!checkboxStatus.all) {
         setCheckboxStatus({
@@ -60,13 +58,23 @@ const TermPage: NextPage = () => {
   };
 
   const pushSignupScreen = () => {
-    Router.push('/signup/infos');
+    if (checkboxStatus.all) Router.push('/signup/infos');
   };
 
   React.useEffect(() => {
     if (checkboxStatus.all) setButtonStatus((prev) => ({ ...prev, next: 'activate' }));
     else setButtonStatus((prev) => ({ ...prev, next: 'nonactivate' }));
   }, [checkboxStatus.all]);
+
+  React.useEffect(() => {
+    if (checkboxStatus.service && checkboxStatus.personal && !checkboxStatus.all) {
+      setCheckboxStatus((prev) => ({ ...prev, all: true }));
+    }
+
+    if ((checkboxStatus.all && !checkboxStatus.service) || (checkboxStatus.all && !checkboxStatus.personal)) {
+      setCheckboxStatus((prev) => ({ ...prev, all: false }));
+    }
+  }, [checkboxStatus]);
 
   return (
     <FontProvider lang={lang}>

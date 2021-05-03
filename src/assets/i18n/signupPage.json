@@ -1,0 +1,8 @@
+{
+    "ko": {
+      "warn-not-logged-in" : "로그인이 필요한 서비스입니다."
+    },
+    "vn": {
+      "warn-not-logged-in" : "Dịch vụ bắt buộc phải đăng nhập."
+    }
+  }

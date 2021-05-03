@@ -8,6 +8,8 @@ import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import useTranslate from '@util/hooks/useTranslate';
 
+import API from '@util/api';
+
 import i18nLoginResource from '../../../assets/i18n/registerPage.json';
 import { fontColor, greyColor, mainColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
@@ -89,6 +91,18 @@ const FindPasswordPage: NextPage = () => {
     if (inputEmail === '') setIsAbleEmailSend('nonactivate');
   }, [inputEmail]);
 
+  const sendEmail = async () => {
+    if (isAbleEmailSend === 'activate') {
+      const formData = new FormData();
+
+      formData.append('email', inputEmail);
+
+      const response = await API.postSendEmailFindPassword(formData);
+
+      if (response.data.status === 'success') setIsMailSent(true);
+    }
+  };
+
   return (
     <>
       <FontProvider lang={lang}>
@@ -116,7 +130,7 @@ const FindPasswordPage: NextPage = () => {
               {!isMailSent && (
                 <>
                   <Button value="취소" style={{ marginRight: '17px' }} status="activate" />
-                  <Button value="메일 전송" status={isAbleEmailSend} />{' '}
+                  <Button value="메일 전송" status={isAbleEmailSend} onClick={() => sendEmail()} />{' '}
                 </>
               )}
               {isMailSent && <Button value="돌아가기" status="activate" onClick={() => Router.push('/')} />}

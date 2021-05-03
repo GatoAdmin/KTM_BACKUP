@@ -161,4 +161,10 @@ export default {
     );
     return response;
   },
+  postSendEmailFindPassword: async (formData: FormData) => {
+    const response = await axios.post('sendemailfindpassword/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response;
+  },
 };

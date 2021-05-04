@@ -9,12 +9,15 @@ import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import useTranslate from '@util/hooks/useTranslate';
 
 import API from '@util/api';
-
-import i18nLoginResource from '../../../assets/i18n/registerPage.json';
-import { fontColor, greyColor, mainColor } from '@util/style/color';
-import { defaultFont } from '@util/style/font';
-import { RegisterAlert, RegisterInput, RegisterInputGroup, RegisterInputRow } from '../SignupPage/SignupPage.style';
+import {
+  RegisterAlert, //
+  RegisterInput,
+  RegisterInputGroup,
+  RegisterInputRow,
+} from '../SignupPage/SignupPage.style';
 import { Button } from '../TermPage/TermPage.style';
+import i18nFindPasswordResource from '../../../assets/i18n/findpasswordPage.json';
+import { Loading, LoadingPopup } from '../LoginPage/LoginPage.style';
 
 const Content = styled.div`
   box-sizing: border-box;
@@ -23,7 +26,6 @@ const Content = styled.div`
   align-items: center;
 
   width: 100%;
-  /* height: 500px; */
   padding: 40px 120px 70px;
 `;
 
@@ -52,32 +54,54 @@ const ButtonWrapper = styled.div`
   justify-content: center;
 `;
 
-const Notify = () => (
+const Notify = (lang: string) => (
   <>
-    <span>회원가입 하신 이메일 주소를 입력해주세요.</span>
-    <br />
-    <span>로그인에 필요한 임시 비밀번호를 전송해드립니다.</span>
+    {lang === 'ko' && (
+      <>
+        <span>회원가입 하신 이메일 주소를 입력해주세요.</span>
+        <br />
+        <span>로그인에 필요한 임시 비밀번호를 전송해드립니다.</span>
+      </>
+    )}
+    {lang === 'vn' && (
+      <>
+        <span>Vui lòng nhập địa chỉ email bạn đã đăng kí.</span>
+        <br />
+        <span>Chúng tôi sẽ gửi cho bạn mật khẩu tạm thời để đăng nhập.</span>
+      </>
+    )}
   </>
 );
 
-const MailSentNotify = () => (
+const MailSentNotify = (lang: string) => (
   <>
-    <span>입력하신 이메일 주소로 임시 비밀번호 전송을 완료했습니다.</span>
-    <br />
-    <span>받은 메일함을 확인해 주세요.</span>
+    {lang === 'ko' && (
+      <>
+        <span>입력하신 이메일 주소로 임시 비밀번호 전송을 완료했습니다.</span>
+        <br />
+        <span>받은 메일함을 확인해 주세요.</span>
+      </>
+    )}
+    {lang === 'vn' && (
+      <>
+        <span>Mật khẩu tạm thời đã được gửi đến email của bạn.</span>
+        <br />
+        <span>Bạn vui lòng kiểm tra ở hộp thư đến.</span>
+      </>
+    )}
   </>
 );
 
 const FindPasswordPage: NextPage = () => {
-  const { t, lang } = useTranslate(i18nLoginResource);
+  const { t, lang } = useTranslate(i18nFindPasswordResource);
   const [inputEmail, setInputEmail] = useState('');
   const [isEmailValidate, setIsEmailValidate] = useState(true);
   const [isAbleEmailSend, setIsAbleEmailSend] = useState('nonactivate');
   const [isMailSent, setIsMailSent] = useState(false);
-
-  const emailValidator = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+  const [loading, setLoading] = useState<boolean>(false);
 
   React.useEffect(() => {
+    const emailValidator = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
     if (inputEmail !== '' && !emailValidator.test(inputEmail)) {
       setIsEmailValidate(false);
       setIsAbleEmailSend('nonactivate');
@@ -85,7 +109,7 @@ const FindPasswordPage: NextPage = () => {
       setIsEmailValidate(true);
       setIsAbleEmailSend('activate');
     }
-  }, [inputEmail, emailValidator]);
+  }, [inputEmail]);
 
   React.useEffect(() => {
     if (inputEmail === '') setIsAbleEmailSend('nonactivate');
@@ -93,13 +117,19 @@ const FindPasswordPage: NextPage = () => {
 
   const sendEmail = async () => {
     if (isAbleEmailSend === 'activate') {
+      setLoading(true);
       const formData = new FormData();
 
       formData.append('email', inputEmail);
 
-      const response = await API.postSendEmailFindPassword(formData);
-
-      if (response.data.status === 'success') setIsMailSent(true);
+      try {
+        const response = await API.postSendEmailFindPassword(formData);
+        if (response.data.status === 'success') setIsMailSent(true);
+      } catch (err) {
+        throw new Error(err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -107,17 +137,22 @@ const FindPasswordPage: NextPage = () => {
     <>
       <FontProvider lang={lang}>
         <UserLayout width={704} height={742}>
+          {loading && (
+            <LoadingPopup>
+              <Loading />
+            </LoadingPopup>
+          )}
           <Content>
-            {!isMailSent && <Title>비밀번호 찾기</Title>}
-            {isMailSent && <Title>메일 전송 완료!</Title>}
-            {!isMailSent && <NotifySentence>{Notify()}</NotifySentence>}
-            {isMailSent && <NotifySentence>{MailSentNotify()}</NotifySentence>}
+            {!isMailSent && <Title>{t('title')}</Title>}
+            {isMailSent && <Title>{t('complete-send')}</Title>}
+            {!isMailSent && <NotifySentence>{Notify(lang)}</NotifySentence>}
+            {isMailSent && <NotifySentence>{MailSentNotify(lang)}</NotifySentence>}
             {!isMailSent && (
               <RegisterInputRow style={{ marginBottom: '71px' }}>
                 <RegisterInputGroup>
                   <RegisterInput
                     type="email"
-                    placeholder="회원가입 하신 이메일 주소를 입력하세요."
+                    placeholder={t('placeholder')}
                     name="email"
                     onChange={(e) => setInputEmail(e.target.value)}
                     value={inputEmail}
@@ -129,11 +164,25 @@ const FindPasswordPage: NextPage = () => {
             <ButtonWrapper>
               {!isMailSent && (
                 <>
-                  <Button value="취소" style={{ marginRight: '17px' }} status="activate" />
-                  <Button value="메일 전송" status={isAbleEmailSend} onClick={() => sendEmail()} />{' '}
+                  <Button
+                    value={t('cancel')} //
+                    style={{ marginRight: '17px' }}
+                    status="activate"
+                  />
+                  <Button
+                    value={t('send')} //
+                    status={isAbleEmailSend}
+                    onClick={() => sendEmail()}
+                  />{' '}
                 </>
               )}
-              {isMailSent && <Button value="돌아가기" status="activate" onClick={() => Router.push('/')} />}
+              {isMailSent && (
+                <Button
+                  value={t('back')} //
+                  status="activate"
+                  onClick={() => Router.push('/login')}
+                />
+              )}
             </ButtonWrapper>
           </Content>
         </UserLayout>

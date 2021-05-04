@@ -115,12 +115,13 @@ const FindPasswordPage: NextPage = () => {
     if (inputEmail === '') setIsAbleEmailSend('nonactivate');
   }, [inputEmail]);
 
-  const sendEmail = async () => {
+  const sendEmail = async (language: string) => {
     if (isAbleEmailSend === 'activate') {
       setLoading(true);
       const formData = new FormData();
 
       formData.append('email', inputEmail);
+      formData.append('lang', language);
 
       try {
         const response = await API.postSendEmailFindPassword(formData);
@@ -168,11 +169,12 @@ const FindPasswordPage: NextPage = () => {
                     value={t('cancel')} //
                     style={{ marginRight: '17px' }}
                     status="activate"
+                    onClick={() => Router.push('/login')}
                   />
                   <Button
                     value={t('send')} //
                     status={isAbleEmailSend}
-                    onClick={() => sendEmail()}
+                    onClick={() => sendEmail(lang)}
                   />{' '}
                 </>
               )}

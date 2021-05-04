@@ -19,14 +19,15 @@ import {
   Bold,
   Underline,
   TermTitle,
+  NotificationWrapper,
 } from '@views/UserPage/TermPage/TermPage.style';
 import useTranslate from '@util/hooks/useTranslate';
 
-import i18nSignUpResource from '../../../assets/i18n/signupPage.json';
+import i18nTermResource from '../../../assets/i18n/termPage.json';
 import TermModal from './TermModal';
 
 const TermPage: NextPage = () => {
-  const { t, lang } = useTranslate(i18nSignUpResource);
+  const { t, lang } = useTranslate(i18nTermResource);
   const [checkboxStatus, setCheckboxStatus] = React.useState({
     all: false,
     service: false,
@@ -91,46 +92,93 @@ const TermPage: NextPage = () => {
       <FontProvider lang={lang}>
         <UserLayout width={704} height={742}>
           <TermContainer>
-            <Title>약관 동의</Title>
-            <Notification>
-              하단의 서비스 이용약관 및 개인정보 수집 및 이용약관에 대한 안내를 읽고 동의에 체크해 주세요.
-            </Notification>
+            <Title>{t('title')}</Title>
+            <NotificationWrapper>
+              <Notification>{t('notification-first-line')}</Notification>
+              <Notification>{t('notification-second-line')}</Notification>
+            </NotificationWrapper>
 
             <AgreeSection>
               <AgreeLine>
                 <AgreeCheckBox checked={checkboxStatus.all} onChange={() => pushCheckbox('all')} />
-                <Bold>전체 동의</Bold>
+                <Bold>{t('all-agree')}</Bold>
               </AgreeLine>
               <Delimiter />
               <AgreeLine>
                 <AgreeCheckBox checked={checkboxStatus.service} onChange={() => pushCheckbox('service')} />
-                <Underline onClick={() => setTermVisibleStatus((prev) => ({ ...prev, service: true }))}>
-                  <Bold>서비스 이용약관</Bold>
-                </Underline>
-                에 동의합니다.
+
+                {lang === 'ko' && (
+                  <>
+                    <Underline //
+                      onClick={() => setTermVisibleStatus((prev) => ({ ...prev, service: true }))}
+                    >
+                      <Bold>{t('service')}</Bold>
+                    </Underline>
+                    {t('service-rest')}
+                  </>
+                )}
+                {lang === 'vn' && (
+                  <>
+                    {t('service-rest')}
+                    <Underline
+                      style={{ marginLeft: '6px' }}
+                      onClick={() => setTermVisibleStatus((prev) => ({ ...prev, service: true }))}
+                    >
+                      <Bold>{t('service')}</Bold>
+                    </Underline>
+                  </>
+                )}
               </AgreeLine>
               <AgreeLine>
                 <AgreeCheckBox checked={checkboxStatus.personal} onChange={() => pushCheckbox('personal')} />
-                <Underline onClick={() => setTermVisibleStatus((prev) => ({ ...prev, personal: true }))}>
-                  <Bold>개인정보 수집 및 이용약관</Bold>
-                </Underline>
-                에 동의합니다.
+
+                {lang === 'ko' && (
+                  <>
+                    <Underline //
+                      onClick={() => setTermVisibleStatus((prev) => ({ ...prev, personal: true }))}
+                    >
+                      <Bold>{t('personal')}</Bold>
+                    </Underline>
+                    {t('personal-rest')}
+                  </>
+                )}
+                {lang === 'vn' && (
+                  <>
+                    {t('personal-rest')}
+                    <Underline
+                      style={{ marginLeft: '6px' }}
+                      onClick={() => setTermVisibleStatus((prev) => ({ ...prev, personal: true }))}
+                    >
+                      <Bold>{t('personal')}</Bold>
+                    </Underline>
+                  </>
+                )}
               </AgreeLine>
               <Delimiter />
             </AgreeSection>
             <ButtonSection>
               <Button
-                value="취소"
+                value={t('cancel')}
                 style={{ marginRight: '17px' }}
                 status={buttonStatus.cancel}
                 onClick={() => pushLoginScreen()}
               />
-              <Button value="다음" status={buttonStatus.next} onClick={() => pushSignupScreen()} />
+              <Button value={t('next')} status={buttonStatus.next} onClick={() => pushSignupScreen()} />
             </ButtonSection>
           </TermContainer>
         </UserLayout>
-        <TermModal type="personal" isVisible={termVisibleStatus.personal} setTermVisibleStatus={setTermVisibleStatus} />
-        <TermModal type="service" isVisible={termVisibleStatus.service} setTermVisibleStatus={setTermVisibleStatus} />
+        <TermModal
+          type="personal"
+          isVisible={termVisibleStatus.personal}
+          setTermVisibleStatus={setTermVisibleStatus}
+          lang={lang}
+        />
+        <TermModal
+          type="service"
+          isVisible={termVisibleStatus.service}
+          setTermVisibleStatus={setTermVisibleStatus}
+          lang={lang}
+        />
       </FontProvider>
     </>
   );

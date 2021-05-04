@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 
 import { Button } from '@views/UserPage/TermPage/TermPage.style';
 
-import { PersonalTerm, ServiceTerm } from './Terms';
+import { PersonalTerm, ServiceTerm, VnServiceTerm, VnPersonalTerm } from './Terms';
 
 const TermModalWrapper = styled.div`
   box-sizing: border-box;
@@ -60,24 +60,36 @@ export const ButtonArea = styled.div`
 `;
 
 const TermType = {
-  service: {
-    title: '서비스 이용약관',
-    content: ServiceTerm,
+  ko: {
+    service: {
+      title: '서비스 이용약관',
+      content: ServiceTerm,
+    },
+    personal: {
+      title: '개인정보수집 및 이용약관',
+      content: PersonalTerm,
+    },
   },
-  personal: {
-    title: '개인정보수집 및 이용약관',
-    content: PersonalTerm,
+  vn: {
+    service: {
+      title: 'Điều khoản sử dụng dịch vụ',
+      content: VnServiceTerm,
+    },
+    personal: {
+      title: 'Điều khoản dịch vụ & thu thập thông tin cá nhân',
+      content: VnPersonalTerm,
+    },
   },
 };
 
-const TermModal: NextPage = ({ type, isVisible, setTermVisibleStatus }) => (
+const TermModal: NextPage = ({ type, isVisible, setTermVisibleStatus, lang }) => (
   <TermModalWrapper isVisible={isVisible}>
     <Content>
-      <Title>{TermType[type].title}</Title>
-      <Textarea value={TermType[type].content} readOnly />
+      <Title>{TermType[lang][type].title}</Title>
+      <Textarea value={TermType[lang][type].content} readOnly />
       <ButtonArea>
         <Button
-          value="취소"
+          value={lang === 'ko' ? '취소' : 'Hủy bỏ'}
           status="activate"
           onClick={() => setTermVisibleStatus((prev) => ({ ...prev, [type]: false }))}
         />

@@ -9,7 +9,7 @@ export const TermContainer = styled.div`
 
   width: 100%;
   height: 698px;
-  padding: 25px 75px;
+  padding: 25px 60px;
 `;
 
 export const Title = styled.span`
@@ -28,9 +28,13 @@ export const Underline = styled.span`
   cursor: pointer;
 `;
 
-export const Notification = styled.span`
-  width: 414px;
+export const NotificationWrapper = styled.div`
+  width: 100%;
   margin-top: 39px;
+`;
+
+export const Notification = styled.span`
+  display: block;
   text-align: center;
   line-height: 22px;
   font-size: 16px;

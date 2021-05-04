@@ -61,21 +61,44 @@ export const ButtonArea = styled.div`
   margin-top: 20px;
 `;
 
-const Notify = (email) => (
+export const Bold = styled.span`
+  font-weight: bold;
+`;
+
+const Notify = (email, lang) => (
   <>
-    <span>인증 메일이 {email}로 전송되었습니다.</span>
-    <br />
-    <span>인증 메일을 열어 버튼을 클릭하면 가입이 완료됩니다.</span>
+    {lang === 'ko' && (
+      <>
+        <span>
+          인증 메일이 <Bold>{email}</Bold>로 전송되었습니다.
+        </span>
+        <br />
+        <span>인증 메일을 열어 버튼을 클릭하면 가입이 완료됩니다.</span>
+      </>
+    )}
+    {lang === 'vn' && (
+      <>
+        <span>
+          Email xác minh đã được gửi đến <Bold>{email}</Bold>
+        </span>
+        <br />
+        <span>Mở email xác minh và nhấp vào nút để hoàn tất đăng ký.</span>
+      </>
+    )}
   </>
 );
 
-const SignupModal: NextPage = ({ isVisible, email = 'example@naver.com', setModalVisibleStatus }) => (
+const SignupModal: NextPage = ({ isVisible, email = 'example@naver.com', lang }) => (
   <SignupModalWrapper isVisible={isVisible}>
     <Content>
-      <Title>이메일 인증</Title>
-      <NotifySentence>{Notify(email)}</NotifySentence>
+      <Title>{lang === 'ko' ? '이메일 인증' : 'Xác thực Email'}</Title>
+      <NotifySentence>{Notify(email, lang)}</NotifySentence>
       <ButtonArea>
-        <Button value="돌아가기" status="activate" onClick={() => Router.push('/login')} />
+        <Button
+          value={lang === 'ko' ? '돌아가기' : 'Quay lại'} //
+          status="activate"
+          onClick={() => Router.push('/login')}
+        />
       </ButtonArea>
     </Content>
   </SignupModalWrapper>

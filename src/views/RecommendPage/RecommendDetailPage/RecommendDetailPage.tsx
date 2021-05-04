@@ -7,7 +7,6 @@ import Router from 'next/router';
 import UnivTuitionTable, { SubjectType } from '@components/RecommendPage/UnivTutionTable/UnivScholarshipTable';
 import Header from '@components/Shared/Header/Header';
 import Calendar from '@components/RecommendPage/Calendar/Calendar';
-import DefaultLayout from '@components/Shared/DefaultLayout/DefaultLayout';
 import ImageCarousel from '@components/RecommendPage/ImageCarousel/ImageCarousel';
 import {
   ContentSectionTitle,
@@ -41,12 +40,6 @@ import {
   QualificationTitle,
   QualificationImage,
   QualificationDescription,
-  DocumentIconContainer,
-  DocumentIcon,
-  DocumentTypeIconContainer,
-  DocumentDescription,
-  DocumentEssentialDesc,
-  DocumentEssential,
   CalendarSection,
   SideNavImage,
   NotifyDescription,

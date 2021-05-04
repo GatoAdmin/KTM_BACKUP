@@ -93,6 +93,7 @@ const RegisterPage: NextPage = () => {
 
     const axiosFormData = new FormData();
     Object.keys(changedFormData).forEach((key) => axiosFormData.append(key, changedFormData[key]));
+    axiosFormData.append('lang', lang);
 
     try {
       const res = await API.postSignup(axiosFormData);

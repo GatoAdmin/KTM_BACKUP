@@ -25,6 +25,8 @@ import useTranslate from '@util/hooks/useTranslate';
 import { Loading, LoadingPopup } from '../LoginPage/LoginPage.style';
 import i18nLoginResource from '../../../assets/i18n/registerPage.json';
 import SignupModal from './SignupModal';
+import API from '@util/api';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 
 const yearArray = Array.apply(null, Array(40)).map((value, index) => index + 1980);
 const monthArray = Array.apply(null, Array(12)).map((value, index) => index + 1);
@@ -71,7 +73,7 @@ const RegisterPage: NextPage = () => {
   });
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setLoading(true);
@@ -90,31 +92,19 @@ const RegisterPage: NextPage = () => {
     const axiosFormData = new FormData();
     Object.keys(changedFormData).forEach((key) => axiosFormData.append(key, changedFormData[key]));
 
-    axios({
-      method: 'post',
-      url: '/api/signup/',
-      data: axiosFormData,
-    })
-      .then((res) => {
-        const {
-          data: { status },
-        } = res;
-        if (status !== 'success') {
-          setErrMsg((prev) => ({ ...prev, [status]: true }));
-        } else {
-          setLoading(false);
-          setIsSignupModalVisible(true);
-          // alert(t('notify-email-certification'));
-          // Router.push({
-          //   pathname: '/login',
-          //   query: { lang },
-          // });
-        }
+    try {
+      const res = await API.postSignup(axiosFormData);
+
+      if (res.data.status !== 'success') {
+        setErrMsg((prev) => ({ ...prev, [res.data.status]: true }));
+      } else {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        setIsSignupModalVisible(true);
+      }
+      setLoading(false);
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   const handleFormContent = (e?: React.ChangeEvent<HTMLInputElement>, t?: string, v?: string | number) => {
@@ -290,11 +280,7 @@ const RegisterPage: NextPage = () => {
 
           <RegisterButton type="submit">{t('register-button')}</RegisterButton>
         </RegisterFieldset>
-        <SignupModal
-          isVisible={isSignupModalVisible}
-          email={formData.email}
-          setModalVisibleStatus={setIsSignupModalVisible}
-        />
+        <SignupModal isVisible={true} email={formData.email} setModalVisibleStatus={setIsSignupModalVisible} />
       </RegisterForm>
     </UserLayout>
   );

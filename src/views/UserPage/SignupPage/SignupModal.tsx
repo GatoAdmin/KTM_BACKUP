@@ -19,7 +19,7 @@ const SignupModalWrapper = styled.div`
 
 const Content = styled.div`
   position: absolute;
-  top: calc(50% - 180px);
+  top: calc(50% - 220px);
   left: calc(50% - 305px);
   width: 500px;
   height: 408px;

@@ -4,8 +4,8 @@
 import axios from 'axios';
 import isLogin from '@util/auth/auth';
 
-axios.defaults.baseURL = `${process.env.CLIENT_HOST}/api`;
-// axios.defaults.baseURL = `http://localhost:8000/api`;
+// axios.defaults.baseURL = `${process.env.CLIENT_HOST}/api`;
+axios.defaults.baseURL = `http://localhost:8000/api`;
 axios.defaults.withCredentials = true;
 
 export default {
@@ -28,7 +28,7 @@ export default {
     return response.data;
   },
   login: async (formData: any) => {
-    const response = await axios.post('/login', formData);
+    const response = await axios.post('/login/', formData);
     return response;
   },
   getPlayerStatus: async () => {
@@ -163,6 +163,12 @@ export default {
   },
   postSendEmailFindPassword: async (formData: FormData) => {
     const response = await axios.post('sendemailfindpassword/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response;
+  },
+  postSignup: async (formData: FormData) => {
+    const response = await axios.post('/signup/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response;

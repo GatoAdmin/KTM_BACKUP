@@ -36,26 +36,28 @@ export const LogoContainer = styled.div`
   color: ${fontColor};
 `;
 
-export const Navigation = styled.div`
-  font-weight: bold;
-  font-size: 14px;
-`;
-
 export const NavigationContainer = styled.nav`
   display: flex;
   margin-right: 100px;
 `;
 
-export const NavLink = styled.a`
-  margin-left: 60px;
+export const Navigation = styled.div`
+  /* font-weight: bold;
+  font-size: 14px; */
+  display: flex;
+  width: 610px;
+  justify-content: space-evenly;
   color: ${fontColor};
+`;
+
+export const NavLink = styled.a`
+  color: inherit;
   text-decoration: none;
 `;
 
 export const LocalizationButtonContainer = styled.div`
   display: flex;
   position: relative;
-  margin-left: 90px;
 `;
 
 interface LocalizationSelectorProps {
@@ -65,7 +67,7 @@ interface LocalizationSelectorProps {
 export const LocalizationSelector = styled.div<LocalizationSelectorProps>`
   position: absolute;
   left: 0;
-  bottom: 40px;
+  bottom: 35px;
   width: 26px;
   border: 1px solid black;
   transition: transform ease 0.3s;
@@ -78,14 +80,10 @@ export const LocalizationButton = styled.button`
   margin-right: 32px;
   padding: 0;
   border: 0;
-  color: ${fontColor};
+  color: inherit;
   background-color: transparent;
   cursor: pointer;
   outline: none;
-
-  :last-of-type {
-    /* margin: 0; */
-  }
 
   :nth-child(1):hover ~ ${LocalizationSelector} {
     transform: translateX(0);
@@ -96,8 +94,11 @@ export const LocalizationButton = styled.button`
 `;
 
 export const LoginLink = styled.a`
-  color: ${fontColor};
+  height: 90px;
+  width: fit-content;
+  color: inherit;
   text-decoration: none;
+  cursor: pointer;
 `;
 
 export const LinkButtonContainer = styled.div`

@@ -14,6 +14,7 @@ import {
   NavLink,
 } from './Header.style';
 import { Logo } from '@components/Shared/Header/Header.style';
+import { useRouter } from 'next/router';
 
 interface headerLink {
   name: string;
@@ -49,6 +50,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   const [isTop, setIsTop] = React.useState<boolean>(true);
   const header = React.useRef<HTMLElement>(null);
+  const router = useRouter();
   const visible = useIntersection(header);
   const [userButton, setUserButton] = useState(<></>);
 
@@ -76,9 +78,20 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   useEffect(() => {
     if (isLogin()) {
       setUserButton(
-        <Link href={{ pathname: '/mypage' }} passHref>
-          <LoginLink>{t('mypage')}</LoginLink>
-        </Link>,
+        <>
+          <Link href={{ pathname: '/mypage' }} passHref>
+            <LoginLink style={{ marginRight: '20px' }}>{t('mypage')}</LoginLink>
+          </Link>
+          <LoginLink
+            as="div"
+            onClick={() => {
+              router.push('/');
+              window.sessionStorage.removeItem('sid');
+            }}
+          >
+            {t('logout')}
+          </LoginLink>
+        </>,
       );
     } else {
       setUserButton(

@@ -13,6 +13,7 @@ import {
   LocalizationSelector,
   Logo,
 } from './Header.style';
+import { useRouter } from 'next/router';
 
 interface headerLink {
   name: string;
@@ -29,13 +30,25 @@ interface HeaderProps {
 
 const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute', t, changeLang, lang }) => {
   const [userButton, setUserButton] = useState(<></>);
+  const router = useRouter();
 
   useEffect(() => {
     if (isLogin()) {
       setUserButton(
-        <Link href={{ pathname: '/mypage', query: { lang } }} passHref>
-          <LoginLink>{t('mypage')}</LoginLink>
-        </Link>,
+        <>
+          <Link href={{ pathname: '/mypage', query: { lang } }} passHref>
+            <LoginLink style={{ marginRight: '20px' }}>{t('mypage')}</LoginLink>
+          </Link>
+          <LoginLink
+            as="div"
+            onClick={() => {
+              router.push('/');
+              window.sessionStorage.removeItem('sid');
+            }}
+          >
+            {t('logout')}
+          </LoginLink>
+        </>,
       );
     } else {
       setUserButton(

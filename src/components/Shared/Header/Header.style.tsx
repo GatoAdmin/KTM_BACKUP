@@ -24,10 +24,9 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
   align-items: center;
   top: 0;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin: 0 auto;
   padding: 22px 0;
-  width: 1100px;
   font: normal normal normal 14px/19px ${defaultFont};
   background-color: transparent;
   user-select: none;
@@ -51,23 +50,21 @@ export const HeaderContainer = styled.header<HeaderContainerProps>`
         `}
 `;
 
-export const Navigation = styled.div`
-  display: flex;
-  justify-content: space-around;
-  flex: 1 1 0;
-  padding: 0 30px;
-  color: ${fontColor};
-`;
-
 export const NavigationContainer = styled.nav`
   display: flex;
-  flex: 1 1 0;
-  margin-right: 50px;
+  /* margin-right: 50px; */
 `;
 
 export const Logo = styled(LogoSVG)`
   width: 143px;
   cursor: pointer;
+`;
+
+export const Navigation = styled.div`
+  display: flex;
+  width: 610px;
+  justify-content: space-evenly;
+  color: ${fontColor};
 `;
 
 export const NavLink = styled.a`
@@ -111,7 +108,8 @@ export const LocalizationButton = styled.button`
 `;
 
 export const LoginLink = styled.a`
-  margin-left: 30px;
+  width: 90px;
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
 `;

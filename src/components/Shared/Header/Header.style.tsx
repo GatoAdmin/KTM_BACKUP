@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { fontColor, mainColor } from '@util/style/color';
 import { defaultFont, logoFont } from '@util/style/font';
+import LogoSVG from '@assets/header_logo.svg';
 
 export const LogoContainer = styled.div`
   display: flex;
@@ -62,6 +63,11 @@ export const NavigationContainer = styled.nav`
   display: flex;
   flex: 1 1 0;
   margin-right: 50px;
+`;
+
+export const Logo = styled(LogoSVG)`
+  width: 143px;
+  cursor: pointer;
 `;
 
 export const NavLink = styled.a`

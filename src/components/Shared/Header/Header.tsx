@@ -11,6 +11,7 @@ import {
   NavigationContainer,
   NavLink,
   LocalizationSelector,
+  Logo,
 } from './Header.style';
 
 interface headerLink {
@@ -46,10 +47,10 @@ const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute', t, 
   }, [t, lang]);
 
   const headerLinks: Array<headerLink> = [
-    {
-      name: t('introduce'),
-      link: '/',
-    },
+    // {
+    //   name: t('introduce'),
+    //   link: '/',
+    // },
     {
       name: t('university'),
       link: '/recommend',
@@ -68,7 +69,7 @@ const Header: React.VFC<HeaderProps> = ({ background, position = 'absolute', t, 
     <HeaderContainer background={background} position={position}>
       <LogoContainer>
         <Link href="/" key="introduce" passHref>
-          <NavLink>katumm</NavLink>
+          <Logo />
         </Link>
       </LogoContainer>
       <NavigationContainer>

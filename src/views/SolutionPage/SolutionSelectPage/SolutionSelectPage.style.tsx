@@ -1,7 +1,12 @@
 import styled from 'styled-components';
 import { fontColor, borderColor, whiteColor, mainColor600 } from '@util/style/color';
-import { defaultFont } from '@util/style/font';
-import ClickHandSVG from '@assets/svg/click_hand_icon.svg';
+
+export const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 export const UnivListSection = styled.section`
   position: relative;

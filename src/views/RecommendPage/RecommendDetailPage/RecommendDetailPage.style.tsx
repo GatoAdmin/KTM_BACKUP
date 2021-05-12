@@ -137,7 +137,7 @@ export const InfoCardContainer = styled.div`
 
 export const InfoCard = styled.div`
   width: 120px;
-  height: 90px;
+  height: 120px;
   margin-left: 10px;
   padding: 10px;
   border: 1px solid ${lightGreyColor};
@@ -211,9 +211,8 @@ export const QualificationDescription = styled.div`
   justify-content: center;
   align-items: center;
   height: 100px;
-  padding: 0 20px;
-  font: normal normal 18px/25px ${defaultFont};
-  color: ${greyColor};
+  font: normal normal 16px ${defaultFont};
+  color: #232323;
   text-align: center;
 `;
 

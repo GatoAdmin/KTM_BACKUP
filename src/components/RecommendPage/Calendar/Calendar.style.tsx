@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { fontColor, greyColor, mainColor, whiteColor } from '@util/style/color';
+import { greyColor, mainColor, whiteColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import LeftArrowSVG from '@assets/svg/arrow_left_icon.svg';
 import RightArrowSVG from '@assets/svg/arrow_right_icon.svg';
@@ -21,8 +21,7 @@ export const CalendarController = styled.div`
 
 export const CalendarControlButton = styled.button`
   display: flex;
-  width: 12px;
-  height: 12px;
+  align-items: center;
   padding: 0;
   border: 0;
   background: transparent;
@@ -37,9 +36,9 @@ export const CalendarControlButton = styled.button`
 `;
 
 export const LeftArrow = styled(LeftArrowSVG)`
-  width: auto;
-  height: 12px;
-  margin: auto;
+  height: 43px;
+  transform: scale(0.5);
+  cursor: pointer;
   path {
     stroke: ${mainColor};
     stroke-width: 5px;
@@ -47,8 +46,9 @@ export const LeftArrow = styled(LeftArrowSVG)`
 `;
 
 export const RightArrow = styled(RightArrowSVG)`
-  height: 12px;
-  margin: auto;
+  height: 43px;
+  transform: scale(0.5);
+  cursor: pointer;
   path {
     stroke: ${mainColor};
     stroke-width: 5px;

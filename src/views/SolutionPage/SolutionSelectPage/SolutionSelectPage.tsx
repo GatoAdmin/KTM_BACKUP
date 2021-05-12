@@ -350,7 +350,7 @@ const SolutionSelectPage: NextPage = ({
             <LineParser str={t('katumm-welecom')} />
           </ImageContainer>
         </Wrapper>
-        <Footer />
+        <Footer t={t} lang={lang} />
       </DefaultLayout>
     );
   }

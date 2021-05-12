@@ -390,7 +390,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
         <UnivSort updateUrlQuery={updateUrlQuery} t={t} />
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
-      <Footer />
+      <Footer t={t} lang={lang} />
     </DefaultLayout>
   );
 };

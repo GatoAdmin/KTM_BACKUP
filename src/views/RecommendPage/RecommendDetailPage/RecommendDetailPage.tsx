@@ -425,7 +425,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
           </SideNav>
         </SectionContainer>
       </Main>
-      <Footer />
+      <Footer t={t} lang={lang} />
     </Wrapper>
   );
 };

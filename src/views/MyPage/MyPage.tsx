@@ -4,9 +4,7 @@ import Footer from '@components/Shared/Footer/Footer';
 import { NextPage } from 'next';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/myPage.json';
-import {
-  MainArea, SelectTab,
-} from '@components/MyPage';
+import { MainArea, SelectTab } from '@components/MyPage';
 import MainPageContainer from './MyPage.style';
 
 const MyPage: NextPage = () => {
@@ -28,18 +26,8 @@ const MyPage: NextPage = () => {
 
   return (
     <MainPageContainer lang={lang}>
-      <Header
-        background="dark"
-        t={t}
-        changeLang={changeLang}
-        lang={lang}
-      />
-      <SelectTab
-        selectedIndex={selectedIndex}
-        onClick={handlingClickSelectTab}
-        t={t}
-        lang={lang}
-      />
+      <Header background="dark" t={t} changeLang={changeLang} lang={lang} />
+      <SelectTab selectedIndex={selectedIndex} onClick={handlingClickSelectTab} t={t} lang={lang} />
       <MainArea
         t={t}
         lang={lang}
@@ -48,7 +36,7 @@ const MyPage: NextPage = () => {
         handlingClickRefundButton={handlingClickRefundButton}
         selectedIndex={selectedIndex}
       />
-      <Footer />
+      <Footer t={t} lang={lang} />
     </MainPageContainer>
   );
 };

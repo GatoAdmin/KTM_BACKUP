@@ -2,9 +2,9 @@
   "ko": {
     "warn-not-logged-in" : "로그인이 필요한 서비스입니다.",
     "introduce": "회사소개",
-    "university": "대학 소개&추천",
+    "university": "대학 검색",
     "consult": "입학 상담",
-    "one-click": "원클릭 입학솔루션",
+    "one-click": "입학솔루션",
     "login": "로그인",
     "logout": "로그아웃",
     "mypage": "마이페이지",

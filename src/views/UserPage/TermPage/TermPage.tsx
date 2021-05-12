@@ -18,7 +18,6 @@ import {
   ButtonSection,
   Bold,
   Underline,
-  TermTitle,
   NotificationWrapper,
 } from '@views/UserPage/TermPage/TermPage.style';
 import useTranslate from '@util/hooks/useTranslate';

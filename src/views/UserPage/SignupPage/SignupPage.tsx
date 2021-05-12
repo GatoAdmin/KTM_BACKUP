@@ -1,7 +1,9 @@
 /* eslint-disable prefer-spread */
 import React from 'react';
 import { NextPage } from 'next';
-import { withRouter } from 'next/router';
+import { useRouter, withRouter } from 'next/router';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import Select from '@components/UserPage/Select/Select';
@@ -30,6 +32,15 @@ import { Loading, LoadingPopup } from '../LoginPage/LoginPage.style';
 import i18nSignupResource from '../../../assets/i18n/signupPage.json';
 import SignupModal from './SignupModal';
 
+export async function getServerSideProps({ req, res, params }) {
+  if (!req.headers.referer) {
+    res.statusCode = 302;
+    res.setHeader('Location', '/');
+    res.end();
+  }
+  return { props: {} };
+}
+
 const yearArray = Array.apply(null, Array(40)).map((value, index) => index + 1980);
 const monthArray = Array.apply(null, Array(12)).map((value, index) => index + 1);
 const dayArray = Array.apply(null, Array(31)).map((value, index) => index + 1);
@@ -40,6 +51,7 @@ const topikArray = (t: (s: string) => string) => Array.apply(null, Array(7)).map
 
 const RegisterPage: NextPage = () => {
   const { t, lang } = useTranslate(i18nSignupResource);
+  const Router = useRouter();
   const [isSignupModalVisible, setIsSignupModalVisible] = React.useState(false);
   const [formData, setFormData] = React.useState({
     username: null,
@@ -104,9 +116,11 @@ const RegisterPage: NextPage = () => {
         setLoading(false);
         setIsSignupModalVisible(true);
       }
-      setLoading(false);
     } catch (err) {
+      alert('회원가입에 실패했습니다. 관리자에게 문의해주세요.');
       throw new Error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -138,6 +152,10 @@ const RegisterPage: NextPage = () => {
     }
   }, [loading, errMsg]);
 
+  const pushSignupRemainScreen = (pid) => {
+    if (pid !== undefined) Router.push(`/signup/remain/${pid}`);
+  };
+
   return (
     <FontProvider lang={lang}>
       <UserLayout width={630} height={800}>
@@ -148,14 +166,33 @@ const RegisterPage: NextPage = () => {
         )}
         <RegisterTitle>{t('register')}</RegisterTitle>
         <RegisterThirdPartyButtonContainer>
-          <RegisterThirdPartyButton>
-            <ThirdPartyLogo src="/images/google.png" alt={t('register-by-google')} />
-            {t('register-by-google')}
-          </RegisterThirdPartyButton>
-          <RegisterThirdPartyButton>
-            <ThirdPartyLogo src="/images/facebook_logo.png" alt={t('register-by-facebook')} />
-            {t('register-by-facebook')}
-          </RegisterThirdPartyButton>
+          <GoogleLogin
+            clientId="841751381743-4ed7ekbs06i4n4n2l1iugia41jtlv42i.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <RegisterThirdPartyButton
+                onClick={renderProps.onClick} //
+                disabled={renderProps.disabled}
+              >
+                <ThirdPartyLogo src="/images/google.png" alt={t('register-by-google')} />
+                {t('register-by-google')}
+              </RegisterThirdPartyButton>
+            )}
+            onSuccess={({ googleId }) => pushSignupRemainScreen(googleId)}
+            onFailure={(err) => console.log(err)}
+            cookiePolicy={'single_host_origin'}
+          />
+
+          <FacebookLogin
+            appId="1190082198106418"
+            autoLoad={false}
+            callback={({ id }) => pushSignupRemainScreen(id)}
+            render={(renderProps) => (
+              <RegisterThirdPartyButton onClick={renderProps.onClick}>
+                <ThirdPartyLogo src="/images/facebook_logo.png" alt={t('register-by-facebook')} />
+                {t('register-by-facebook')}
+              </RegisterThirdPartyButton>
+            )}
+          />
         </RegisterThirdPartyButtonContainer>
         <RegisterForm onSubmit={handleSubmit}>
           <RegisterLegend>{t('register-legend')}</RegisterLegend>

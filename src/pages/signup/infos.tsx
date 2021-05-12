@@ -1,1 +1,1 @@
-export { default } from '@views/UserPage/SignupPage/SignupPage';
+export { default, getServerSideProps } from '@views/UserPage/SignupPage/SignupPage';

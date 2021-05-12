@@ -31,6 +31,10 @@ export default {
     const response = await axios.post('/login/', formData);
     return response;
   },
+  snslogin: async (formData: any) => {
+    const response = await axios.post('/snslogin/', formData);
+    return response;
+  },
   getPlayerStatus: async () => {
     const sid = sessionStorage.getItem('sid');
     if (!isLogin()) return {};
@@ -169,6 +173,12 @@ export default {
   },
   postSignup: async (formData: FormData) => {
     const response = await axios.post('/signup/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response;
+  },
+  postSignupRemain: async (formData: FormData) => {
+    const response = await axios.post('/signupremain/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response;

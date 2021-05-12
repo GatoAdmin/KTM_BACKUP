@@ -44,6 +44,7 @@ import useIntersection from '@util/hooks/useInteraction';
 import useTranslate from '@util/hooks/useTranslate';
 import i18nResource from '@assets/i18n/landingPage.json';
 import isLogin from '@util/auth/auth';
+import Footer from '@components/Shared/Footer/Footer';
 
 interface FilterValue {
   location: Array<KoreaLocation>;
@@ -389,6 +390,7 @@ const RecommendListPage: NextPage<RecommendListPageProps> = ({ filterParams, ini
         <UnivSort updateUrlQuery={updateUrlQuery} t={t} />
         <UnivListLoadTrigger ref={univListLoadRef} />
       </UnivListSection>
+      <Footer />
     </DefaultLayout>
   );
 };

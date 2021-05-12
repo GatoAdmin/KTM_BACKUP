@@ -27,6 +27,7 @@ import {
   DocumentShortContainer,
 } from '@components/SolutionPage/Common/Common.style';
 import { ImageContainer, CoverImage, Wrapper } from '@views/SolutionPage/SolutionSelectPage/SolutionSelectPage.style';
+import Footer from '@components/Shared/Footer/Footer';
 
 interface tap {
   name: string;
@@ -349,6 +350,7 @@ const SolutionSelectPage: NextPage = ({
             <LineParser str={t('katumm-welecom')} />
           </ImageContainer>
         </Wrapper>
+        <Footer />
       </DefaultLayout>
     );
   }

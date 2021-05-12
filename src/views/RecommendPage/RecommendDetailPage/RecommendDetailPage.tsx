@@ -70,6 +70,7 @@ import useTranslate from '@util/hooks/useTranslate';
 
 import API from '@util/api';
 import isLogin from '@util/auth/auth';
+import Footer from '@components/Shared/Footer/Footer';
 
 const qualificationIcons = [
   { type: '국적요건', icon: FamilyIcon },
@@ -424,6 +425,7 @@ const RecommendDetailPage: NextPage<RecommendDetailPageProps> = ({
           </SideNav>
         </SectionContainer>
       </Main>
+      <Footer />
     </Wrapper>
   );
 };

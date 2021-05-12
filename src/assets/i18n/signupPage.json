@@ -102,7 +102,7 @@
         "complete-signup" : "Hoàn tất đăng kí thành viên.",
         "already-signup" : "Email này đã được đăng kí.",
         "no-signup" : "Bạn chưa đăng kí thành viên. Vui lòng tiến hành đăng kí thành viên.",
-        "signup-undefined-error": "회원가입에 실패했습니다. 관리자에게 문의해주세요.",
+        "signup-undefined-error": "Đăng kí thành viên thất bại. Vui lòng liên hệ với quản trị viên.",
         "register-by-google" : "Tiếp tục bằng Google",
         "register-by-facebook" : "Tiếp tục bằng Facebook",
         "last-name" : "Họ",

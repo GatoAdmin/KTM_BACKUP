@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
-import {
-  mainColor, greyColor, lightGreyColor, fontColor,
-} from '@util/style/color';
+
+import { mainColor, greyColor, lightGreyColor, fontColor } from '@util/style/color';
 import { defaultFont } from '@util/style/font';
 import LogoIcon from '../../../assets/logo.svg';
 
@@ -19,12 +18,26 @@ export const LogoContainer = styled.div`
 `;
 
 export const Logo = styled(LogoIcon)`
-  width: 220px;
-  height: 120px;
+  margin: 40px 0 60px 0;
+  cursor: pointer;
+`;
 
-  > path {
-    fill: ${mainColor};
-  }
+export const LanguageConvertWrapper = styled.div`
+  position: absolute;
+  top: 105px;
+  right: 95px;
+
+  display: flex;
+  justify-content: space-between;
+
+  width: 70px;
+  height: 25px;
+`;
+
+export const Language = styled.span`
+  font-size: 18px;
+  color: #000;
+  cursor: pointer;
 `;
 
 export const LoginForm = styled.form`

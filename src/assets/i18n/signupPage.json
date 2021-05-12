@@ -2,6 +2,7 @@
     "ko":{
         "register-legend" : "카툼 회원가입",
         "register" : "회원가입",
+        "sns-register" : "SNS 회원가입",
         "register-by-google" : "Google로 계속하기",
         "register-by-facebook" : "Facebook으로 계속하기",
         "last-name" : "성",
@@ -86,11 +87,14 @@
         "topik-4" : "TOPIK 4급",
         "topik-5" : "TOPIK 5급",
         "topik-6" : "TOPIK 6급",
-        "notify-email-certification" : "이메일 인증을 완료해주세요."
+        "notify-email-certification" : "이메일 인증을 완료해주세요.",
+        "cancel" : "취소",
+        "next" : "다음"
     },
     "vn":{
         "register-legend" : "Katumm Đăng kí",
         "register" : "Đăng kí",
+        "sns-register" : "SNS Đăng kí",
         "register-by-google" : "Tiếp tục bằng Google",
         "register-by-facebook" : "Tiếp tục bằng Facebook",
         "last-name" : "Họ",
@@ -175,6 +179,8 @@
         "topik-4" : "TOPIK Cấp 4",
         "topik-5" : "TOPIK Cấp 5",
         "topik-6" : "TOPIK Cấp 6",
-        "notify-email-certification" : "Vui lòng hoàn tất xác minh Email."
+        "notify-email-certification" : "Vui lòng hoàn tất xác minh Email.",
+        "cancel" : "Hủy bỏ",
+        "next" : "Tiếp theo"
     }
 }

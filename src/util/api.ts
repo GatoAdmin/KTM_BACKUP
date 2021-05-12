@@ -4,8 +4,8 @@
 import axios from 'axios';
 import isLogin from '@util/auth/auth';
 
-axios.defaults.baseURL = `${process.env.CLIENT_HOST}/api`;
-// axios.defaults.baseURL = `http://localhost:8000/api`;
+// axios.defaults.baseURL = `${process.env.CLIENT_HOST}/api`;
+axios.defaults.baseURL = `http://localhost:8000/api`;
 axios.defaults.withCredentials = true;
 
 export default {
@@ -28,7 +28,11 @@ export default {
     return response.data;
   },
   login: async (formData: any) => {
-    const response = await axios.post('/login', formData);
+    const response = await axios.post('/login/', formData);
+    return response;
+  },
+  snslogin: async (formData: any) => {
+    const response = await axios.post('/snslogin/', formData);
     return response;
   },
   getPlayerStatus: async () => {
@@ -128,9 +132,7 @@ export default {
     const response = await axios.get('?action=get_my_info&params={}');
     return response.data.value;
   },
-  patchMyInfomation: async ({
-    first_name, last_name, topik_level, identity, username,
-  }: any) => {
+  patchMyInfomation: async ({ first_name, last_name, topik_level, identity, username }: any) => {
     const response = await axios.get(
       `?action=change_my_info&params={"infos":{"last_name" : "${last_name}", "first_name":"${first_name}", "username":"${username}", "identity":${identity}, "topik_level":${topik_level}}}`,
     );
@@ -158,7 +160,27 @@ export default {
     return response.data;
   },
   postRefund: async (id: number, account: string, reason: string, bank: string) => {
-    const response = await axios.get(`?action=refund_account_num&params={"status_id":${id}, "account":"${account}", "reason":"${reason}", "bank":"${bank}"}`);
+    const response = await axios.get(
+      `?action=refund_account_num&params={"status_id":${id}, "account":"${account}", "reason":"${reason}", "bank":"${bank}"}`,
+    );
+    return response;
+  },
+  postSendEmailFindPassword: async (formData: FormData) => {
+    const response = await axios.post('sendemailfindpassword/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response;
+  },
+  postSignup: async (formData: FormData) => {
+    const response = await axios.post('/signup/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response;
+  },
+  postSignupRemain: async (formData: FormData) => {
+    const response = await axios.post('/signupremain/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response;
   },
 };

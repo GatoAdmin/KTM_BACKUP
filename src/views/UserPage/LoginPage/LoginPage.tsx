@@ -1,7 +1,10 @@
+/* eslint-disable no-alert */
 import React from 'react';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import Router, { withRouter } from 'next/router';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import UserLayout from '@components/UserPage/UserPageLayout/UserLayout';
 import {
@@ -22,17 +25,15 @@ import {
   RegisterLink,
   LoadingPopup,
   Loading,
+  LanguageConvertWrapper,
+  Language,
 } from '@views/UserPage/LoginPage/LoginPage.style';
 import API from '@util/api';
 import useTranslate from '@util/hooks/useTranslate';
 import { FontProvider } from '@views/LandingPage/LandingPage.style';
 import i18nLoginResource from '../../../assets/i18n/loginPage.json';
 
-const LoginPage: NextPage = ({
-  router: {
-    query: { lang: queryLang },
-  },
-}) => {
+const LoginPage: NextPage = () => {
   const { t, lang, changeLang } = useTranslate(i18nLoginResource);
   const [formData, setFormData] = React.useState({
     email: null,
@@ -80,11 +81,23 @@ const LoginPage: NextPage = ({
     }
   };
 
-  React.useEffect(() => {
-    if (queryLang !== undefined) {
-      changeLang(queryLang);
+  const handleSNSLogin = async (id) => {
+    const axiosFormData = new FormData();
+    axiosFormData.append('email', id);
+
+    try {
+      const res = await API.snslogin(axiosFormData);
+
+      if (res.data.status === 'success') {
+        sessionStorage.setItem('sid', res.data.sid);
+        Router.push('/');
+      } else if (res.data.status === 'ERROR_NOT_EXIST_EMAIL') {
+        alert(t('no-signup'));
+      }
+    } catch (error) {
+      alert('로그인에 실패했습니다. 관리자에게 문의해주세요.');
     }
-  }, [queryLang]);
+  };
 
   React.useEffect(() => {
     if (loading) {
@@ -103,8 +116,14 @@ const LoginPage: NextPage = ({
           </LoadingPopup>
         )}
         <LogoContainer>
-          <Logo />
+          <Link href={{ pathname: '/' }} passHref>
+            <Logo />
+          </Link>
         </LogoContainer>
+        <LanguageConvertWrapper>
+          <Language onClick={() => changeLang('ko')}>KR</Language>
+          <Language onClick={() => changeLang('vn')}>VN</Language>
+        </LanguageConvertWrapper>
         <LoginForm onSubmit={handleSubmit}>
           <LoginFieldset>
             <LoginLegend>카툼 로그인</LoginLegend>
@@ -128,22 +147,41 @@ const LoginPage: NextPage = ({
           </LoginFieldset>
         </LoginForm>
         <LoginTextContainer>
-          <Link href="/" passHref>
+          <Link href={{ pathname: '/findpassword' }} passHref>
             <LoginHelpLink>{t('find-password')}</LoginHelpLink>
           </Link>
         </LoginTextContainer>
         <RegisterThirdPartyButtonContainer>
-          <RegisterThirdPartyButton>
-            <ThirdPartyLogo src="/images/google.png" alt={t('login-by-google')} />
-            {t('login-by-google')}
-          </RegisterThirdPartyButton>
-          <RegisterThirdPartyButton>
-            <ThirdPartyLogo src="/images/facebook_logo.png" alt={t('login-by-facebook')} />
-            {t('login-by-facebook')}
-          </RegisterThirdPartyButton>
+          <GoogleLogin
+            clientId="841751381743-4ed7ekbs06i4n4n2l1iugia41jtlv42i.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <RegisterThirdPartyButton
+                onClick={renderProps.onClick} //
+                disabled={renderProps.disabled}
+              >
+                <ThirdPartyLogo src="/images/google.png" alt={t('login-by-google')} />
+                {t('login-by-google')}
+              </RegisterThirdPartyButton>
+            )}
+            onSuccess={({ googleId }) => handleSNSLogin(googleId)}
+            onFailure={(err) => console.log(err)}
+            cookiePolicy={'single_host_origin'}
+          />
+
+          <FacebookLogin
+            appId="1190082198106418"
+            autoLoad={false}
+            callback={({ id }) => handleSNSLogin(id)}
+            render={(renderProps) => (
+              <RegisterThirdPartyButton onClick={renderProps.onClick}>
+                <ThirdPartyLogo src="/images/facebook_logo.png" alt={t('login-by-facebook')} />
+                {t('login-by-facebook')}
+              </RegisterThirdPartyButton>
+            )}
+          />
         </RegisterThirdPartyButtonContainer>
         <LoginTextContainer>{t('register-label')}</LoginTextContainer>
-        <Link href={{ pathname: '/register', query: { lang } }} passHref>
+        <Link href={{ pathname: '/signup/term' }} passHref>
           <RegisterLink>{t('register-button')}</RegisterLink>
         </Link>
       </UserLayout>

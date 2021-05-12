@@ -77,22 +77,18 @@ const Header: React.FC<HeaderProps> = ({ t, lang, changeLang }) => {
   useEffect(() => {
     if (isLogin()) {
       setUserButton(
-        <Link href={{ pathname: '/mypage', query: { lang } }} passHref>
+        <Link href={{ pathname: '/mypage' }} passHref>
           <LoginLink>{t('mypage')}</LoginLink>
         </Link>,
       );
     } else {
       setUserButton(
-        <Link href={{ pathname: '/login', query: { lang } }} passHref>
+        <Link href={{ pathname: '/login' }} passHref>
           <LoginLink>{t('login')}</LoginLink>
         </Link>,
       );
     }
   }, [t, lang]);
-
-  React.useEffect(() => {
-    console.log(isLoggedIn);
-  }, [isLoggedIn]);
 
   return (
     <HeaderContainer ref={header} show={visible} isTop={isTop}>

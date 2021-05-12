@@ -1,0 +1,26 @@
+{
+    "ko": {
+        "title" : "약관 동의",
+        "notification-first-line" : "하단의 서비스 이용약관 및 개인정보 수집 및 이용약관에 대한",
+        "notification-second-line" : "안내를 읽고 동의에 체크해 주세요.",
+        "all-agree" : "전체 동의",
+        "service" : "서비스 이용약관",
+        "service-rest" : "에 동의합니다.",
+        "personal" : "개인정보 수집 및 이용약관",
+        "personal-rest" : "에 동의합니다.",
+        "cancel" : "취소",
+        "next" : "다음"
+    },
+    "vn": {
+        "title" : "Đồng ý các điều khoản",
+        "notification-first-line" : "Vui lòng đọc thông tin về Điều khoản sử dụng dịch vụ,",
+        "notification-second-line" : "Điều khoản dịch vụ & thu thập thông tin cá nhân dưới đây và chọn ĐỒNG Ý",
+        "all-agree" : "Đồng ý tất cả",
+        "service" : " Điều khoản sử dụng dịch vụ",
+        "service-rest" : "Tôi đồng ý ",
+        "personal" : "Điều khoản dịch vụ & thu thập thông tin cá nhân",
+        "personal-rest" : "Tôi đồng ý ",
+        "cancel" : "Hủy bỏ",
+        "next" : "Tiếp theo"
+    }
+  }

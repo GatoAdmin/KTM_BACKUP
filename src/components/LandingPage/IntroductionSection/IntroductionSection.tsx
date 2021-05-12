@@ -12,6 +12,7 @@ import {
   InputWrap,
   SearchIcon,
 } from './IntroductionSection.style';
+import { useRouter } from 'next/router';
 
 // temp interface for temporary translation(delete if change to next.js 10
 interface IntroductionSectionProps {
@@ -20,7 +21,9 @@ interface IntroductionSectionProps {
 
 const IntroductionSection: React.FC<IntroductionSectionProps> = ({ t }) => {
   const firstSection = React.useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const visible = useIntersection(firstSection);
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   return (
     <IntroductionSectionContainer ref={firstSection}>
@@ -35,7 +38,16 @@ const IntroductionSection: React.FC<IntroductionSectionProps> = ({ t }) => {
           </SubTitle>
         </IntroductionContent>
         <InputWrap>
-          <InputUniversity placeholder={t('landing-input-placeholder')} />
+          <InputUniversity
+            placeholder={t('landing-input-placeholder')}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchTerm !== '') {
+                router.push(`/recommend?location=&tuition=&topik=&exam=&scholarship=&category=&word=${searchTerm}`);
+              }
+            }}
+          />
           <SearchIcon />
         </InputWrap>
       </Introduction>

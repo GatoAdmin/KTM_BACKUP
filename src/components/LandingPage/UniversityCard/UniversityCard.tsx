@@ -46,10 +46,10 @@ const UniversityCard: React.FC<UniversityCardProps> = ({ data, lang }) => {
           <SmileIcon />
           <CardInfoComment> Comment </CardInfoComment>
         </CardInfoCommentWrap>
-        <DetailTextWrap>
-          {lang === 'ko' ? detailKorText : detailVnText}
-        </DetailTextWrap>
-        <Button onClick={() => router.replace(`/recommand/${data.univ_code}`)}> 상세보기 </Button>
+        <DetailTextWrap>{lang === 'ko' ? detailKorText : detailVnText}</DetailTextWrap>
+        <Button onClick={() => router.replace(`/recommand/${data.univ_code}`)}>
+          {lang === 'ko' ? '상세보기' : 'Xem chi tiết'}
+        </Button>
       </CardInfo>
     </UniversityCardContainer>
   );

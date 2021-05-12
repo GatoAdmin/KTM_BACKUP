@@ -117,7 +117,7 @@ const RegisterPage: NextPage = () => {
         setIsSignupModalVisible(true);
       }
     } catch (err) {
-      alert('회원가입에 실패했습니다. 관리자에게 문의해주세요.');
+      alert(t('signup-undefined-error'));
       throw new Error(err);
     } finally {
       setLoading(false);

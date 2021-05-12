@@ -36,7 +36,18 @@ const SolutionSection: React.FC<SolutionSectionProps> = ({ t, lang }) => {
               <br />
               {t('landing-solution-section-detail-2')}
             </Detail>
-            <Button onClick={() => { router.replace('/'); }}>{t('landing-solution-section-button')}</Button>
+            <Button
+              onClick={() => {
+                if (window.sessionStorage.getItem('sid') === null) {
+                  let msg = lang === 'ko' ? '로그인이 필요한 서비스입니다.' : 'Dịch vụ bắt buộc phải đăng nhập.';
+                  alert(msg);
+                } else {
+                  router.replace('/solution');
+                }
+              }}
+            >
+              {t('landing-solution-section-button')}
+            </Button>
           </TextWrap>
         </Box>
       </SolutionSectionInnerBox>

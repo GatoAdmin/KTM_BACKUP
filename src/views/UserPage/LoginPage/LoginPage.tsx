@@ -66,7 +66,7 @@ const LoginPage: NextPage = () => {
     const { status } = res.data;
     if (status !== 'success') {
       if (status === 'ERROR_NOT_YET_EMAIL_CONFIRM') {
-        alert('이메일 인증을 완료해 주세요.');
+        alert(t('request-email-authentication'));
       } else {
         setErrMsg((prev) => ({ ...prev, [status]: true }));
       }
@@ -95,7 +95,7 @@ const LoginPage: NextPage = () => {
         alert(t('no-signup'));
       }
     } catch (error) {
-      alert('로그인에 실패했습니다. 관리자에게 문의해주세요.');
+      alert(t('login-undefined-error'));
     }
   };
 

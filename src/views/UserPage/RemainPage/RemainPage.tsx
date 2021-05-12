@@ -139,14 +139,14 @@ const RemainPage: NextPage = () => {
           if (res.data.status === 'ERROR_EXIST_EMAIL') {
             alert(t('already-signup'));
             router.push('/login');
-          } else alert('회원가입에 실패했습니다. 관리자에게 문의해주세요.');
+          } else alert(t('signup-undefined-error'));
           setErrMsg((prev) => ({ ...prev, [res.data.status]: true }));
         } else {
           alert(t('complete-signup'));
           router.push('/login');
         }
       } catch (error) {
-        alert('회원가입에 실패했습니다. 관리자에게 문의해주세요.');
+        alert(t('signup-undefined-error'));
         throw new Error(error);
       } finally {
         setLoading(false);
